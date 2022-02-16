@@ -32,4 +32,5 @@ name = "projgeom-rs"
 version = "0.1.0"
 dependencies = [
  "num-integer",
+ "num-traits",
 ]

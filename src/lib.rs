@@ -28,9 +28,9 @@ where
 {
     let [a, b, c] = co1;
     let [d, e, f] = co2;
-    let g = (a.cross(e)).cross(&b.cross(d));
-    let h = (a.cross(f)).cross(&c.cross(d));
-    let i = (b.cross(f)).cross(&c.cross(e));
+    let g = (a.cross(e)).cross(& b.cross(d));
+    let h = (a.cross(f)).cross(& c.cross(d));
+    let i = (b.cross(f)).cross(& c.cross(e));
     coincident(&g, &h, &i)
 }
 
@@ -64,7 +64,7 @@ where
 {
     let [a, b, c] = tri1;
     let [d, e, f] = tri2;
-    let o = (a.cross(d)).cross(&b.cross(e));
+    let o = (a.cross(d)).cross(& b.cross(e));
     (c.cross(f)).incident(&o)
 }
 
@@ -106,8 +106,8 @@ where
     let ab = a.cross(b);
     let p = ab.aux1();
     let r = p.aux2(c);
-    let s = (a.cross(&r)).cross(&b.cross(&p));
-    let q = (b.cross(&r)).cross(&a.cross(&p));
+    let s = (a.cross(&r)).cross(& b.cross(&p));
+    let q = (b.cross(&r)).cross(& a.cross(&p));
     (q.cross(&s)).cross(&ab)
 }
 
@@ -121,7 +121,7 @@ where
     P: ProjPlanePrim2<L>,
     L: ProjPlanePrim2<P>,
 {
-    harm_conj(a, b, c).eq(d)
+    harm_conj(a, b, c) == *d
 }
 
 #[allow(dead_code)]
@@ -136,13 +136,13 @@ where
 }
 
 pub trait ProjPlaneGeneric<L>: Eq + ProjPlanePrim2<L> {
-    // type Value; // measurement value
-    fn dot(&self, line: &L) -> i64; // basic measurement
-    fn plucker(ld: &i64, p: &Self, mu: &i64, p: &Self) -> Self;
+    type V; // measurement value
+    fn dot(&self, line: &L) -> Self::V; // basic measurement
+    fn plucker(ld: &Self::V, p: &Self, mu: &Self::V, p: &Self) -> Self;
 
-    fn incident(&self, line: &L) -> bool {
-        self.dot(line) == 0_i64
-    }
+    // fn incident(&self, line: &L) -> bool {
+    //     self.dot(line) == Self::V::new()
+    // }
 }
 
 /*
