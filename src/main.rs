@@ -84,8 +84,8 @@ fn main() {
     let p = PArch::new();
     let q = PArch::new();
     let r = PArch::new();
-    let l = LArch::new();
+    let l = &LArch::new();
     println!("{}", p == q);
-    println!("{}", p.incident(&l));
+    println!("{}", p.incident(l));
     println!("{}", coincident(&p, &q, &r));
 }

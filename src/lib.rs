@@ -8,8 +8,8 @@ pub fn coincident<P, L>(p: &P, q: &P, r: &P) -> bool
 where
     P: ProjPlanePrim<L>,
 {
-    let l = p.cross(q);
-    r.incident(&l)
+    let l = &p.cross(q);
+    r.incident(l)
 }
 
 /**
@@ -64,8 +64,8 @@ where
 {
     let [a, b, c] = tri1;
     let [d, e, f] = tri2;
-    let o = (a.cross(d)).cross(& b.cross(e));
-    (c.cross(f)).incident(&o)
+    let o = &(a.cross(d)).cross(& b.cross(e));
+    (c.cross(f)).incident(o)
 }
 
 /**
@@ -80,10 +80,10 @@ where
     P: ProjPlanePrim<L>,
     L: ProjPlanePrim<P>,
 {
-    let trid1 = tri_dual(tri1);
-    let trid2 = tri_dual(tri2);
+    let trid1 = &tri_dual(tri1);
+    let trid2 = &tri_dual(tri2);
     let b1 = persp(tri1, tri2);
-    let b2 = persp(&trid1, &trid2);
+    let b2 = persp(trid1, trid2);
     (b1 && b2) || (!b1 && !b2)
 }
 
@@ -103,12 +103,12 @@ where
     L: ProjPlanePrim2<P>,
 {
     assert!(coincident(a, b, c));
-    let ab = a.cross(b);
-    let p = ab.aux1();
-    let r = p.aux2(c);
-    let s = (a.cross(&r)).cross(& b.cross(&p));
-    let q = (b.cross(&r)).cross(& a.cross(&p));
-    (q.cross(&s)).cross(&ab)
+    let ab = &a.cross(b);
+    let p = &ab.aux1();
+    let r = &p.aux2(c);
+    let s = &(a.cross(r)).cross(& b.cross(p));
+    let q = &(b.cross(r)).cross(& a.cross(p));
+    (q.cross(s)).cross(ab)
 }
 
 /**
@@ -138,7 +138,7 @@ where
 pub trait ProjPlaneGeneric<L>: Eq + ProjPlanePrim2<L> {
     type V; // measurement value
     fn dot(&self, line: &L) -> Self::V; // basic measurement
-    fn plucker(ld: &Self::V, p: &Self, mu: &Self::V, p: &Self) -> Self;
+    fn plucker(ld: Self::V, p: &Self, mu: Self::V, p: &Self) -> Self;
 
     // fn incident(&self, line: &L) -> bool {
     //     self.dot(line) == Self::V::new()
@@ -170,6 +170,6 @@ where
 {
     assert!(coincident(a, b, c));
     let ab = a.cross(b);
-    let lc = ab.aux1().cross(c);
-    P::plucker(&a.dot(&lc), a, &b.dot(&lc), b)
+    let lc = &ab.aux1().cross(c);
+    P::plucker(a.dot(lc), a, b.dot(lc), b)
 }
