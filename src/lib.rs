@@ -1,14 +1,26 @@
 pub trait ProjPlanePrim<L>: Eq {
     // type Dual: ProjPlanePrim;
-    fn cross(&self, rhs: &Self) -> L;
+    fn circ(&self, rhs: &Self) -> L;
     fn incident(&self, line: &L) -> bool;
 }
 
+pub fn check_axiom<P, L>(p: &P, q: &P, l: &L)
+where
+    P: ProjPlanePrim<L>,
+    L: ProjPlanePrim<P>,
+{
+    assert!((p == q) == (q == p));
+    assert!(p.incident(l) == l.incident(p));
+    assert!(p.circ(q) == q.circ(p));
+    let m = p.circ(q);
+    assert!(m.incident(p) && m.incident(q));
+}
+    
 pub fn coincident<P, L>(p: &P, q: &P, r: &P) -> bool
 where
     P: ProjPlanePrim<L>,
 {
-    let l = &p.cross(q);
+    let l = &p.circ(q);
     r.incident(l)
 }
 
@@ -28,9 +40,9 @@ where
 {
     let [a, b, c] = co1;
     let [d, e, f] = co2;
-    let g = (a.cross(e)).cross(& b.cross(d));
-    let h = (a.cross(f)).cross(& c.cross(d));
-    let i = (b.cross(f)).cross(& c.cross(e));
+    let g = (a.circ(e)).circ(& b.circ(d));
+    let h = (a.circ(f)).circ(& c.circ(d));
+    let i = (b.circ(f)).circ(& c.circ(e));
     coincident(&g, &h, &i)
 }
 
@@ -46,7 +58,7 @@ where
 {
     let [a1, a2, a3] = tri;
     assert!(!coincident(a1, a2, a3));
-    [a2.cross(a3), a1.cross(a3), a1.cross(a2)]
+    [a2.circ(a3), a1.circ(a3), a1.circ(a2)]
 }
 
 /**
@@ -64,8 +76,8 @@ where
 {
     let [a, b, c] = tri1;
     let [d, e, f] = tri2;
-    let o = &(a.cross(d)).cross(& b.cross(e));
-    (c.cross(f)).incident(o)
+    let o = &(a.circ(d)).circ(& b.circ(e));
+    (c.circ(f)).incident(o)
 }
 
 /**
@@ -103,12 +115,12 @@ where
     L: ProjPlanePrim2<P>,
 {
     assert!(coincident(a, b, c));
-    let ab = &a.cross(b);
+    let ab = &a.circ(b);
     let p = &ab.aux1();
     let r = &p.aux2(c);
-    let s = &(a.cross(r)).cross(& b.cross(p));
-    let q = &(b.cross(r)).cross(& a.cross(p));
-    (q.cross(s)).cross(ab)
+    let s = &(a.circ(r)).circ(& b.circ(p));
+    let q = &(b.circ(r)).circ(& a.circ(p));
+    (q.circ(s)).circ(ab)
 }
 
 /**
@@ -130,8 +142,8 @@ where
     P: ProjPlanePrim2<L>,
     L: ProjPlanePrim2<P>,
 {
-    let po = p.cross(origin);
-    let b = po.cross(mirror);
+    let po = p.circ(origin);
+    let b = po.circ(mirror);
     harm_conj(origin, &b, p)
 }
 
@@ -150,7 +162,7 @@ impl<P, L> ProjPlanePrim<L> for P
 where
     P: ProjPlaneGeneric<L>,
 {
-    fn cross(&self, rhs: &Self) -> L { L }
+    fn circ(&self, rhs: &Self) -> L { L }
 
     fn incident(&self, line: &L) -> bool {
         self.dot(line) == 0_i64
@@ -169,7 +181,7 @@ where
     L: ProjPlaneGeneric<P>,
 {
     assert!(coincident(a, b, c));
-    let ab = a.cross(b);
-    let lc = &ab.aux1().cross(c);
+    let ab = a.circ(b);
+    let lc = &ab.aux1().circ(c);
     P::plucker(a.dot(lc), a, b.dot(lc), b)
 }
