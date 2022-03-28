@@ -15,7 +15,7 @@ where
     let m = p.circ(q);
     assert!(m.incident(p) && m.incident(q));
 }
-    
+
 pub fn coincident<P, L>(p: &P, q: &P, r: &P) -> bool
 where
     P: ProjPlanePrim<L>,
@@ -40,9 +40,9 @@ where
 {
     let [a, b, c] = co1;
     let [d, e, f] = co2;
-    let g = (a.circ(e)).circ(& b.circ(d));
-    let h = (a.circ(f)).circ(& c.circ(d));
-    let i = (b.circ(f)).circ(& c.circ(e));
+    let g = (a.circ(e)).circ(&b.circ(d));
+    let h = (a.circ(f)).circ(&c.circ(d));
+    let i = (b.circ(f)).circ(&c.circ(e));
     coincident(&g, &h, &i)
 }
 
@@ -76,7 +76,7 @@ where
 {
     let [a, b, c] = tri1;
     let [d, e, f] = tri2;
-    let o = &(a.circ(d)).circ(& b.circ(e));
+    let o = &(a.circ(d)).circ(&b.circ(e));
     (c.circ(f)).incident(o)
 }
 
@@ -118,8 +118,8 @@ where
     let ab = &a.circ(b);
     let p = &ab.aux1();
     let r = &p.aux2(c);
-    let s = &(a.circ(r)).circ(& b.circ(p));
-    let q = &(b.circ(r)).circ(& a.circ(p));
+    let s = &(a.circ(r)).circ(&b.circ(p));
+    let q = &(b.circ(r)).circ(&a.circ(p));
     (q.circ(s)).circ(ab)
 }
 
