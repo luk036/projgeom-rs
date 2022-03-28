@@ -35,7 +35,7 @@ impl ProjPlanePrim<LArch> for PArch {
         true
     }
     #[inline]
-    fn cross(&self, _rhs: &Self) -> LArch {
+    fn circ(&self, _rhs: &Self) -> LArch {
         LArch::new()
     }
 }
@@ -64,7 +64,7 @@ impl ProjPlanePrim<PArch> for LArch {
         true
     }
     #[inline]
-    fn cross(&self, _rhs: &Self) -> PArch {
+    fn circ(&self, _rhs: &Self) -> PArch {
         PArch::new()
     }
 }
