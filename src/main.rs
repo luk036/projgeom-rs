@@ -1,6 +1,6 @@
 // use std::cmp::{Eq, PartialEq};
-mod lib;
-use crate::lib::{coincident, ProjPlanePrim, ProjPlanePrim2};
+mod proj_plane;
+use crate::proj_plane::{coincident, ProjPlanePrim, ProjPlanePrim2};
 
 #[derive(Debug, PartialEq, Eq, Clone, Copy)]
 struct PArch {}
