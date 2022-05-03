@@ -1,7 +1,5 @@
-use crate::involution;
-use crate::proj_plane::tri_dual;
-use crate::proj_plane::ProjPlanePrim;
-use crate::proj_plane::ProjPlanePrim2;
+use crate::pg_plane::{tri_dual, involution};
+use crate::pg_plane::{ProjPlanePrim, ProjPlane};
 
 pub trait CKPlanePrim<L>: ProjPlanePrim<L> {
     // type Dual: ProjPlanePrim;
@@ -52,16 +50,14 @@ where
     [t1, t2, t3]
 }
 
-pub trait CKPlanePrim2<L>: ProjPlanePrim2<L> {
-    // type Dual: ProjPlanePrim;
-    fn perp(&self) -> L;
-}
+pub trait CKPlane<L, V: Default + Eq>: ProjPlane<L, V> + CKPlanePrim<L> {}
 
 #[allow(dead_code)]
-pub fn reflect<P, L>(mirror: &L, p: &P) -> P
+pub fn reflect<P, L, V>(mirror: &L, p: &P) -> P
 where
-    P: CKPlanePrim2<L>,
-    L: CKPlanePrim2<P>,
+    V: Default + Eq,
+    P: CKPlane<L, V>,
+    L: CKPlane<P, V>,
 {
     involution(&mirror.perp(), mirror, p)
 }

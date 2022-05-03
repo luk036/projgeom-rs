@@ -1,152 +1,114 @@
-// The template and inlines for the -*- C++ -*- pg object classes.
-// Initially implemented by Wai-Shing Luk <luk036@gmail.com>
-//
+use crate::pg_plane::{ProjPlanePrim, ProjPlane};
+// use crate::pg_plane::{check_axiom, coincident};
 
-/**
- * @brief Projective object
- *
- * @tparam _K Type of object elements
- * @tparam _dual
- */
-template <ring _K, typename _dual> class pg_object : public std::array<_K, 3> {
-    /// Value typedef.
-    using _Base = std::array<_K, 3>;
-    using _Self = pg_object<_K, _dual>;
-
-  public:
-    using value_type = _K;
-    using dual = _dual;
-
-    // pg_object(_Self &&) = default;
-
-    /**
-     * @brief Construct a new pg object object
-     *
-     * @param[in] a array of coordinates
-     */
-    constexpr explicit pg_object(const _Base& a) : _Base{a} {}
-
-    /**
-     * @brief Construct a new pg object
-     *
-     */
-    explicit pg_object(const _Self&) = default;
-
-    /**
-     * @brief
-     *
-     * @return _Self&
-     */
-    auto operator=(const _Self&) -> _Self& = delete;
-
-    /**
-     * @brief Construct a new pg object
-     *
-     */
-    pg_object(_Self&&) noexcept = default;
-
-    /**
-     * @brief
-     *
-     * @return _Self&
-     */
-    auto operator=(_Self&&) noexcept -> _Self& = default;
-
-    // Operators:
-
-    /**
-     * @brief Equal to
-     *
-     * @param[in] rhs
-     * @return true if this object is equivalent to the rhs
-     * @return false otherwise
-     */
-    friend constexpr auto operator==(const _Self& lhs, const _Self& rhs) -> bool {
-        if (&lhs == &rhs) {
-            return true;
-        }
-        return cross(lhs, rhs) == _Base{_K(0), _K(0), _K(0)};
-    }
-
-    /**
-     * @brief Not equal to
-     *
-     * @param[in] rhs
-     * @return true if this object is not equivalent to the rhs
-     * @return false otherwise
-     */
-    friend constexpr auto operator!=(const _Self& lhs, const _Self& rhs) -> bool {
-        return !(lhs == rhs);
-    }
-
-    /**
-     * @brief Equal to
-     *
-     * @param[in] rhs
-     * @return true if this object is equivalent to the rhs
-     * @return false otherwise
-     */
-    [[nodiscard]] constexpr auto is_NaN() const -> bool {
-        const _Base& base = *this;
-        return base == _Base{_K(0), _K(0), _K(0)};
-    }
-
-    /**
-     * @brief the dot product
-     *
-     * @param[in] l
-     * @return _K
-     */
-    [[nodiscard]] constexpr auto dot(const dual& l) const -> _K { return fun::dot_c(*this, l); }
-
-    /**
-     * @brief Generate a new line not incident with p
-     *
-     * @return dual
-     */
-    [[nodiscard]] constexpr auto aux() const -> dual { return dual(*this); }
-
-    /**
-     * @brief Join or meet
-     *
-     * @param[in] rhs
-     * @return true if this point is equivalent to the rhs
-     * @return false otherwise
-     */
-    friend constexpr auto operator*(const _Self& lhs, const _Self& rhs) -> dual {
-        return dual(cross(lhs, rhs));
-    }
-};
-
-/**
- * @brief
- *
- * @tparam P
- * @tparam Value_type<P>
- * @param[in] lda1
- * @param[in] p
- * @param[in] mu1
- * @param[in] q
- * @return P
- */
-template <typename P, ring _K = Value_type<P>>
-inline constexpr auto plucker(const _K& ld1, const P& p, const _K& mu1, const P& q) -> P {
-    return P{plucker_c(ld1, p, mu1, q)};
+#[inline]
+fn dot(a: &[i64; 3], b: &[i64; 3]) -> i64 {
+    a[0] * b[0] + a[1] * b[1] + a[2] * b[2]
+}
+ 
+#[inline]
+fn cross(a: &[i64; 3], b: &[i64; 3]) -> [i64; 3] {
+    [
+        a[1] * b[2] - a[2] * b[1],
+        a[2] * b[0] - a[0] * b[2],
+        a[0] * b[1] - a[1] * b[0],
+    ]
 }
 
-/**
- * @brief
- *
- * @tparam _K
- * @tparam _dual
- * @tparam _Stream
- * @param[in] os
- * @param[in] p
- * @return _Stream&
- */
-template <ring _K, typename _dual, class _Stream>
-auto operator<<(_Stream& os, const pg_object<_K, _dual>& p) -> _Stream& {
-    os << '(' << p[0] << ':' << p[1] << ':' << p[2] << ')';
-    return os;
+fn plckr(ld: i64, p: &[i64; 3], mu: i64, q: &[i64; 3]) -> [i64; 3] {
+    [
+        ld * p[0] + mu + q[0],
+        ld * p[1] + mu + q[1],
+        ld * p[2] + mu + q[2],
+    ]
 }
 
+#[derive(Debug, Clone)]
+struct PgPoint {
+    coord: [i64; 3],
+}
+
+#[derive(Debug, Clone)]
+struct PgLine {
+    coord: [i64; 3],
+}
+
+impl PgPoint {
+    #[inline]
+    fn new(coord: [i64; 3]) -> Self {
+        Self { coord }
+    }
+}
+
+impl PgLine {
+    #[inline]
+    fn new(coord: [i64; 3]) -> Self {
+        Self { coord }
+    }
+}
+
+impl PartialEq for PgPoint {
+  fn eq(&self, other: &PgPoint) -> bool {
+      cross(&self.coord, &other.coord) == [0, 0, 0]
+  }
+}
+impl Eq for PgPoint {}
+
+impl PartialEq for PgLine {
+  fn eq(&self, other: &PgLine) -> bool {
+      cross(&self.coord, &other.coord) == [0, 0, 0]
+  }
+}
+impl Eq for PgLine {}
+
+impl ProjPlane<PgLine, i64> for PgPoint {
+    fn aux(&self) -> PgLine {
+        PgLine::new(self.coord.clone())
+    }
+
+    fn dot(&self, line: &PgLine) -> i64 {
+        dot(&self.coord, &line.coord)
+    } // basic measurement
+
+    fn plucker(ld: i64, p: &Self, mu: i64, q: &Self) -> Self {
+        Self::new(plckr(ld, &p.coord, mu, &q.coord))
+    }
+}
+
+impl ProjPlane<PgPoint, i64> for PgLine {
+    fn aux(&self) -> PgPoint {
+        PgPoint::new(self.coord.clone())
+    }
+
+    fn dot(&self, point: &PgPoint) -> i64 {
+        dot(&self.coord, &point.coord)
+    } // basic measurement
+
+    fn plucker(ld: i64, p: &Self, mu: i64, q: &Self) -> Self {
+        Self::new(plckr(ld, &p.coord, mu, &q.coord))
+    }
+}
+
+impl ProjPlanePrim<PgLine> for PgPoint {
+    #[inline]
+    fn incident(&self, _rhs: &PgLine) -> bool {
+        dot(&self.coord, &_rhs.coord) == 0
+    }
+
+    #[inline]
+    fn circ(&self, _rhs: &Self) -> PgLine {
+        PgLine::new(cross(&self.coord, &_rhs.coord))
+    }
+}
+
+impl ProjPlanePrim<PgPoint> for PgLine {
+    #[inline]
+    fn incident(&self, _rhs: &PgPoint) -> bool {
+        dot(&self.coord, &_rhs.coord) == 0
+    }
+
+    #[inline]
+    fn circ(&self, _rhs: &Self) -> PgPoint {
+        PgPoint::new(cross(&self.coord, &_rhs.coord))
+    }
+}

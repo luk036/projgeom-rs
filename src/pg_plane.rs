@@ -1,5 +1,4 @@
 pub trait ProjPlanePrim<L>: Eq {
-    // type Dual: ProjPlanePrim;
     fn circ(&self, rhs: &Self) -> L;
     fn incident(&self, line: &L) -> bool;
 }
@@ -101,62 +100,13 @@ where
     (b1 && b2) || (!b1 && !b2)
 }
 
-pub trait ProjPlanePrim2<L>: Eq + ProjPlanePrim<L> {
-    // type Dual: ProjPlanePrim;
-    fn aux1(&self) -> L; // line not incident with p
-    fn aux2(&self, other: &Self) -> Self; // point r on pq, r != p and r != q
-}
-
-/**
- * @brief harmonic conjugate
- *
- */
-pub fn harm_conj<P, L>(a: &P, b: &P, c: &P) -> P
-where
-    P: ProjPlanePrim2<L>,
-    L: ProjPlanePrim2<P>,
-{
-    assert!(coincident(a, b, c));
-    let ab = &a.circ(b);
-    let p = &ab.aux1();
-    let r = &p.aux2(c);
-    let s = &(a.circ(r)).circ(&b.circ(p));
-    let q = &(b.circ(r)).circ(&a.circ(p));
-    (q.circ(s)).circ(ab)
-}
-
-/**
- * @brief harmonic conjugate
- *
- */
-#[allow(dead_code)]
-pub fn is_harmonic<P, L>(a: &P, b: &P, c: &P, d: &P) -> bool
-where
-    P: ProjPlanePrim2<L>,
-    L: ProjPlanePrim2<P>,
-{
-    harm_conj(a, b, c) == *d
-}
-
-#[allow(dead_code)]
-pub fn involution<P, L>(origin: &P, mirror: &L, p: &P) -> P
-where
-    P: ProjPlanePrim2<L>,
-    L: ProjPlanePrim2<P>,
-{
-    let po = p.circ(origin);
-    let b = po.circ(mirror);
-    harm_conj(origin, &b, p)
-}
-
-pub trait ProjPlaneGeneric<L>: Eq + ProjPlanePrim2<L> {
-    type V: Default + Eq; // measurement value
-
-    fn dot(&self, line: &L) -> Self::V; // basic measurement
-    fn plucker(ld: Self::V, p: &Self, mu: Self::V, p: &Self) -> Self;
+pub trait ProjPlane<L, V: Default + Eq>: ProjPlanePrim<L> {
+    fn aux(&self) -> L;
+    fn dot(&self, line: &L) -> V; // basic measurement
+    fn plucker(ld: V, p: &Self, mu: V, q: &Self) -> Self;
 
     fn incident(&self, line: &L) -> bool {
-        self.dot(line) == Self::V::default()
+        self.dot(line) == V::default()
     }
 }
 
@@ -178,13 +128,26 @@ where
  *
  */
 #[allow(dead_code)]
-pub fn harm_conj_generic<P, L>(a: &P, b: &P, c: &P) -> P
+pub fn harm_conj<P, L, V>(a: &P, b: &P, c: &P) -> P
 where
-    P: ProjPlaneGeneric<L>,
-    L: ProjPlaneGeneric<P>,
+    V: Default + Eq,
+    P: ProjPlane<L, V>,
+    L: ProjPlane<P, V>,
 {
     assert!(coincident(a, b, c));
     let ab = a.circ(b);
-    let lc = &ab.aux1().circ(c);
-    P::plucker(a.dot(lc), a, b.dot(lc), b)
+    let lc = ab.aux().circ(c);
+    P::plucker(lc.dot(a), a, lc.dot(b), b)
+}
+
+#[allow(dead_code)]
+pub fn involution<P, L, V>(origin: &P, mirror: &L, p: &P) -> P
+where
+    V: Default + Eq,
+    P: ProjPlane<L, V>,
+    L: ProjPlane<P, V>,
+{
+    let po = p.circ(origin);
+    let b = po.circ(mirror);
+    harm_conj(origin, &b, p)
 }

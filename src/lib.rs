@@ -1,13 +1,14 @@
 pub mod ck_plane;
-pub mod proj_plane;
+pub mod pg_object;
+pub mod pg_plane;
 
 pub use crate::ck_plane::*;
-pub use crate::proj_plane::*;
+pub use crate::pg_plane::*;
 
 #[cfg(test)]
 mod tests {
-    use crate::proj_plane::{check_axiom, coincident};
-    use crate::proj_plane::{ProjPlanePrim, ProjPlanePrim2};
+    use crate::pg_plane::ProjPlanePrim;
+    use crate::pg_plane::{check_axiom, coincident};
 
     #[derive(Debug, PartialEq, Eq, Clone, Copy)]
     struct PArch {}
@@ -40,17 +41,6 @@ mod tests {
         }
     }
 
-    impl ProjPlanePrim2<LArch> for PArch {
-        #[inline]
-        fn aux1(&self) -> LArch {
-            LArch::new()
-        } // line not incident with p
-        #[inline]
-        fn aux2(&self, _other: &Self) -> Self {
-            Self::new()
-        } // point r on p * q, r != p and r != q
-    }
-
     // impl PartialEq for LArch {
     //     fn eq(&self, _rhs: &Self) -> bool {
     //         false
@@ -67,17 +57,6 @@ mod tests {
         fn circ(&self, _rhs: &Self) -> PArch {
             PArch::new()
         }
-    }
-
-    impl ProjPlanePrim2<PArch> for LArch {
-        #[inline]
-        fn aux1(&self) -> PArch {
-            PArch::new()
-        } // line not incident with p
-        #[inline]
-        fn aux2(&self, _other: &Self) -> Self {
-            Self::new()
-        } // point r on p * q, r != p and r != q
     }
 
     #[test]
