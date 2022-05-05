@@ -1,5 +1,5 @@
-use crate::pg_plane::{tri_dual, involution};
-use crate::pg_plane::{ProjPlanePrim, ProjPlane};
+use crate::pg_plane::{involution, tri_dual};
+use crate::pg_plane::{ProjPlane, ProjPlanePrim};
 
 pub trait CKPlanePrim<L>: ProjPlanePrim<L> {
     // type Dual: ProjPlanePrim;
@@ -61,3 +61,4 @@ where
 {
     involution(&mirror.perp(), mirror, p)
 }
+

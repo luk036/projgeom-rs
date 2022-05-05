@@ -1,6 +1,10 @@
 pub mod ck_plane;
+// pub mod hyperbolic;
+// pub mod elliptic;
 pub mod pg_object;
 pub mod pg_plane;
+pub mod hyp_object;
+pub mod ell_object;
 
 pub use crate::ck_plane::*;
 pub use crate::pg_plane::*;
