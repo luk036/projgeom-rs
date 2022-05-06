@@ -1,4 +1,4 @@
-use crate::pg_plane::{involution, tri_dual};
+use crate::pg_plane::{coincident, involution, tri_dual};
 use crate::pg_plane::{ProjPlane, ProjPlanePrim};
 
 pub trait CKPlanePrim<L>: ProjPlanePrim<L> {
@@ -31,6 +31,7 @@ where
     L: CKPlanePrim<P>,
 {
     let [a1, a2, a3] = tri;
+    assert!(!coincident(a1, a2, a3));
     let t1 = &altitude(a1, &a2.circ(a3));
     let t2 = &altitude(a2, &a3.circ(a1));
     t1.circ(t2)
@@ -44,6 +45,7 @@ where
 {
     let [l1, l2, l3] = tri_dual(tri);
     let [a1, a2, a3] = tri;
+    assert!(!coincident(a1, a2, a3));
     let t1 = altitude(a1, &l1);
     let t2 = altitude(a2, &l2);
     let t3 = altitude(a3, &l3);
@@ -61,4 +63,3 @@ where
 {
     involution(&mirror.perp(), mirror, p)
 }
-

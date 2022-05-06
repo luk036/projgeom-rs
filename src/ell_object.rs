@@ -1,5 +1,5 @@
-use crate::pg_object::{EllPoint, EllLine};
 use crate::ck_plane::CKPlanePrim;
+use crate::pg_object::{EllLine, EllPoint};
 
 impl CKPlanePrim<EllLine> for EllPoint {
     fn perp(&self) -> EllLine {

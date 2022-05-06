@@ -1,10 +1,10 @@
 pub mod ck_plane;
 // pub mod hyperbolic;
 // pub mod elliptic;
+pub mod ell_object;
+pub mod hyp_object;
 pub mod pg_object;
 pub mod pg_plane;
-pub mod hyp_object;
-pub mod ell_object;
 
 pub use crate::ck_plane::*;
 pub use crate::pg_plane::*;
@@ -68,10 +68,26 @@ mod tests {
         let p = PArch::new();
         let q = PArch::new();
         let r = PArch::new();
-        let l = &LArch::new();
+        let l = LArch::new();
         println!("{}", p == q);
-        println!("{}", p.incident(l));
+        println!("{}", p.incident(&l));
         println!("{}", coincident(&p, &q, &r));
         check_axiom(&p, &q, &l);
+    }
+ 
+    use std::str::FromStr;
+    use fraction::{Fraction, Sign};
+
+    #[test]
+    fn test_fraction() {
+        // There are several ways to construct a fraction, depending on your use case
+
+        let f = Fraction::new_generic(Sign::Minus, 3i32, 4u32).unwrap();  // with numerator/denominator of different integer types
+        // let inf = Fraction::new_generic(Sign::Plus, 1u32, 0u32).unwrap();  // with numerator/denominator of different integer types
+        assert_eq!(f, Fraction::new_generic(Sign::Plus, -3i32, 4u8).unwrap());  // with numerator/denominator of different integer types
+        assert_eq!(f, Fraction::from_str("-0.75").unwrap());  // parse a string
+        assert_eq!(f, Fraction::from_str("-3/4").unwrap());  // parse a string
+
+        // assert_eq!(inf, Fraction::from_str("1/0").unwrap());  // parse a string
     }
 }

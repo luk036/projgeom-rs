@@ -1,6 +1,6 @@
 pub trait ProjPlanePrim<L>: Eq {
-    fn circ(&self, rhs: &Self) -> L;
-    fn incident(&self, line: &L) -> bool;
+    fn circ(&self, rhs: &Self) -> L; // join or meet
+    fn incident(&self, line: &L) -> bool; // incidence
 }
 
 #[allow(dead_code)]
@@ -101,13 +101,22 @@ where
 }
 
 pub trait ProjPlane<L, V: Default + Eq>: ProjPlanePrim<L> {
-    fn aux(&self) -> L;
-    fn dot(&self, line: &L) -> V; // basic measurement
-    fn plucker(ld: V, p: &Self, mu: V, q: &Self) -> Self;
+    fn aux(&self) -> L; // line not incident with P
+    fn dot(&self, line: &L) -> V; // for basic measurement
+    fn plucker(ld: &V, p: &Self, mu: &V, q: &Self) -> Self;
+}
 
-    fn incident(&self, line: &L) -> bool {
-        self.dot(line) == V::default()
-    }
+#[allow(dead_code)]
+pub fn check_axiom2<P, L, V>(p: &P, q: &P, l: &L, a: &V, b: &V)
+where
+    V: Default + Eq,
+    P: ProjPlane<L, V>,
+    L: ProjPlane<P, V>,
+{
+    assert!(p.dot(l) == l.dot(p));
+    assert!(!p.aux().incident(p));
+    let m = p.circ(q);
+    assert!(m.incident(&P::plucker(a, p, b, q)));
 }
 
 /*
@@ -137,7 +146,7 @@ where
     assert!(coincident(a, b, c));
     let ab = a.circ(b);
     let lc = ab.aux().circ(c);
-    P::plucker(lc.dot(a), a, lc.dot(b), b)
+    P::plucker(&lc.dot(a), a, &lc.dot(b), b)
 }
 
 #[allow(dead_code)]

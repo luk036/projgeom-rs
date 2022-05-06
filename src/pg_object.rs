@@ -44,12 +44,12 @@ Examples:
 
 ```rust
 use projgeom_rs::pg_object::plckr;
-let a = plckr(1, &[1, 2, 3], -1, &[3, 4, 5]);
+let a = plckr(&1, &[1, 2, 3], &-1, &[3, 4, 5]);
 assert_eq!(a, [-2, -2, -2]);
 ```
 */
 #[inline]
-pub fn plckr(ld: i64, p: &[i64; 3], mu: i64, q: &[i64; 3]) -> [i64; 3] {
+pub fn plckr(ld: &i64, p: &[i64; 3], mu: &i64, q: &[i64; 3]) -> [i64; 3] {
     [
         ld * p[0] + mu * q[0],
         ld * p[1] + mu * q[1],
@@ -77,7 +77,7 @@ macro_rules! define_point_or_line {
             }
         }
         impl Eq for $point {}
-    }
+    };
 }
 
 macro_rules! define_line_for_point {
@@ -91,7 +91,7 @@ macro_rules! define_line_for_point {
                 dot(&self.coord, &line.coord)
             } // basic measurement
 
-            fn plucker(ld: i64, p: &Self, mu: i64, q: &Self) -> Self {
+            fn plucker(ld: &i64, p: &Self, mu: &i64, q: &Self) -> Self {
                 Self::new(plckr(ld, &p.coord, mu, &q.coord))
             }
         }
@@ -107,7 +107,7 @@ macro_rules! define_line_for_point {
                 $line::new(cross(&self.coord, &_rhs.coord))
             }
         }
-    }
+    };
 }
 
 macro_rules! define_point_and_line {
@@ -116,7 +116,7 @@ macro_rules! define_point_and_line {
         define_point_or_line!(impl $line);
         define_line_for_point!(impl $line, $point);
         define_line_for_point!(impl $point, $line);
-    }
+    };
 }
 
 define_point_and_line!(impl PgPoint, PgLine);
