@@ -1,719 +1,644 @@
-// -*- coding: utf-16 -*-
-#pragma once
 
-/** @file include/fractions.hpp
- *  This is a C++ Library header.
- */
+#[cfg(test)]
+use core::hash;
+// use core::iter::{Product, Sum};
+use core::ops::{Add, Div, Mul, Neg, Rem, Sub};
 
-// #include <boost/operators.hpp>
-// #include <cmath>
-#include <numeric>
-#include <type_traits>
-#include <utility>
+// use core::str::FromStr;
+#[cfg(feature = "std")]
+use std::error::Error;
+use std::mem; // for swap
+use num_integer::gcd;
+use num_traits::{Num, Signed, Zero, One};
 
-#include "common_concepts.h"
+#[derive(Copy, Clone, Hash, Debug, Default)]
+// #[repr(C)]
+pub struct Fraction<Z> {
+    /// numerator portion of the Fraction object
+    pub num: Z,
+    /// denominator portion of the Fraction object
+    pub den: Z,
+}
 
-namespace fun {
-
-    /**
-     * @brief absolute
-     *
-     * @tparam T
-     * @param[in] a
-     * @return T
-     */
-    template <typename T> inline constexpr auto abs(const T& a) -> T {
-        if constexpr (std::is_unsigned_v<T>) {
-            return a;
-        } else {
-            return (a < T(0)) ? -a : a;
-        }
+impl<Z: Num + Zero + One> Fraction<Z> {
+    /// Create a new Fraction
+    #[inline]
+    pub fn new(num: Z, den: Z) -> Self {
+        let mut res = Fraction { num, den };
+        res.normalize();
+        res
     }
 
     /**
-     * @brief Greatest common divider
+     * @brief normalize to a canonical form
      *
-     * @tparam _Mn
-     * @param[in] __m
-     * @param[in] __n
-     * @return _Mn
+     * denominator is always non-negative and co-prime with numerator
      */
-    template <Integral _Mn> inline constexpr auto gcd_recur(const _Mn& __m, const _Mn& __n) -> _Mn {
-        if (__n == 0) {
-            return abs(__m);
-        }
-        return gcd_recur(__n, __m % __n);
+    pub fn normalize(&mut self) -> Z {
+        self.normalize1();
+        self.normalize2()
     }
 
     /**
-     * @brief Greatest common divider
+     * @brief normalize to a canonical form
      *
-     * @tparam _Mn
-     * @param[in] __m
-     * @param[in] __n
-     * @return _Mn
+     * denominator is always co-prime with numerator
      */
-    template <Integral _Mn> inline constexpr auto gcd(const _Mn& __m, const _Mn& __n) -> _Mn {
-        if (__m == 0) {
-            return abs(__n);
+    pub fn normalize2(&mut self) -> Z {
+        let common: Z = gcd(self.num, self.den);
+        if common != One::one() && common != Zero::zero() {
+            self.num /= common;
+            self.den /= common;
         }
-        return gcd_recur(__m, __n);
+        common
+    }
+}
+
+impl<Z: Num + Zero> Fraction<Z> {
+    /**
+     * @brief normalize to a canonical form
+     *
+     * denominator is always non-negative
+     */
+    pub fn normalize1(&mut self) {
+        if self.den < Zero::zero() {
+            self.num = -self.num;
+            self.den = -self.den;
+        }
+    }
+}
+
+impl<Z: Num + One> Fraction<Z> {
+    #[inline]
+    pub fn from(num: Z) -> Self {
+        Fraction { num, den: One::one() }
+    }
+}
+
+impl<Z: Num + One + Zero> Default for Fraction<Z> {
+    #[inline]
+    pub fn default() -> Self {
+        Fraction { num: Zero::zero(), den: One::one() }
+    }
+}
+
+impl<Z: Num> Fraction<Z> {
+    /**
+     * @brief cross product
+     *
+     * @param rhs
+     * @return Z
+     */
+    pub fn cross(&self, rhs: &Fraction) -> Z {
+        self.num * rhs.den - self.den * rhs.num
+    }
+}
+
+impl<Z: Num + PartialEq + Clone> PartialEq<Rhs = Z> for Fraction<Z> {
+    /** @name Comparison operators
+     *  ==, !=, <, >, <=, >= etc.
+     */
+    ///@{
+
+    /**
+     * @brief Equal to
+     *
+     * @param[in] lhs
+     * @param[in] rhs
+     * @return true
+     * @return false
+     */
+    pub fn eq(&self, other: &Z) -> bool {
+        if self.den == One::one() || rhs == Zero::zero() {
+            return self.num == other;
+        }
+        let mut lhs = self.clone();
+        let mut rhs = other.clone();
+        mem::swap(&mut lhs.den, &mut rhs);
+        lhs.normalize2();
+        lhs.num == self.den * rhs;
+    }
+}
+impl<Z: Num + Eq + Clone> Eq<Rhs = Z> for Fraction<Z> {}
+
+
+impl<Z: Num + PartialOrd + Clone> PartialOrd<Rhs = Z> for Fraction<Z> {}
+    /**
+     * @brief Less than
+     *
+     * @param[in] lhs
+     * @param[in] rhs
+     * @return true
+     * @return false
+     */
+    pub fn lt(&self, other: &Z) -> bool {
+        if self.den == One::one() || other == Zero::zero() {
+            return self.num < other;
+        }
+        let mut lhs = self.clone();
+        let mut rhs = other.clone();
+        mem::swap(&mut lhs.den, &mut rhs.num);
+        lhs.normalize2();
+        lhs.num < lhs.den * rhs
     }
 
     /**
-     * @brief Least common multiple
+     * @brief Less than
      *
-     * @tparam _Mn
-     * @param[in] __m
-     * @param[in] __n
-     * @return _Mn
+     * @param[in] lhs
+     * @param[in] rhs
+     * @return true
+     * @return false
      */
-    template <Integral _Mn> inline constexpr auto lcm(const _Mn& __m, const _Mn& __n) -> _Mn {
-        if (__m == 0 || __n == 0) {
-            return 0;
+    pub fn operator<(Z lhs, Fraction rhs) -> bool {
+        if rhs.den == One::one() || lhs == Zero::zero() {
+            return lhs < rhs.num;
         }
-        return (abs(__m) / gcd(__m, __n)) * abs(__n);
+        mem::swap(&mut rhs.den, &mut lhs);
+        rhs.normalize2();
+        return rhs.den * lhs < rhs.num;
     }
 
     /**
-     * @brief Fraction
+     * @brief Equal to
      *
+     * @param[in] lhs
+     * @param[in] rhs
+     * @return true
+     * @return false
+     */
+    pub fn operator==(const Z& lhs, const Fraction& rhs) -> bool {
+        return rhs == lhs;
+    }
+
+    /**
+     * @brief Equal to
+     *
+     * @param[in] rhs
+     * @return true
+     * @return false
+     */
+
+    /**
+     * @brief Equal to
+     *
+     * @param lhs
+     * @param rhs
+     * @return true
+     * @return false
+     */
+    constexpr pub fn operator==(Fraction lhs, Fraction rhs) -> bool {
+        if lhs.den == rhs.den {
+            return lhs.num == rhs.num;
+        }
+        mem::swap(&mut lhs.den, &mut rhs.num);
+        lhs.normalize2();
+        rhs.normalize2();
+        return lhs.num * rhs.den == lhs.den * rhs.num;
+    }
+
+    /**
+     * @brief Less than
+     *
+     * @param lhs
+     * @param rhs
+     * @return true
+     * @return false
+     */
+    constexpr pub fn operator<(Fraction lhs, Fraction rhs) -> bool {
+        if lhs.den == rhs.den {
+            return lhs.num < rhs.num;
+        }
+        mem::swap(&mut lhs.den, &mut rhs.num);
+        lhs.normalize2();
+        rhs.normalize2();
+        return lhs.num * rhs.den < lhs.den * rhs.num;
+    }
+
+    /**
+     * @brief
+     *
+     * @param[in] rhs
+     * @return true
+     * @return false
+     */
+    pub fn operator!=(const Fraction& rhs) const -> bool { return !(*this == rhs); }
+
+    /**
+     * @brief Greater than
+     *
+     * @param[in] rhs
+     * @return true
+     * @return false
+     */
+    pub fn operator>(const Fraction& rhs) const -> bool { return rhs < *this; }
+
+    /**
+     * @brief Greater than or euqal to
+     *
+     * @param[in] rhs
+     * @return true
+     * @return false
+     */
+    pub fn operator>=(const Fraction& rhs) const -> bool { return !(*this < rhs); }
+
+    /**
+     * @brief Less than or equal to
+     *
+     * @param[in] rhs
+     * @return true
+     * @return false
+     */
+    pub fn operator<=(const Fraction& rhs) const -> bool { return !(rhs < *this); }
+
+    /**
+     * @brief Greater than
+     *
+     * @param[in] rhs
+     * @return true
+     * @return false
+     */
+    pub fn operator>(const Z& rhs) const -> bool { return rhs < *this; }
+
+    /**
+     * @brief Less than or equal to
+     *
+     * @param[in] rhs
+     * @return true
+     * @return false
+     */
+    pub fn operator<=(const Z& rhs) const -> bool { return !(rhs < *this); }
+
+    /**
+     * @brief Greater than or equal to
+     *
+     * @param[in] rhs
+     * @return true
+     * @return false
+     */
+    pub fn operator>=(const Z& rhs) const -> bool { return !(*this < rhs); }
+
+    /**
+     * @brief Greater than
+     *
+     * @param[in] lhs
+     * @param[in] rhs
+     * @return true
+     * @return false
+     */
+    pub fn operator>(const Z& lhs, const Fraction& rhs) -> bool {
+        return rhs < lhs;
+    }
+
+    /**
+     * @brief Less than or equal to
+     *
+     * @param[in] lhs
+     * @param[in] rhs
+     * @return true
+     * @return false
+     */
+    pub fn operator<=(const Z& lhs, const Fraction& rhs) -> bool {
+        return !(rhs < lhs);
+    }
+
+    /**
+     * @brief Greater than or euqal to
+     *
+     * @param[in] lhs
+     * @param[in] rhs
+     * @return true
+     * @return false
+     */
+    pub fn operator>=(const Z& lhs, const Fraction& rhs) -> bool {
+        return !(lhs < rhs);
+    }
+
+    ///@}
+
+    /**
+     * @brief reciprocal
+     *
+     */
+    pub fn reciprocal() noexcept(std::is_nothrow_swappable_v<Z>) {
+        mem::swap(&mut self.num, &mut self.den);
+        self.normalize1();
+    }
+
+    /**
+     * @brief multiply and assign
+     *
+     * @param rhs
+     * @return Fraction&
+     */
+    pub fn operator*=(Fraction rhs) -> Fraction& {
+        mem::swap(&mut self.num, &mut rhs.num);
+        self.normalize2();
+        rhs.normalize2();
+        self.num *= rhs.num;
+        self.den *= rhs.den;
+        return *this;
+    }
+
+    /**
+     * @brief multiply
+     *
+     * @param lhs
+     * @param rhs
+     * @return Fraction
+     */
+    pub fn operator*(Fraction lhs, const Fraction& rhs) -> Fraction {
+        return lhs *= rhs;
+    }
+
+    /**
+     * @brief multiply and assign
+     *
+     * @param rhs
+     * @return Fraction&
+     */
+    pub fn operator*=(Z rhs) -> Fraction& {
+        mem::swap(&mut self.num, &mut rhs);
+        self.normalize2();
+        self.num *= rhs;
+        return *this;
+    }
+
+    /**
+     * @brief multiply
+     *
+     * @param lhs
+     * @param rhs
+     * @return Fraction
+     */
+    pub fn operator*(Fraction lhs, const Z& rhs) -> Fraction {
+        return lhs *= rhs;
+    }
+
+    /**
+     * @brief multiply
+     *
+     * @param lhs
+     * @param rhs
+     * @return Fraction
+     */
+    pub fn operator*(const Z& lhs, Fraction rhs) -> Fraction {
+        return rhs *= lhs;
+    }
+
+    /**
+     * @brief divide and assign
+     *
+     * @param rhs
+     * @return Fraction&
+     */
+    pub fn operator/=(Fraction rhs) -> Fraction& {
+        mem::swap(&mut self.den, &mut rhs.num);
+        self.normalize();
+        rhs.normalize2();
+        self.num *= rhs.den;
+        self.den *= rhs.num;
+        return *this;
+    }
+
+    /**
+     * @brief divide
+     *
+     * @param lhs
+     * @param rhs
+     * @return Fraction
+     */
+    pub fn operator/(Fraction lhs, const Fraction& rhs) -> Fraction {
+        return lhs /= rhs;
+    }
+
+    /**
+     * @brief divide and assign
+     *
+     * @param rhs
+     * @return Fraction&
+     */
+    pub fn operator/=(const Z& rhs) -> Fraction& {
+        mem::swap(&mut self.den, &mut rhs);
+        self.normalize();
+        self.den *= rhs;
+        return *this;
+    }
+
+    /**
+     * @brief divide
+     *
+     * @param lhs
+     * @param rhs
+     * @return Fraction
+     */
+    pub fn operator/(Fraction lhs, const Z& rhs) -> Fraction {
+        return lhs /= rhs;
+    }
+
+    /**
+     * @brief divide
+     *
+     * @param lhs
+     * @param rhs
+     * @return Fraction
+     */
+    pub fn operator/(const Z& lhs, Fraction rhs) -> Fraction {
+        rhs.reciprocal();
+        return rhs *= lhs;
+    }
+
+    /**
+     * @brief Negate
+     *
+     * @return Fraction
+     */
+    pub fn operator-() const -> Fraction {
+        let mut res = Fraction(*this);
+        res.num = -res.num;
+        return res;
+    }
+
+    /**
+     * @brief Add
+     *
+     * @param rhs
+     * @return Fraction
+     */
+    pub fn operator+(const Fraction& rhs) const -> Fraction {
+        if self.den == rhs.den {
+            return Fraction(self.num + rhs.num, self.den);
+        }
+        let common = gcd(self.den, rhs.den);
+        if common == Zero::zero() {
+            return Fraction(rhs.den * self.num + self.den * rhs.num, Zero::zero());
+        }
+        let l = self.den / common;
+        let r = rhs.den / common;
+        let mut d = self.den * r;
+        let mut n = r * self.num + l * rhs.num;
+        return Fraction(std::move(n), std::move(d));
+    }
+
+    /**
+     * @brief Subtract
+     *
+     * @param[in] frac
+     * @return Fraction
+     */
+    pub fn operator-(const Fraction& frac) const -> Fraction { return *this + (-frac); }
+
+    /**
+     * @brief Add
+     *
+     * @param[in] frac
+     * @param[in] i
+     * @return Fraction
+     */
+    pub fn operator+(Fraction frac, const Z& i) -> Fraction { return frac += i; }
+
+    /**
+     * @brief Add
+     *
+     * @param[in] i
+     * @param[in] frac
+     * @return Fraction
+     */
+    pub fn operator+(const Z& i, Fraction frac) -> Fraction { return frac += i; }
+
+    /**
+     * @brief
+     *
+     * @param[in] i
+     * @return Fraction
+     */
+    pub fn operator-(const Z& i) const -> Fraction { return *this + (-i); }
+
+    /**
+     * @brief
+     *
+     * @param[in] rhs
+     * @return Fraction
+     */
+    pub fn operator+=(const Fraction& rhs) -> Fraction& { return *this -= (-rhs); }
+
+    /**
+     * @brief
+     *
+     * @param[in] rhs
+     * @return Fraction
+     */
+    pub fn operator-=(const Fraction& rhs) -> Fraction& {
+        if self.den == rhs.den {
+            self.num -= rhs.num;
+            self.normalize2();
+            return *this;
+        }
+
+        let mut other{rhs};
+        mem::swap(&mut self.den, &mut other.num);
+        let mut common_n = self.normalize2();
+        let mut common_d = other.normalize2();
+        mem::swap(&mut self.den, &mut other.num);
+        self.num = self.cross(other);
+        self.den *= other.den;
+        mem::swap(&mut self.den, &mut common_d);
+        self.normalize2();
+        self.num *= common_n;
+        self.den *= common_d;
+        self.normalize2();
+        return *this;
+    }
+
+    /**
+     * @brief
+     *
+     * @param[in] i
+     * @return Fraction
+     */
+    pub fn operator+=(const Z& i) -> Fraction& { return *this -= (-i); }
+
+    /**
+     * @brief
+     *
+     * @param[in] rhs
+     * @return Fraction
+     */
+    pub fn operator-=(const Z& rhs) -> Fraction& {
+        if self.den == One::one() {
+            self.num -= rhs;
+            return *this;
+        }
+
+        let mut other{rhs};
+        mem::swap(&mut self.den, &mut other);
+        let mut common_n = self.normalize2();
+        mem::swap(&mut self.den, &mut other);
+        self.num -= other * self.den;
+        self.num *= common_n;
+        self.normalize2();
+        return *this;
+    }
+
+    /**
+     * @brief
+     *
+     * @param[in] c
+     * @param[in] frac
+     * @return Fraction
+     */
+    pub fn operator-(const Z& c, const Fraction& frac) -> Fraction {
+        return c + (-frac);
+    }
+
+    /**
+     * @brief
+     *
+     * @param[in] c
+     * @param[in] frac
+     * @return Fraction
+     */
+    pub fn operator+(int&& c, const Fraction& frac) -> Fraction {
+        return frac + Z(c);
+    }
+
+    /**
+     * @brief
+     *
+     * @param[in] c
+     * @param[in] frac
+     * @return Fraction
+     */
+    pub fn operator-(int&& c, const Fraction& frac) -> Fraction {
+        return (-frac) + Z(c);
+    }
+
+    /**
+     * @brief
+     *
+     * @param[in] c
+     * @param[in] frac
+     * @return Fraction<Z>
+     */
+    pub fn operator*(int&& c, const Fraction& frac) -> Fraction {
+        return frac * Z(c);
+    }
+
+    /**
+     * @brief
+     *
+     * @tparam _Stream
      * @tparam Z
+     * @param[in] os
+     * @param[in] frac
+     * @return _Stream&
      */
-    template <Integral Z> struct Fraction {
-        Z _num;
-        Z _den;
+    template <typename _Stream> pub fn operator<<(_Stream& os, const Fraction& frac)
+        -> _Stream& {
+        os << "(" << frac.num() << "/" << frac.den() << ")";
+        return os;
+    }
 
-        /**
-         * @brief Construct a new Fraction object
-         *
-         * @param[in] num
-         * @param[in] den
-         */
-        constexpr Fraction(Z num, Z den) : _num{std::move(num)}, _den{std::move(den)} {
-            this->normalize();
-        }
+// For template deduction
+// Integral{Z} Fraction(const Z &, const Z &) noexcept -> Fraction<Z>;
 
-        /**
-         * @brief normalize to a canonical form
-         *
-         * denominator is always non-negative and co-prime with numerator
-         */
-        constexpr auto normalize() -> Z {
-            this->normalize1();
-            return this->normalize2();
-        }
-
-        /**
-         * @brief normalize to a canonical form
-         *
-         * denominator is always non-negative
-         */
-        constexpr void normalize1() {
-            if (this->_den < Z(0)) {
-                this->_num = -this->_num;
-                this->_den = -this->_den;
-            }
-        }
-
-        /**
-         * @brief normalize to a canonical form
-         *
-         * denominator is always co-prime with numerator
-         */
-        constexpr auto normalize2() -> Z {
-            Z common = gcd(this->_num, this->_den);
-            if (common == Z(1) || common == Z(0)) {
-                return common;
-            }
-            this->_num /= common;
-            this->_den /= common;
-            return common;
-        }
-
-        /**
-         * @brief Construct a new Fraction object
-         *
-         * @param[in] num
-         */
-        constexpr explicit Fraction(Z&& num) : _num{std::move(num)}, _den(Z(1)) {}
-
-        /**
-         * @brief Construct a new Fraction object
-         *
-         * @param[in] num
-         */
-        constexpr explicit Fraction(const Z& num) : _num{num}, _den(1) {}
-
-        /**
-         * @brief Construct a new Fraction object
-         *
-         * @param[in] num
-         */
-        constexpr Fraction() : _num(0), _den(1) {}
-
-        /**
-         * @brief
-         *
-         * @return const Z&
-         */
-        [[nodiscard]] constexpr auto num() const noexcept -> const Z& { return _num; }
-
-        /**
-         * @brief
-         *
-         * @return const Z&
-         */
-        [[nodiscard]] constexpr auto den() const noexcept -> const Z& { return _den; }
-
-        /**
-         * @brief cross product
-         *
-         * @param rhs
-         * @return Z
-         */
-        constexpr auto cross(const Fraction& rhs) const -> Z {
-            return this->_num * rhs._den - this->_den * rhs._num;
-        }
-
-        /** @name Comparison operators
-         *  ==, !=, <, >, <=, >= etc.
-         */
-        ///@{
-
-        /**
-         * @brief Equal to
-         *
-         * @param[in] lhs
-         * @param[in] rhs
-         * @return true
-         * @return false
-         */
-        friend constexpr auto operator==(Fraction lhs, Z rhs) -> bool {
-            if (lhs._den == Z(1) || rhs == Z(0)) {
-                return lhs._num == rhs;
-            }
-            std::swap(lhs._den, rhs);
-            lhs.normalize2();
-            return lhs._num == lhs._den * rhs;
-        }
-
-        /**
-         * @brief Less than
-         *
-         * @param[in] lhs
-         * @param[in] rhs
-         * @return true
-         * @return false
-         */
-        friend constexpr auto operator<(Fraction lhs, Z rhs) -> bool {
-            if (lhs._den == Z(1) || rhs == Z(0)) {
-                return lhs._num == rhs;
-            }
-            std::swap(lhs._den, rhs._num);
-            lhs.normalize2();
-            return lhs._num < lhs._den * rhs;
-        }
-
-        /**
-         * @brief Less than
-         *
-         * @param[in] lhs
-         * @param[in] rhs
-         * @return true
-         * @return false
-         */
-        friend constexpr auto operator<(Z lhs, Fraction rhs) -> bool {
-            if (rhs._den == Z(1) || lhs == Z(0)) {
-                return lhs < rhs._num;
-            }
-            std::swap(rhs._den, lhs);
-            rhs.normalize2();
-            return rhs._den * lhs < rhs._num;
-        }
-
-        /**
-         * @brief Equal to
-         *
-         * @param[in] lhs
-         * @param[in] rhs
-         * @return true
-         * @return false
-         */
-        friend constexpr auto operator==(const Z& lhs, const Fraction& rhs) -> bool {
-            return rhs == lhs;
-        }
-
-        /**
-         * @brief Equal to
-         *
-         * @param[in] rhs
-         * @return true
-         * @return false
-         */
-
-        /**
-         * @brief Equal to
-         *
-         * @param lhs
-         * @param rhs
-         * @return true
-         * @return false
-         */
-        constexpr friend auto operator==(Fraction lhs, Fraction rhs) -> bool {
-            if (lhs._den == rhs._den) {
-                return lhs._num == rhs._num;
-            }
-            std::swap(lhs._den, rhs._num);
-            lhs.normalize2();
-            rhs.normalize2();
-            return lhs._num * rhs._den == lhs._den * rhs._num;
-        }
-
-        /**
-         * @brief Less than
-         *
-         * @param lhs
-         * @param rhs
-         * @return true
-         * @return false
-         */
-        constexpr friend auto operator<(Fraction lhs, Fraction rhs) -> bool {
-            if (lhs._den == rhs._den) {
-                return lhs._num < rhs._num;
-            }
-            std::swap(lhs._den, rhs._num);
-            lhs.normalize2();
-            rhs.normalize2();
-            return lhs._num * rhs._den < lhs._den * rhs._num;
-        }
-
-        /**
-         * @brief
-         *
-         * @param[in] rhs
-         * @return true
-         * @return false
-         */
-        constexpr auto operator!=(const Fraction& rhs) const -> bool { return !(*this == rhs); }
-
-        /**
-         * @brief Greater than
-         *
-         * @param[in] rhs
-         * @return true
-         * @return false
-         */
-        constexpr auto operator>(const Fraction& rhs) const -> bool { return rhs < *this; }
-
-        /**
-         * @brief Greater than or euqal to
-         *
-         * @param[in] rhs
-         * @return true
-         * @return false
-         */
-        constexpr auto operator>=(const Fraction& rhs) const -> bool { return !(*this < rhs); }
-
-        /**
-         * @brief Less than or equal to
-         *
-         * @param[in] rhs
-         * @return true
-         * @return false
-         */
-        constexpr auto operator<=(const Fraction& rhs) const -> bool { return !(rhs < *this); }
-
-        /**
-         * @brief Greater than
-         *
-         * @param[in] rhs
-         * @return true
-         * @return false
-         */
-        constexpr auto operator>(const Z& rhs) const -> bool { return rhs < *this; }
-
-        /**
-         * @brief Less than or equal to
-         *
-         * @param[in] rhs
-         * @return true
-         * @return false
-         */
-        constexpr auto operator<=(const Z& rhs) const -> bool { return !(rhs < *this); }
-
-        /**
-         * @brief Greater than or equal to
-         *
-         * @param[in] rhs
-         * @return true
-         * @return false
-         */
-        constexpr auto operator>=(const Z& rhs) const -> bool { return !(*this < rhs); }
-
-        /**
-         * @brief Greater than
-         *
-         * @param[in] lhs
-         * @param[in] rhs
-         * @return true
-         * @return false
-         */
-        friend constexpr auto operator>(const Z& lhs, const Fraction& rhs) -> bool {
-            return rhs < lhs;
-        }
-
-        /**
-         * @brief Less than or equal to
-         *
-         * @param[in] lhs
-         * @param[in] rhs
-         * @return true
-         * @return false
-         */
-        friend constexpr auto operator<=(const Z& lhs, const Fraction& rhs) -> bool {
-            return !(rhs < lhs);
-        }
-
-        /**
-         * @brief Greater than or euqal to
-         *
-         * @param[in] lhs
-         * @param[in] rhs
-         * @return true
-         * @return false
-         */
-        friend constexpr auto operator>=(const Z& lhs, const Fraction& rhs) -> bool {
-            return !(lhs < rhs);
-        }
-
-        ///@}
-
-        /**
-         * @brief reciprocal
-         *
-         */
-        constexpr void reciprocal() noexcept(std::is_nothrow_swappable_v<Z>) {
-            std::swap(this->_num, this->_den);
-            this->normalize1();
-        }
-
-        /**
-         * @brief multiply and assign
-         *
-         * @param rhs
-         * @return Fraction&
-         */
-        constexpr auto operator*=(Fraction rhs) -> Fraction& {
-            std::swap(this->_num, rhs._num);
-            this->normalize2();
-            rhs.normalize2();
-            this->_num *= rhs._num;
-            this->_den *= rhs._den;
-            return *this;
-        }
-
-        /**
-         * @brief multiply
-         *
-         * @param lhs
-         * @param rhs
-         * @return Fraction
-         */
-        friend constexpr auto operator*(Fraction lhs, const Fraction& rhs) -> Fraction {
-            return lhs *= rhs;
-        }
-
-        /**
-         * @brief multiply and assign
-         *
-         * @param rhs
-         * @return Fraction&
-         */
-        constexpr auto operator*=(Z rhs) -> Fraction& {
-            std::swap(this->_num, rhs);
-            this->normalize2();
-            this->_num *= rhs;
-            return *this;
-        }
-
-        /**
-         * @brief multiply
-         *
-         * @param lhs
-         * @param rhs
-         * @return Fraction
-         */
-        friend constexpr auto operator*(Fraction lhs, const Z& rhs) -> Fraction {
-            return lhs *= rhs;
-        }
-
-        /**
-         * @brief multiply
-         *
-         * @param lhs
-         * @param rhs
-         * @return Fraction
-         */
-        friend constexpr auto operator*(const Z& lhs, Fraction rhs) -> Fraction {
-            return rhs *= lhs;
-        }
-
-        /**
-         * @brief divide and assign
-         *
-         * @param rhs
-         * @return Fraction&
-         */
-        constexpr auto operator/=(Fraction rhs) -> Fraction& {
-            std::swap(this->_den, rhs._num);
-            this->normalize();
-            rhs.normalize2();
-            this->_num *= rhs._den;
-            this->_den *= rhs._num;
-            return *this;
-        }
-
-        /**
-         * @brief divide
-         *
-         * @param lhs
-         * @param rhs
-         * @return Fraction
-         */
-        friend constexpr auto operator/(Fraction lhs, const Fraction& rhs) -> Fraction {
-            return lhs /= rhs;
-        }
-
-        /**
-         * @brief divide and assign
-         *
-         * @param rhs
-         * @return Fraction&
-         */
-        constexpr auto operator/=(const Z& rhs) -> Fraction& {
-            std::swap(this->_den, rhs);
-            this->normalize();
-            this->_den *= rhs;
-            return *this;
-        }
-
-        /**
-         * @brief divide
-         *
-         * @param lhs
-         * @param rhs
-         * @return Fraction
-         */
-        friend constexpr auto operator/(Fraction lhs, const Z& rhs) -> Fraction {
-            return lhs /= rhs;
-        }
-
-        /**
-         * @brief divide
-         *
-         * @param lhs
-         * @param rhs
-         * @return Fraction
-         */
-        friend constexpr auto operator/(const Z& lhs, Fraction rhs) -> Fraction {
-            rhs.reciprocal();
-            return rhs *= lhs;
-        }
-
-        /**
-         * @brief Negate
-         *
-         * @return Fraction
-         */
-        constexpr auto operator-() const -> Fraction {
-            auto res = Fraction(*this);
-            res._num = -res._num;
-            return res;
-        }
-
-        /**
-         * @brief Add
-         *
-         * @param rhs
-         * @return Fraction
-         */
-        constexpr auto operator+(const Fraction& rhs) const -> Fraction {
-            if (this->_den == rhs._den) {
-                return Fraction(this->_num + rhs._num, this->_den);
-            }
-            const auto common = gcd(this->_den, rhs._den);
-            if (common == Z(0)) {
-                return Fraction(rhs._den * this->_num + this->_den * rhs._num, Z(0));
-            }
-            const auto l = this->_den / common;
-            const auto r = rhs._den / common;
-            auto d = this->_den * r;
-            auto n = r * this->_num + l * rhs._num;
-            return Fraction(std::move(n), std::move(d));
-        }
-
-        /**
-         * @brief Subtract
-         *
-         * @param[in] frac
-         * @return Fraction
-         */
-        constexpr auto operator-(const Fraction& frac) const -> Fraction { return *this + (-frac); }
-
-        /**
-         * @brief Add
-         *
-         * @param[in] frac
-         * @param[in] i
-         * @return Fraction
-         */
-        friend constexpr auto operator+(Fraction frac, const Z& i) -> Fraction { return frac += i; }
-
-        /**
-         * @brief Add
-         *
-         * @param[in] i
-         * @param[in] frac
-         * @return Fraction
-         */
-        friend constexpr auto operator+(const Z& i, Fraction frac) -> Fraction { return frac += i; }
-
-        /**
-         * @brief
-         *
-         * @param[in] i
-         * @return Fraction
-         */
-        constexpr auto operator-(const Z& i) const -> Fraction { return *this + (-i); }
-
-        /**
-         * @brief
-         *
-         * @param[in] rhs
-         * @return Fraction
-         */
-        constexpr auto operator+=(const Fraction& rhs) -> Fraction& { return *this -= (-rhs); }
-
-        /**
-         * @brief
-         *
-         * @param[in] rhs
-         * @return Fraction
-         */
-        constexpr auto operator-=(const Fraction& rhs) -> Fraction& {
-            if (this->_den == rhs._den) {
-                this->_num -= rhs._num;
-                this->normalize2();
-                return *this;
-            }
-
-            auto other{rhs};
-            std::swap(this->_den, other._num);
-            auto common_n = this->normalize2();
-            auto common_d = other.normalize2();
-            std::swap(this->_den, other._num);
-            this->_num = this->cross(other);
-            this->_den *= other._den;
-            std::swap(this->_den, common_d);
-            this->normalize2();
-            this->_num *= common_n;
-            this->_den *= common_d;
-            this->normalize2();
-            return *this;
-        }
-
-        /**
-         * @brief
-         *
-         * @param[in] i
-         * @return Fraction
-         */
-        constexpr auto operator+=(const Z& i) -> Fraction& { return *this -= (-i); }
-
-        /**
-         * @brief
-         *
-         * @param[in] rhs
-         * @return Fraction
-         */
-        constexpr auto operator-=(const Z& rhs) -> Fraction& {
-            if (this->_den == Z(1)) {
-                this->_num -= rhs;
-                return *this;
-            }
-
-            auto other{rhs};
-            std::swap(this->_den, other);
-            auto common_n = this->normalize2();
-            std::swap(this->_den, other);
-            this->_num -= other * this->_den;
-            this->_num *= common_n;
-            this->normalize2();
-            return *this;
-        }
-
-        /**
-         * @brief
-         *
-         * @param[in] c
-         * @param[in] frac
-         * @return Fraction
-         */
-        friend constexpr auto operator-(const Z& c, const Fraction& frac) -> Fraction {
-            return c + (-frac);
-        }
-
-        /**
-         * @brief
-         *
-         * @param[in] c
-         * @param[in] frac
-         * @return Fraction
-         */
-        friend constexpr auto operator+(int&& c, const Fraction& frac) -> Fraction {
-            return frac + Z(c);
-        }
-
-        /**
-         * @brief
-         *
-         * @param[in] c
-         * @param[in] frac
-         * @return Fraction
-         */
-        friend constexpr auto operator-(int&& c, const Fraction& frac) -> Fraction {
-            return (-frac) + Z(c);
-        }
-
-        /**
-         * @brief
-         *
-         * @param[in] c
-         * @param[in] frac
-         * @return Fraction<Z>
-         */
-        friend constexpr auto operator*(int&& c, const Fraction& frac) -> Fraction {
-            return frac * Z(c);
-        }
-
-        /**
-         * @brief
-         *
-         * @tparam _Stream
-         * @tparam Z
-         * @param[in] os
-         * @param[in] frac
-         * @return _Stream&
-         */
-        template <typename _Stream> friend auto operator<<(_Stream& os, const Fraction& frac)
-            -> _Stream& {
-            os << "(" << frac.num() << "/" << frac.den() << ")";
-            return os;
-        }
-    };
-
-    // For template deduction
-    // Integral{Z} Fraction(const Z &, const Z &) noexcept -> Fraction<Z>;
-
-}  // namespace fun
