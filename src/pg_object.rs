@@ -91,8 +91,8 @@ macro_rules! define_line_for_point {
                 dot(&self.coord, &line.coord)
             } // basic measurement
 
-            fn plucker(ld: &i64, p: &Self, mu: &i64, q: &Self) -> Self {
-                Self::new(plckr(ld, &p.coord, mu, &q.coord))
+            fn plucker(&self, ld: &i64, q: &Self, mu: &i64) -> Self {
+                Self::new(plckr(ld, &self.coord, mu, &q.coord))
             }
         }
 
@@ -122,3 +122,4 @@ macro_rules! define_point_and_line {
 define_point_and_line!(impl PgPoint, PgLine);
 define_point_and_line!(impl HypPoint, HypLine);
 define_point_and_line!(impl EllPoint, EllLine);
+// TODO: definie Perspective Point and Line

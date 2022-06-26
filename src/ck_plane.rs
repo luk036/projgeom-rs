@@ -32,9 +32,9 @@ where
 {
     let [a1, a2, a3] = tri;
     assert!(!coincident(a1, a2, a3));
-    let t1 = &altitude(a1, &a2.circ(a3));
-    let t2 = &altitude(a2, &a3.circ(a1));
-    t1.circ(t2)
+    let t1 = altitude(a1, &a2.circ(a3));
+    let t2 = altitude(a2, &a3.circ(a1));
+    t1.circ(&t2)
 }
 
 #[allow(dead_code)]

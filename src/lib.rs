@@ -8,86 +8,46 @@ pub mod pg_plane;
 
 pub use crate::ck_plane::*;
 pub use crate::pg_plane::*;
+pub use crate::pg_object::{PgPoint, PgLine};
 
 #[cfg(test)]
 mod tests {
-    use crate::pg_plane::ProjPlanePrim;
-    use crate::pg_plane::{check_axiom, coincident};
+    // use crate::pg_plane::{ProjPlanePrim, ProjPlane};
+    // use crate::pg_plane::{check_axiom, coincident};
+    // use crate::pg_object::*;
+    use super::*;
 
-    #[derive(Debug, PartialEq, Eq, Clone, Copy)]
-    struct PArch {}
+    #[test]
+    fn test_pg_point() {
+        let p = PgPoint::new([1, 3, 2]);
+        let q = PgPoint::new([-2, 1, -1]);
 
-    #[derive(Debug, PartialEq, Eq, Clone, Copy)]
-    struct LArch {}
+        let l = p.circ(&q);
+        assert_eq!(l, q.circ(&p));
+        assert!(l.incident(&p));
+        assert!(l.incident(&q));
 
-    impl PArch {
-        #[inline]
-        fn new() -> Self {
-            Self {}
-        }
-    }
+        let pq = p.plucker(&2, &q, &3);
+        assert!(coincident(&p, &q, &pq));
 
-    impl LArch {
-        #[inline]
-        fn new() -> Self {
-            Self {}
-        }
-    }
-
-    impl ProjPlanePrim<LArch> for PArch {
-        #[inline]
-        fn incident(&self, _rhs: &LArch) -> bool {
-            true
-        }
-        #[inline]
-        fn circ(&self, _rhs: &Self) -> LArch {
-            LArch::new()
-        }
-    }
-
-    // impl PartialEq for LArch {
-    //     fn eq(&self, _rhs: &Self) -> bool {
-    //         false
-    //     }
-    // }
-    // impl Eq for LArch {}
-
-    impl ProjPlanePrim<PArch> for LArch {
-        #[inline]
-        fn incident(&self, _rhs: &PArch) -> bool {
-            true
-        }
-        #[inline]
-        fn circ(&self, _rhs: &Self) -> PArch {
-            PArch::new()
-        }
+        let h = harm_conj(&p, &q, &pq);
+        assert_eq!(harm_conj(&p, &q, &h), pq);
     }
 
     #[test]
-    fn it_works() {
-        let p = PArch::new();
-        let q = PArch::new();
-        let r = PArch::new();
-        let l = LArch::new();
-        println!("{}", p == q);
-        println!("{}", p.incident(&l));
-        println!("{}", coincident(&p, &q, &r));
-        check_axiom(&p, &q, &l);
-    }
- 
-    use std::str::FromStr;
-    use fraction::{Fraction, Sign};
+    fn test_pg_line() {
+        let p = PgLine::new([1, 3, 2]);
+        let q = PgLine::new([-2, 1, -1]);
 
-    #[test]
-    fn test_fraction() {
-        // There are several ways to construct a fraction, depending on your use case
+        let l = p.circ(&q);
+        assert_eq!(l, q.circ(&p));
+        assert!(l.incident(&p));
+        assert!(l.incident(&q));
 
-        let f = Fraction::new_generic(Sign::Minus, 3i32, 4u32).unwrap();  // with numerator/denominator of different integer types
-        // let inf = Fraction::new_generic(Sign::Plus, 1u32, 0u32).unwrap();  // with numerator/denominator of different integer types
-        assert_eq!(f, Fraction::new_generic(Sign::Plus, -3i32, 4u8).unwrap());  // with numerator/denominator of different integer types
-        assert_eq!(f, Fraction::from_str("-0.75").unwrap());  // parse a string
-        assert_eq!(f, Fraction::from_str("-3/4").unwrap());  // parse a string
+        let pq = p.plucker(&2, &q, &3);
+        assert!(coincident(&p, &q, &pq));
 
-        // assert_eq!(inf, Fraction::from_str("1/0").unwrap());  // parse a string
+        let h = harm_conj(&p, &q, &pq);
+        assert_eq!(harm_conj(&p, &q, &h), pq);
     }
 }
