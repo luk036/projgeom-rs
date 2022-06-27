@@ -72,6 +72,7 @@ macro_rules! define_point_or_line {
         }
 
         impl PartialEq for $point {
+            #[inline]
             fn eq(&self, other: &$point) -> bool {
                 cross(&self.coord, &other.coord) == [0, 0, 0]
             }
@@ -83,14 +84,17 @@ macro_rules! define_point_or_line {
 macro_rules! define_line_for_point {
     (impl $line:ident, $point:ident) => {
         impl ProjPlane<$line, i64> for $point {
+            #[inline]
             fn aux(&self) -> $line {
                 $line::new(self.coord.clone())
             }
 
+            #[inline]
             fn dot(&self, line: &$line) -> i64 {
                 dot(&self.coord, &line.coord)
             } // basic measurement
 
+            #[inline]
             fn plucker(&self, ld: &i64, q: &Self, mu: &i64) -> Self {
                 Self::new(plckr(ld, &self.coord, mu, &q.coord))
             }

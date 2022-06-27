@@ -7,6 +7,7 @@ pub trait CKPlanePrim<L>: ProjPlanePrim<L> {
 }
 
 #[allow(dead_code)]
+#[inline]
 pub fn is_perpendicular<P, L>(m1: &L, m2: &L) -> bool
 where
     P: CKPlanePrim<L>,
@@ -16,6 +17,7 @@ where
 }
 
 #[allow(dead_code)]
+#[inline]
 pub fn altitude<P, L>(p: &P, m: &L) -> L
 where
     P: CKPlanePrim<L>,
@@ -25,7 +27,8 @@ where
 }
 
 #[allow(dead_code)]
-pub fn orthcenter<P, L>(tri: &[P; 3]) -> P
+#[inline]
+pub fn orthocenter<P, L>(tri: &[P; 3]) -> P
 where
     P: CKPlanePrim<L>,
     L: CKPlanePrim<P>,
@@ -38,6 +41,7 @@ where
 }
 
 #[allow(dead_code)]
+#[inline]
 pub fn tri_altitude<P, L>(tri: &[P; 3]) -> [L; 3]
 where
     P: CKPlanePrim<L>,
@@ -55,6 +59,7 @@ where
 pub trait CKPlane<L, V: Default + Eq>: ProjPlane<L, V> + CKPlanePrim<L> {}
 
 #[allow(dead_code)]
+#[inline]
 pub fn reflect<P, L, V>(mirror: &L, p: &P) -> P
 where
     V: Default + Eq,

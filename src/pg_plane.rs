@@ -16,6 +16,7 @@ where
     assert!(m.incident(p) && m.incident(q));
 }
 
+#[inline]
 pub fn coincident<P, L>(p: &P, q: &P, r: &P) -> bool
 where
     P: ProjPlanePrim<L>,
@@ -52,6 +53,7 @@ where
  * @param[in] tri
  * @return auto
  */
+#[inline]
 pub fn tri_dual<P, L>(tri: &[P; 3]) -> [L; 3]
 where
     P: ProjPlanePrim<L>,
@@ -70,6 +72,7 @@ where
  * @return true
  * @return false
  */
+#[inline]
 pub fn persp<P, L>(tri1: &[P; 3], tri2: &[P; 3]) -> bool
 where
     P: ProjPlanePrim<L>,
@@ -137,6 +140,7 @@ where
  *
  */
 #[allow(dead_code)]
+#[inline]
 pub fn harm_conj<P, L, V>(a: &P, b: &P, c: &P) -> P
 where
     V: Default + Eq,
@@ -150,6 +154,7 @@ where
 }
 
 #[allow(dead_code)]
+#[inline]
 pub fn involution<P, L, V>(origin: &P, mirror: &L, p: &P) -> P
 where
     V: Default + Eq,
