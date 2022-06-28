@@ -30,15 +30,17 @@ impl CKPlane<PerspLine, i128> for PerspPoint {}
 impl CKPlane<PerspPoint, i128> for PerspLine {}
 
 impl PerspLine {
+    #[inline]
     pub fn is_parallel(&self, other: &PerspLine) -> bool {
         L_INF.dot(&self.circ(other)) == 0
     }
 }
 
 impl PerspPoint {
+    #[inline]
     pub fn midpoint(&self, other: &PerspPoint) -> PerspPoint {
-        let alpha = L_INF.dot(self);
-        let beta = L_INF.dot(other);
+        let alpha = L_INF.dot(other);
+        let beta = L_INF.dot(self);
         self.plucker(&alpha, other, &beta)
     }
 }

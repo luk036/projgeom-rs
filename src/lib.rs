@@ -2,6 +2,7 @@ pub mod ck_plane;
 // pub mod hyperbolic;
 // pub mod elliptic;
 pub mod ell_object;
+pub mod euclid_object;
 pub mod hyp_object;
 pub mod myck_object;
 pub mod persp_object;
@@ -10,6 +11,7 @@ pub mod pg_plane;
 
 pub use crate::ck_plane::*;
 pub use crate::pg_object::{EllLine, EllPoint};
+pub use crate::pg_object::{EuclidLine, EuclidPoint};
 pub use crate::pg_object::{HypLine, HypPoint};
 pub use crate::pg_object::{MyCKLine, MyCKPoint};
 pub use crate::pg_object::{PerspLine, PerspPoint};
@@ -132,4 +134,12 @@ mod tests {
     //     let a3 = PerspLine::new([-2, 12, 23]);
     //     check_ck_plane(a1, a2, a3);
     // }
+
+    #[test]
+    fn test_euclid_point() {
+        let a1 = EuclidPoint::new([13, 23, 32]);
+        let a2 = EuclidPoint::new([44, -34, 2]);
+        let a3 = EuclidPoint::new([-2, 12, 23]);
+        check_ck_plane(a1, a2, a3);
+    }
 }

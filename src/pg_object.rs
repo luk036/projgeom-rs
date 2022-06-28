@@ -18,6 +18,38 @@ pub fn dot(a: &[i128; 3], b: &[i128; 3]) -> i128 {
 }
 
 /**
+Dot product (2d)
+
+Examples:
+
+```rust
+use projgeom_rs::pg_object::dot;
+let a = dot(&[1, 2, 3], &[3, 4, 5]);
+assert_eq!(a, 26);
+```
+*/
+#[inline]
+pub fn dot1(a: &[i128], b: &[i128]) -> i128 {
+    a[0] * b[0] + a[1] * b[1]
+}
+
+/**
+Cross product (2d)
+
+Examples:
+
+```rust
+use projgeom_rs::pg_object::cross;
+let a = cross2(&[1, 2, 3], &[3, 4, 5]);
+assert_eq!(a, -2);
+```
+*/
+#[inline]
+pub fn cross2(a: &[i128], b: &[i128]) -> i128 {
+    a[0] * b[1] - a[1] * b[0]
+}
+
+/**
 Cross product
 
 Examples:
@@ -128,4 +160,5 @@ define_point_and_line!(impl HypPoint, HypLine);
 define_point_and_line!(impl EllPoint, EllLine);
 define_point_and_line!(impl MyCKPoint, MyCKLine);
 define_point_and_line!(impl PerspPoint, PerspLine);
-// TODO: definie Perspective Point and Line
+define_point_and_line!(impl EuclidPoint, EuclidLine);
+// You may add your own geometry here
