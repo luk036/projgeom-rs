@@ -127,4 +127,5 @@ define_point_and_line!(impl PgPoint, PgLine);
 define_point_and_line!(impl HypPoint, HypLine);
 define_point_and_line!(impl EllPoint, EllLine);
 define_point_and_line!(impl MyCKPoint, MyCKLine);
+define_point_and_line!(impl PerspPoint, PerspLine);
 // TODO: definie Perspective Point and Line
