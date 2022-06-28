@@ -13,7 +13,7 @@ assert_eq!(a, 26);
 ```
 */
 #[inline]
-pub fn dot(a: &[i64; 3], b: &[i64; 3]) -> i64 {
+pub fn dot(a: &[i128; 3], b: &[i128; 3]) -> i128 {
     a[0] * b[0] + a[1] * b[1] + a[2] * b[2]
 }
 
@@ -29,7 +29,7 @@ assert_eq!(a, [-2, 4, -2]);
 ```
 */
 #[inline]
-pub fn cross(a: &[i64; 3], b: &[i64; 3]) -> [i64; 3] {
+pub fn cross(a: &[i128; 3], b: &[i128; 3]) -> [i128; 3] {
     [
         a[1] * b[2] - a[2] * b[1],
         a[2] * b[0] - a[0] * b[2],
@@ -49,7 +49,7 @@ assert_eq!(a, [-2, -2, -2]);
 ```
 */
 #[inline]
-pub fn plckr(ld: &i64, p: &[i64; 3], mu: &i64, q: &[i64; 3]) -> [i64; 3] {
+pub fn plckr(ld: &i128, p: &[i128; 3], mu: &i128, q: &[i128; 3]) -> [i128; 3] {
     [
         ld * p[0] + mu * q[0],
         ld * p[1] + mu * q[1],
@@ -61,12 +61,12 @@ macro_rules! define_point_or_line {
     (impl $point:ident) => {
         #[derive(Debug, Clone)]
         pub struct $point {
-            pub coord: [i64; 3],
+            pub coord: [i128; 3],
         }
 
         impl $point {
             #[inline]
-            pub fn new(coord: [i64; 3]) -> Self {
+            pub fn new(coord: [i128; 3]) -> Self {
                 Self { coord }
             }
         }
@@ -83,19 +83,19 @@ macro_rules! define_point_or_line {
 
 macro_rules! define_line_for_point {
     (impl $line:ident, $point:ident) => {
-        impl ProjPlane<$line, i64> for $point {
+        impl ProjPlane<$line, i128> for $point {
             #[inline]
             fn aux(&self) -> $line {
                 $line::new(self.coord.clone())
             }
 
             #[inline]
-            fn dot(&self, line: &$line) -> i64 {
+            fn dot(&self, line: &$line) -> i128 {
                 dot(&self.coord, &line.coord)
             } // basic measurement
 
             #[inline]
-            fn plucker(&self, ld: &i64, q: &Self, mu: &i64) -> Self {
+            fn plucker(&self, ld: &i128, q: &Self, mu: &i128) -> Self {
                 Self::new(plckr(ld, &self.coord, mu, &q.coord))
             }
         }
@@ -126,4 +126,5 @@ macro_rules! define_point_and_line {
 define_point_and_line!(impl PgPoint, PgLine);
 define_point_and_line!(impl HypPoint, HypLine);
 define_point_and_line!(impl EllPoint, EllLine);
+define_point_and_line!(impl MyCKPoint, MyCKLine);
 // TODO: definie Perspective Point and Line

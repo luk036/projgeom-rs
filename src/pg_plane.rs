@@ -130,7 +130,7 @@ where
     fn circ(&self, rhs: &Self) -> L { L }
 
     fn incident(&self, line: &L) -> bool {
-        self.dot(line) == 0_i64
+        self.dot(line) == 0_i128
     }
 }
 */

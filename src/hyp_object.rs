@@ -1,4 +1,4 @@
-use crate::ck_plane::{CKPlanePrim, CKPlane};
+use crate::ck_plane::{CKPlane, CKPlanePrim};
 use crate::pg_object::{HypLine, HypPoint};
 
 impl CKPlanePrim<HypLine> for HypPoint {
@@ -15,8 +15,6 @@ impl CKPlanePrim<HypPoint> for HypLine {
     }
 }
 
-impl CKPlane<HypLine, i64> for HypPoint {
-}
+impl CKPlane<HypLine, i128> for HypPoint {}
 
-impl CKPlane<HypPoint, i64> for HypLine {
-}
+impl CKPlane<HypPoint, i128> for HypLine {}

@@ -1,4 +1,4 @@
-use crate::ck_plane::{CKPlanePrim, CKPlane};
+use crate::ck_plane::{CKPlane, CKPlanePrim};
 use crate::pg_object::{EllLine, EllPoint};
 
 impl CKPlanePrim<EllLine> for EllPoint {
@@ -15,8 +15,6 @@ impl CKPlanePrim<EllPoint> for EllLine {
     }
 }
 
-impl CKPlane<EllLine, i64> for EllPoint {
-}
+impl CKPlane<EllLine, i128> for EllPoint {}
 
-impl CKPlane<EllPoint, i64> for EllLine {
-}
+impl CKPlane<EllPoint, i128> for EllLine {}
