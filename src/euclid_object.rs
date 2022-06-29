@@ -2,7 +2,7 @@
 
 use crate::ck_plane::{CKPlane, CKPlanePrim};
 use crate::pg_object::{EuclidLine, EuclidPoint};
-use crate::pg_plane::{ProjPlane, ProjPlanePrim};
+use crate::pg_plane::{ProjPlane, ProjPlanePrim, tri_dual, coincident};
 // use crate::pg_object::{plckr, dot};
 use crate::pg_object::{cross2, dot1};
 
@@ -51,3 +51,27 @@ impl EuclidPoint {
         self.plucker(&other.coord[2], other, &self.coord[2])
     }
 }
+
+#[allow(dead_code)]
+pub fn tri_altitude(tri: &[EuclidPoint; 3]) -> [EuclidLine; 3]
+{
+    let [l1, l2, l3] = tri_dual(tri);
+    let [a1, a2, a3] = tri;
+    assert!(!coincident(a1, a2, a3));
+    let t1 = l1.altitude(a1);
+    let t2 = l2.altitude(a2);
+    let t3 = l3.altitude(a3);
+    [t1, t2, t3]
+}
+
+#[allow(dead_code)]
+#[inline]
+pub fn orthocenter(tri: &[EuclidPoint; 3]) -> EuclidPoint
+{
+    let [a1, a2, a3] = tri;
+    assert!(!coincident(a1, a2, a3));
+    let t1 = a2.circ(a3).altitude(a1);
+    let t2 = a3.circ(a1).altitude(a2);
+    t1.circ(&t2)
+}
+
