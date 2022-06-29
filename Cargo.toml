@@ -8,4 +8,4 @@ edition = "2021"
 [dependencies]
 num-integer = { version = "0.1.44" }
 num-traits = { version = "0.2.14" }
-fraction = { version = "0.10.0" }
+# fraction = { version = "0.10.0" }

@@ -2,23 +2,23 @@
 
 use crate::ck_plane::{CKPlane, CKPlanePrim};
 use crate::pg_object::{EuclidLine, EuclidPoint};
-use crate::pg_plane::{ProjPlane, ProjPlanePrim, tri_dual, coincident};
+use crate::pg_plane::{coincident, tri_dual, ProjPlane, ProjPlanePrim};
 // use crate::pg_object::{plckr, dot};
-use crate::pg_object::{cross2, dot1};
+use crate::pg_object::dot1;
 
 // static I_RE: EuclidPoint = EuclidPoint { coord: [0, 1, 1] };
 // static I_IM: EuclidPoint = EuclidPoint { coord: [1, 0, 0] };
 static L_INF: EuclidLine = EuclidLine { coord: [0, 0, 1] };
 
 impl CKPlanePrim<EuclidLine> for EuclidPoint {
-    #[inline]
+    #[allow(dead_code)]
     fn perp(&self) -> EuclidLine {
         L_INF.clone()
     }
 }
 
 impl CKPlanePrim<EuclidPoint> for EuclidLine {
-    #[inline]
+    #[allow(dead_code)]
     fn perp(&self) -> EuclidPoint {
         EuclidPoint::new([self.coord[0], self.coord[1], 0])
     }
@@ -31,7 +31,7 @@ impl CKPlane<EuclidPoint, i128> for EuclidLine {}
 impl EuclidLine {
     #[inline]
     pub fn is_parallel(&self, other: &EuclidLine) -> bool {
-        cross2(&self.coord, &other.coord) == 0
+        self.coord[0] * other.coord[1] == self.coord[1] * other.coord[0]
     }
 
     #[inline]
@@ -53,8 +53,7 @@ impl EuclidPoint {
 }
 
 #[allow(dead_code)]
-pub fn tri_altitude(tri: &[EuclidPoint; 3]) -> [EuclidLine; 3]
-{
+pub fn tri_altitude(tri: &[EuclidPoint; 3]) -> [EuclidLine; 3] {
     let [l1, l2, l3] = tri_dual(tri);
     let [a1, a2, a3] = tri;
     assert!(!coincident(a1, a2, a3));
@@ -66,12 +65,10 @@ pub fn tri_altitude(tri: &[EuclidPoint; 3]) -> [EuclidLine; 3]
 
 #[allow(dead_code)]
 #[inline]
-pub fn orthocenter(tri: &[EuclidPoint; 3]) -> EuclidPoint
-{
+pub fn orthocenter(tri: &[EuclidPoint; 3]) -> EuclidPoint {
     let [a1, a2, a3] = tri;
     assert!(!coincident(a1, a2, a3));
     let t1 = a2.circ(a3).altitude(a1);
     let t2 = a3.circ(a1).altitude(a2);
     t1.circ(&t2)
 }
-
