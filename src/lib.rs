@@ -21,6 +21,7 @@ pub use crate::pg_plane::*;
 pub mod fractions;
 pub use crate::fractions::Fraction;
 
+
 #[cfg(test)]
 mod tests {
     use num_integer::gcd;
@@ -28,6 +29,7 @@ mod tests {
     // use crate::pg_plane::{check_axiom, coincident};
     // use crate::pg_object::*;
     use super::*;
+    use quickcheck_macros::quickcheck;
 
     #[test]
     fn it_works() {
@@ -149,7 +151,7 @@ mod tests {
         assert_eq!(l, q.circ(&p));
         assert!(l.incident(&p));
         assert!(l.incident(&q));
-        let pq = p.plucker(&2, &q, &3);
+        let pq = P::plucker(&p, &2, &q, &3);
         assert!(coincident(&p, &q, &pq));
 
         let h = harm_conj(&p, &q, &pq);
@@ -256,5 +258,12 @@ mod tests {
         let a2 = EuclidPoint::new([44, -34, 2]);
         let a3 = EuclidPoint::new([-2, 12, 23]);
         check_ck_plane(a1, a2, a3);
+    }
+
+    #[quickcheck]
+    fn test_pg_point_q(pz: i32, qz: i32) -> bool {
+        let p = PgPoint::new([1, 3, pz.into()]);
+        let q = PgPoint::new([-2, 1, qz.into()]);
+        p != q
     }
 }

@@ -9,6 +9,7 @@ where
     P: ProjPlanePrim<L>,
     L: ProjPlanePrim<P>,
 {
+    assert!(p == p);
     assert!((p == q) == (q == p));
     assert!(p.incident(l) == l.incident(p));
     assert!(p.circ(q) == q.circ(p));
@@ -26,12 +27,7 @@ where
 }
 
 /**
- * @brief Check Pappus Theorem
- *
- * @tparam P
- * @tparam L
- * @param[in] co1
- * @param[in] co2
+ * Check Pappus Theorem
  */
 #[allow(dead_code)]
 pub fn check_pappus<P, L>(co1: &[P; 3], co2: &[P; 3]) -> bool
@@ -49,9 +45,6 @@ where
 
 /**
  * @brief
- *
- * @param[in] tri
- * @return auto
  */
 #[inline]
 pub fn tri_dual<P, L>(tri: &[P; 3]) -> [L; 3]
@@ -65,12 +58,7 @@ where
 }
 
 /**
- * @brief return whether two triangles are perspective
- *
- * @param[in] tri1
- * @param[in] tri2
- * @return true
- * @return false
+ * Return whether two triangles are perspective
  */
 #[inline]
 pub fn persp<P, L>(tri1: &[P; 3], tri2: &[P; 3]) -> bool
@@ -86,9 +74,6 @@ where
 
 /**
  * @brief
- *
- * @param[in] tri1
- * @param[in] tri2
  */
 #[allow(dead_code)]
 pub fn check_desargue<P, L>(tri1: &[P; 3], tri2: &[P; 3]) -> bool
@@ -119,7 +104,7 @@ where
     assert!(p.dot(l) == l.dot(p));
     assert!(!p.aux().incident(p));
     let m = p.circ(q);
-    assert!(m.incident(&p.plucker(a, q, b)));
+    assert!(m.incident(&P::plucker(p, a, q, b)));
 }
 
 /*
@@ -150,7 +135,7 @@ where
     assert!(coincident(a, b, c));
     let ab = a.circ(b);
     let lc = ab.aux().circ(c);
-    a.plucker(&lc.dot(a), b, &lc.dot(b))
+    P::plucker(a, &lc.dot(b), b, &lc.dot(a))
 }
 
 #[allow(dead_code)]

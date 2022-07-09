@@ -21,7 +21,7 @@ impl CKPlanePrim<PerspPoint> for PerspLine {
     fn perp(&self) -> PerspPoint {
         let alpha = I_RE.dot(self);
         let beta = I_IM.dot(self);
-        I_RE.plucker(&alpha, &I_IM, &beta)
+        PerspPoint::plucker(&I_RE, &alpha, &I_IM, &beta)
     }
 }
 
@@ -41,6 +41,6 @@ impl PerspPoint {
     pub fn midpoint(&self, other: &PerspPoint) -> PerspPoint {
         let alpha = L_INF.dot(other);
         let beta = L_INF.dot(self);
-        self.plucker(&alpha, other, &beta)
+        PerspPoint::plucker(self, &alpha, other, &beta)
     }
 }
