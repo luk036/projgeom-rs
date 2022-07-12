@@ -21,7 +21,6 @@ pub use crate::pg_plane::*;
 pub mod fractions;
 pub use crate::fractions::Fraction;
 
-
 #[cfg(test)]
 mod tests {
     use num_integer::gcd;
@@ -265,5 +264,21 @@ mod tests {
         let p = PgPoint::new([1, 3, pz.into()]);
         let q = PgPoint::new([-2, 1, qz.into()]);
         p != q
+    }
+
+    #[quickcheck]
+    fn test_pg_point_q2(pz: i32, qz: i32) -> bool {
+        let p = PgPoint::new([1, 3, pz.into()]);
+        let q = PgPoint::new([-2, 1, qz.into()]);
+        let l = p.circ(&q);
+        l == q.circ(&p)
+    }
+
+    #[quickcheck]
+    fn test_pg_point_q3(pz: i32, qz: i32) -> bool {
+        let p = PgPoint::new([1, 3, pz.into()]);
+        let q = PgPoint::new([-2, 1, qz.into()]);
+        let l = p.circ(&q);
+        l.incident(&p) && l.incident(&q) 
     }
 }
