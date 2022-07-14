@@ -19,8 +19,8 @@ impl CKPlanePrim<PerspLine> for PerspPoint {
 impl CKPlanePrim<PerspPoint> for PerspLine {
     #[inline]
     fn perp(&self) -> PerspPoint {
-        let alpha = I_RE.dot(self);
-        let beta = I_IM.dot(self);
+        let alpha = I_RE.dot(self); // ???
+        let beta = I_IM.dot(self); // ???
         PerspPoint::plucker(&I_RE, &alpha, &I_IM, &beta)
     }
 }

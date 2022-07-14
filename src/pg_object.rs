@@ -93,7 +93,8 @@ macro_rules! define_point_or_line {
     (impl $point:ident) => {
         #[derive(Debug, Clone)]
         pub struct $point {
-            pub coord: [i128; 3],
+            /// Homogeneous coordinate
+            pub coord: [i128; 3], 
         }
 
         impl $point {

@@ -260,7 +260,7 @@ mod tests {
     }
 
     #[quickcheck]
-    fn test_pg_point_q(pz: i32, qz: i32) -> bool {
+    fn test_pg_point_q(pz: i64, qz: i64) -> bool {
         let p = PgPoint::new([1, 3, pz.into()]);
         let q = PgPoint::new([-2, 1, qz.into()]);
         p != q
@@ -268,16 +268,16 @@ mod tests {
 
     #[quickcheck]
     fn test_pg_point_q2(pz: i32, qz: i32) -> bool {
-        let p = PgPoint::new([1, 3, pz.into()]);
-        let q = PgPoint::new([-2, 1, qz.into()]);
+        let p = PgPoint::new([100000003, 30000001, pz.into()]);
+        let q = PgPoint::new([-200000004, 100000005, qz.into()]);
         let l = p.circ(&q);
         l == q.circ(&p)
     }
 
     #[quickcheck]
     fn test_pg_point_q3(pz: i32, qz: i32) -> bool {
-        let p = PgPoint::new([1, 3, pz.into()]);
-        let q = PgPoint::new([-2, 1, qz.into()]);
+        let p = PgPoint::new([100000003, 30000001, pz.into()]);
+        let q = PgPoint::new([-200000004, 100000005, qz.into()]);
         let l = p.circ(&q);
         l.incident(&p) && l.incident(&q) 
     }
