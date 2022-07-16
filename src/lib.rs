@@ -279,6 +279,6 @@ mod tests {
         let p = PgPoint::new([100000003, 30000001, pz.into()]);
         let q = PgPoint::new([-200000004, 100000005, qz.into()]);
         let l = p.circ(&q);
-        l.incident(&p) && l.incident(&q) 
+        l.incident(&p) && l.incident(&q)
     }
 }
