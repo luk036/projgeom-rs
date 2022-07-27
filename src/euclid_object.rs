@@ -48,7 +48,7 @@ impl EuclidLine {
 impl EuclidPoint {
     #[inline]
     pub fn midpoint(&self, other: &EuclidPoint) -> EuclidPoint {
-        EuclidPoint::plucker(self, &other.coord[2], other, &self.coord[2])
+        EuclidPoint::plucker(self, other.coord[2], other, self.coord[2])
     }
 }
 

@@ -150,7 +150,7 @@ mod tests {
         assert_eq!(l, q.circ(&p));
         assert!(l.incident(&p));
         assert!(l.incident(&q));
-        let pq = P::plucker(&p, &2, &q, &3);
+        let pq = P::plucker(&p, 2, &q, 3);
         assert!(coincident(&p, &q, &pq));
 
         let h = harm_conj(&p, &q, &pq);

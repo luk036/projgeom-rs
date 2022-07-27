@@ -91,11 +91,11 @@ where
 pub trait ProjPlane<L, V: Default + Eq>: ProjPlanePrim<L> {
     fn aux(&self) -> L; // line not incident with P
     fn dot(&self, line: &L) -> V; // for basic measurement
-    fn plucker(&self, ld: &V, q: &Self, mu: &V) -> Self;
+    fn plucker(&self, ld: V, q: &Self, mu: V) -> Self;
 }
 
 #[allow(dead_code)]
-pub fn check_axiom2<P, L, V>(p: &P, q: &P, l: &L, a: &V, b: &V)
+pub fn check_axiom2<P, L, V>(p: &P, q: &P, l: &L, a: V, b: V)
 where
     V: Default + Eq,
     P: ProjPlane<L, V>,
@@ -135,7 +135,7 @@ where
     assert!(coincident(a, b, c));
     let ab = a.circ(b);
     let lc = ab.aux().circ(c);
-    P::plucker(a, &lc.dot(b), b, &lc.dot(a))
+    P::plucker(a, lc.dot(b), b, lc.dot(a))
 }
 
 #[allow(dead_code)]

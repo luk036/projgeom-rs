@@ -13,7 +13,7 @@ assert_eq!(a, 26);
 ```
 */
 #[inline]
-pub fn dot(a: &[i128; 3], b: &[i128; 3]) -> i128 {
+pub const fn dot(a: &[i128; 3], b: &[i128; 3]) -> i128 {
     a[0] * b[0] + a[1] * b[1] + a[2] * b[2]
 }
 
@@ -29,7 +29,7 @@ assert_eq!(a, 26);
 ```
 */
 #[inline]
-pub fn dot1(a: &[i128], b: &[i128]) -> i128 {
+pub const fn dot1(a: &[i128], b: &[i128]) -> i128 {
     a[0] * b[0] + a[1] * b[1]
 }
 
@@ -45,7 +45,7 @@ assert_eq!(a, -2);
 ```
 */
 #[inline]
-pub fn cross2(a: &[i128], b: &[i128]) -> i128 {
+pub const fn cross2(a: &[i128], b: &[i128]) -> i128 {
     a[0] * b[1] - a[1] * b[0]
 }
 
@@ -61,7 +61,7 @@ assert_eq!(a, [-2, 4, -2]);
 ```
 */
 #[inline]
-pub fn cross(a: &[i128; 3], b: &[i128; 3]) -> [i128; 3] {
+pub const fn cross(a: &[i128; 3], b: &[i128; 3]) -> [i128; 3] {
     [
         a[1] * b[2] - a[2] * b[1],
         a[2] * b[0] - a[0] * b[2],
@@ -76,12 +76,12 @@ Examples:
 
 ```rust
 use projgeom_rs::pg_object::plckr;
-let a = plckr(&1, &[1, 2, 3], &-1, &[3, 4, 5]);
+let a = plckr(1, &[1, 2, 3], -1, &[3, 4, 5]);
 assert_eq!(a, [-2, -2, -2]);
 ```
 */
 #[inline]
-pub fn plckr(ld: &i128, p: &[i128; 3], mu: &i128, q: &[i128; 3]) -> [i128; 3] {
+pub const fn plckr(ld: i128, p: &[i128; 3], mu: i128, q: &[i128; 3]) -> [i128; 3] {
     [
         ld * p[0] + mu * q[0],
         ld * p[1] + mu * q[1],
@@ -99,7 +99,7 @@ macro_rules! define_point_or_line {
 
         impl $point {
             #[inline]
-            pub fn new(coord: [i128; 3]) -> Self {
+            pub const fn new(coord: [i128; 3]) -> Self {
                 Self { coord }
             }
         }
@@ -128,7 +128,7 @@ macro_rules! define_line_for_point {
             } // basic measurement
 
             #[inline]
-            fn plucker(&self, ld: &i128, q: &Self, mu: &i128) -> Self {
+            fn plucker(&self, ld: i128, q: &Self, mu: i128) -> Self {
                 Self::new(plckr(ld, &self.coord, mu, &q.coord))
             }
         }
