@@ -18,8 +18,8 @@ pub use crate::pg_object::{PerspLine, PerspPoint};
 pub use crate::pg_object::{PgLine, PgPoint};
 pub use crate::pg_plane::*;
 
-pub mod fractions;
-pub use crate::fractions::Fraction;
+// pub mod fractions;
+// pub use crate::fractions::Fraction;
 
 #[cfg(test)]
 mod tests {
@@ -29,6 +29,8 @@ mod tests {
     // use crate::pg_object::*;
     use super::*;
     use quickcheck_macros::quickcheck;
+
+    use fractions::Fraction;
 
     #[test]
     fn it_works() {

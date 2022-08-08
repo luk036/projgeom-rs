@@ -34,6 +34,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "fractions-rs"
+version = "0.1.0"
+source = "git+https://github.com/luk036/fractions-rs#bd2cf4fff659992f783b5667cd0e99d93791b2ad"
+dependencies = [
+ "num-integer",
+ "num-traits",
+]
+
+[[package]]
 name = "getrandom"
 version = "0.2.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -97,6 +106,7 @@ dependencies = [
 name = "projgeom-rs"
 version = "0.1.0"
 dependencies = [
+ "fractions-rs",
  "num-integer",
  "num-traits",
  "quickcheck",

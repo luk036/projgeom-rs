@@ -8,6 +8,7 @@ edition = "2021"
 [dependencies]
 num-integer = { version = "0.1.44" }
 num-traits = { version = "0.2.14" }
+fractions-rs = { git = "https://github.com/luk036/fractions-rs" }
 # fraction = { version = "0.10.0" }
 
 [dev-dependencies]
