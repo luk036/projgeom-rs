@@ -10,7 +10,7 @@ where
     L: ProjPlanePrim<P> + std::fmt::Debug,
 {
     assert_eq!(p, p);
-    assert_eq!(p == q,  q == p);
+    assert_eq!(p == q, q == p);
     assert_eq!(p.incident(l), l.incident(p));
     assert_eq!(p.circ(q), q.circ(p));
     let m = p.circ(q);
