@@ -6,13 +6,13 @@ pub trait ProjPlanePrim<L>: Eq {
 #[allow(dead_code)]
 pub fn check_axiom<P, L>(p: &P, q: &P, l: &L)
 where
-    P: ProjPlanePrim<L>,
-    L: ProjPlanePrim<P>,
+    P: ProjPlanePrim<L> + std::fmt::Debug,
+    L: ProjPlanePrim<P> + std::fmt::Debug,
 {
-    assert!(p == p);
-    assert!((p == q) == (q == p));
-    assert!(p.incident(l) == l.incident(p));
-    assert!(p.circ(q) == q.circ(p));
+    assert_eq!(p, p);
+    assert_eq!(p == q,  q == p);
+    assert_eq!(p.incident(l), l.incident(p));
+    assert_eq!(p.circ(q), q.circ(p));
     let m = p.circ(q);
     assert!(m.incident(p) && m.incident(q));
 }
