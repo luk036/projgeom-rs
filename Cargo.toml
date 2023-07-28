@@ -6,8 +6,8 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-num-integer = { version = "0.1.44" }
-num-traits = { version = "0.2.14" }
+num-integer = { version = "0.1.45" }
+num-traits = { version = "0.2.16" }
 fractions-rs = { git = "https://github.com/luk036/fractions-rs" }
 # fraction = { version = "0.10.0" }
 
