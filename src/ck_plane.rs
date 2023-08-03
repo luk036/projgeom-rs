@@ -10,15 +10,15 @@ pub trait CKPlanePrim<L>: ProjPlanePrim<L> {
 }
 
 /// The function `is_perpendicular` checks if two lines are perpendicular to each other.
-/// 
+///
 /// Arguments:
-/// 
+///
 /// * `m1`: A reference to an object of type L, which represents a line or a plane in a geometric space.
 /// * `m2`: m2 is a reference to an object of type L, which is a generic type parameter. The specific
 /// type of L is not specified in the function signature.
-/// 
+///
 /// Returns:
-/// 
+///
 /// a boolean value.
 #[allow(dead_code)]
 #[inline]
@@ -31,14 +31,14 @@ where
 }
 
 /// The `altitude` function calculates the altitude of a point `p` with respect to a line `m`.
-/// 
+///
 /// Arguments:
-/// 
+///
 /// * `p`: A point on a plane.
 /// * `m`: The parameter `m` represents a line in a two-dimensional plane.
-/// 
+///
 /// Returns:
-/// 
+///
 /// The function `altitude` returns a value of type `L`.
 #[allow(dead_code)]
 #[inline]
@@ -51,14 +51,14 @@ where
 }
 
 /// The `orthocenter` function calculates the orthocenter of a triangle given its three vertices.
-/// 
+///
 /// Arguments:
-/// 
+///
 /// * `tri`: The `tri` parameter is an array of three elements of type `P`. Each element represents a
 /// point in a triangle.
-/// 
+///
 /// Returns:
-/// 
+///
 /// The function `orthocenter` returns a value of type `P`, which is the type parameter specified in the
 /// function signature.
 #[allow(dead_code)]
@@ -77,13 +77,13 @@ where
 
 /// The function `tri_altitude` calculates the altitudes of a triangle given its three vertices and
 /// three lines.
-/// 
+///
 /// Arguments:
-/// 
+///
 /// * `tri`: tri is an array of 3 elements of type P, representing the vertices of a triangle.
-/// 
+///
 /// Returns:
-/// 
+///
 /// The function `tri_altitude` returns an array of three elements, where each element represents the
 /// altitude of a vertex in a triangle.
 #[allow(dead_code)]
@@ -105,14 +105,14 @@ where
 pub trait CKPlane<L, V: Default + Eq>: ProjPlane<L, V> + CKPlanePrim<L> {}
 
 /// The `reflect` function in Rust reflects a point `p` across a mirror plane `mirror`.
-/// 
+///
 /// Arguments:
-/// 
+///
 /// * `mirror`: A reference to an object of type L, which represents a mirror or a plane.
 /// * `p`: The parameter `p` represents a point in a geometric space.
-/// 
+///
 /// Returns:
-/// 
+///
 /// The function `reflect` returns a value of type `P`, which is the same type as the input parameter
 /// `p`.
 #[allow(dead_code)]

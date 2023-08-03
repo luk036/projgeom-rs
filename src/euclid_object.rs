@@ -37,13 +37,13 @@ impl CKPlane<EuclidPoint, i128> for EuclidLine {}
 
 impl EuclidLine {
     /// The function checks if two EuclidLine objects are parallel.
-    /// 
+    ///
     /// Arguments:
-    /// 
+    ///
     /// * `other`: `other` is a reference to an `EuclidLine` object.
-    /// 
+    ///
     /// Returns:
-    /// 
+    ///
     /// The `is_parallel` function returns a boolean value indicating whether the current `EuclidLine`
     /// object is parallel to the `other` `EuclidLine` object.
     #[inline]
@@ -52,22 +52,22 @@ impl EuclidLine {
     }
 
     /// The function checks if two Euclidean lines are perpendicular.
-    /// 
+    ///
     /// Arguments:
-    /// 
+    ///
     /// * `other`: `other` is a reference to an `EuclidLine` object.
-    /// 
+    ///
     /// Returns:
-    /// 
+    ///
     /// a boolean value, indicating whether the two lines are perpendicular to each other.
     /// The function checks if two Euclidean lines are perpendicular.
-    /// 
+    ///
     /// Arguments:
-    /// 
+    ///
     /// * `other`: `other` is a reference to an `EuclidLine` object.
-    /// 
+    ///
     /// Returns:
-    /// 
+    ///
     /// a boolean value, indicating whether the two lines are perpendicular to each other.
     #[inline]
     pub fn is_perpendicular(&self, other: &EuclidLine) -> bool {
@@ -75,22 +75,22 @@ impl EuclidLine {
     }
 
     /// The `altitude` function calculates the perpendicular line from a given point to a line.
-    /// 
+    ///
     /// Arguments:
-    /// 
+    ///
     /// * `a`: The parameter `a` is of type `EuclidPoint`.
-    /// 
+    ///
     /// Returns:
-    /// 
+    ///
     /// The `altitude` function returns an `EuclidLine` object.
     /// The `altitude` function calculates the perpendicular line from a given point to a line.
-    /// 
+    ///
     /// Arguments:
-    /// 
+    ///
     /// * `a`: The parameter `a` is of type `EuclidPoint`.
-    /// 
+    ///
     /// Returns:
-    /// 
+    ///
     /// The `altitude` function returns an `EuclidLine` object.
     #[inline]
     pub fn altitude(&self, a: &EuclidPoint) -> EuclidLine {
@@ -100,13 +100,13 @@ impl EuclidLine {
 
 impl EuclidPoint {
     /// The `midpoint` function calculates the midpoint between two EuclidPoint objects.
-    /// 
+    ///
     /// Arguments:
-    /// 
+    ///
     /// * `other`: `other` is a reference to an `EuclidPoint` object.
-    /// 
+    ///
     /// Returns:
-    /// 
+    ///
     /// The `midpoint` function returns an instance of the `EuclidPoint` struct.
     #[inline]
     pub fn midpoint(&self, other: &EuclidPoint) -> EuclidPoint {
@@ -115,14 +115,14 @@ impl EuclidPoint {
 }
 
 /// The `tri_altitude` function calculates the altitudes of a triangle given its three vertices.
-/// 
+///
 /// Arguments:
-/// 
+///
 /// * `tri`: The `tri` parameter is an array of `EuclidPoint` structs representing the three vertices of
 /// a triangle.
-/// 
+///
 /// Returns:
-/// 
+///
 /// The function `tri_altitude` returns an array of `EuclidLine` objects, specifically `[t1, t2, t3]`.
 #[allow(dead_code)]
 pub fn tri_altitude(tri: &[EuclidPoint; 3]) -> [EuclidLine; 3] {
@@ -136,13 +136,13 @@ pub fn tri_altitude(tri: &[EuclidPoint; 3]) -> [EuclidLine; 3] {
 }
 
 /// The `orthocenter` function calculates the orthocenter of a triangle given its three vertices.
-/// 
+///
 /// Arguments:
-/// 
+///
 /// * `tri`: tri is an array of 3 EuclidPoint objects representing the vertices of a triangle.
-/// 
+///
 /// Returns:
-/// 
+///
 /// The function `orthocenter` returns an `EuclidPoint` object.
 #[allow(dead_code)]
 #[inline]

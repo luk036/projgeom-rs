@@ -1,65 +1,57 @@
 use crate::pg_plane::{ProjPlane, ProjPlanePrim};
 // use crate::pg_plane::{check_axiom, coincident};
 
-/**
-Dot product
-
-Examples:
-
-```rust
-use projgeom_rs::pg_object::dot;
-let a = dot(&[1, 2, 3], &[3, 4, 5]);
-assert_eq!(a, 26);
-```
-*/
+/// Dot product
+///
+/// Examples:
+///
+/// ```rust
+/// use projgeom_rs::pg_object::dot;
+/// let a = dot(&[1, 2, 3], &[3, 4, 5]);
+/// assert_eq!(a, 26);
+/// ```
 #[inline]
 pub const fn dot(a: &[i128; 3], b: &[i128; 3]) -> i128 {
     a[0] * b[0] + a[1] * b[1] + a[2] * b[2]
 }
 
-/**
-Dot product (2d)
-
-Examples:
-
-```rust
-use projgeom_rs::pg_object::dot;
-let a = dot(&[1, 2, 3], &[3, 4, 5]);
-assert_eq!(a, 26);
-```
-*/
+/// Dot product (2d)
+///
+/// Examples:
+///
+/// ```rust
+/// use projgeom_rs::pg_object::dot;
+/// let a = dot(&[1, 2, 3], &[3, 4, 5]);
+/// assert_eq!(a, 26);
+/// ```
 #[inline]
 pub const fn dot1(a: &[i128], b: &[i128]) -> i128 {
     a[0] * b[0] + a[1] * b[1]
 }
 
-/**
-Cross product (2d)
-
-Examples:
-
-```rust
-use projgeom_rs::pg_object::cross2;
-let a = cross2(&[1, 2, 3], &[3, 4, 5]);
-assert_eq!(a, -2);
-```
-*/
+/// Cross product (2d)
+///
+/// Examples:
+///
+/// ```rust
+/// use projgeom_rs::pg_object::cross2;
+/// let a = cross2(&[1, 2, 3], &[3, 4, 5]);
+/// assert_eq!(a, -2);
+/// ```
 #[inline]
 pub const fn cross2(a: &[i128], b: &[i128]) -> i128 {
     a[0] * b[1] - a[1] * b[0]
 }
 
-/**
-Cross product
-
-Examples:
-
-```rust
-use projgeom_rs::pg_object::cross;
-let a = cross(&[1, 2, 3], &[3, 4, 5]);
-assert_eq!(a, [-2, 4, -2]);
-```
-*/
+/// Cross product
+///
+/// Examples:
+///
+/// ```rust
+/// use projgeom_rs::pg_object::cross;
+/// let a = cross(&[1, 2, 3], &[3, 4, 5]);
+/// assert_eq!(a, [-2, 4, -2]);
+/// ```
 #[inline]
 pub const fn cross(a: &[i128; 3], b: &[i128; 3]) -> [i128; 3] {
     [
@@ -69,17 +61,15 @@ pub const fn cross(a: &[i128; 3], b: &[i128; 3]) -> [i128; 3] {
     ]
 }
 
-/**
-Plucker operation
-
-Examples:
-
-```rust
-use projgeom_rs::pg_object::plckr;
-let a = plckr(1, &[1, 2, 3], -1, &[3, 4, 5]);
-assert_eq!(a, [-2, -2, -2]);
-```
-*/
+/// Plucker operation
+///
+/// Examples:
+///
+/// ```rust
+/// use projgeom_rs::pg_object::plckr;
+/// let a = plckr(1, &[1, 2, 3], -1, &[3, 4, 5]);
+/// assert_eq!(a, [-2, -2, -2]);
+/// ```
 #[inline]
 pub const fn plckr(ld: i128, p: &[i128; 3], mu: i128, q: &[i128; 3]) -> [i128; 3] {
     [
@@ -102,6 +92,11 @@ macro_rules! define_point_or_line {
             pub const fn new(coord: [i128; 3]) -> Self {
                 Self { coord }
             }
+
+            // #[inline]
+            // const fn eq(&self, other: &$point) -> bool {
+            //     cross(&self.coord, &other.coord) == [0, 0, 0]
+            // }
         }
 
         impl PartialEq for $point {

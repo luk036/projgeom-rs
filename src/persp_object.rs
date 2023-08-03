@@ -35,13 +35,13 @@ impl CKPlane<PerspPoint, i128> for PerspLine {}
 
 impl PerspLine {
     /// The function checks if two perspective lines are parallel.
-    /// 
+    ///
     /// Arguments:
-    /// 
+    ///
     /// * `other`: `other` is a reference to an object of type `PerspLine`.
-    /// 
+    ///
     /// Returns:
-    /// 
+    ///
     /// a boolean value.
     #[inline]
     pub fn is_parallel(&self, other: &PerspLine) -> bool {
@@ -52,13 +52,13 @@ impl PerspLine {
 impl PerspPoint {
     /// The `midpoint` function calculates the midpoint between two `PerspPoint` objects using the dot
     /// product and Plücker coordinates.
-    /// 
+    ///
     /// Arguments:
-    /// 
+    ///
     /// * `other`: A reference to another `PerspPoint` object.
-    /// 
+    ///
     /// Returns:
-    /// 
+    ///
     /// The `midpoint` function returns a `PerspPoint` object.
     #[inline]
     pub fn midpoint(&self, other: &PerspPoint) -> PerspPoint {
