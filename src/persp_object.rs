@@ -1,17 +1,17 @@
 // Perspective Geometry
 
-use crate::ck_plane::{CKPlane, CKPlanePrim};
+use crate::ck_plane::{CayleyKleinPlane, CayleyKleinPlanePrimitive};
 use crate::pg_object::{PerspLine, PerspPoint};
-use crate::pg_plane::{ProjPlane, ProjPlanePrim};
-// use crate::pg_object::{plckr, dot};
+use crate::pg_plane::{ProjectivePlane, ProjectivePlanePrimitive};
+// use crate::pg_object::{plucker_operation, dot};
 
 static I_RE: PerspPoint = PerspPoint { coord: [0, 1, 1] };
 static I_IM: PerspPoint = PerspPoint { coord: [1, 0, 0] };
 static L_INF: PerspLine = PerspLine { coord: [0, -1, 1] };
 
 /// The code block is implementing the perspective geometry for the point `PerspPoint` in the context of
-/// the `CKPlanePrim` trait for the line `PerspLine`.
-impl CKPlanePrim<PerspLine> for PerspPoint {
+/// the `CayleyKleinPlanePrimitive` trait for the line `PerspLine`.
+impl CayleyKleinPlanePrimitive<PerspLine> for PerspPoint {
     #[inline]
     fn perp(&self) -> PerspLine {
         L_INF.clone()
@@ -19,8 +19,8 @@ impl CKPlanePrim<PerspLine> for PerspPoint {
 }
 
 /// The code block is implementing the perspective geometry for the line `PerspLine` in the context of
-/// the `CKPlanePrim` trait for the point `PerspPoint`.
-impl CKPlanePrim<PerspPoint> for PerspLine {
+/// the `CayleyKleinPlanePrimitive` trait for the point `PerspPoint`.
+impl CayleyKleinPlanePrimitive<PerspPoint> for PerspLine {
     #[inline]
     fn perp(&self) -> PerspPoint {
         let alpha = I_RE.dot(self); // ???
@@ -29,9 +29,9 @@ impl CKPlanePrim<PerspPoint> for PerspLine {
     }
 }
 
-impl CKPlane<PerspLine, i128> for PerspPoint {}
+impl CayleyKleinPlane<PerspLine, i128> for PerspPoint {}
 
-impl CKPlane<PerspPoint, i128> for PerspLine {}
+impl CayleyKleinPlane<PerspPoint, i128> for PerspLine {}
 
 impl PerspLine {
     /// The function checks if two perspective lines are parallel.
@@ -45,7 +45,7 @@ impl PerspLine {
     /// a boolean value.
     #[inline]
     pub fn is_parallel(&self, other: &PerspLine) -> bool {
-        L_INF.dot(&self.circ(other)) == 0
+        L_INF.dot(&self.interact(other)) == 0
     }
 }
 

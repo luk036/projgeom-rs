@@ -24,7 +24,7 @@ pub use crate::pg_plane::*;
 #[cfg(test)]
 mod tests {
     use num_integer::gcd;
-    // use crate::pg_plane::{ProjPlanePrim, ProjPlane};
+    // use crate::pg_plane::{ProjectivePlanePrimitive, ProjectivePlane};
     // use crate::pg_plane::{check_axiom, coincident};
     // use crate::pg_object::*;
     use super::*;
@@ -143,144 +143,144 @@ mod tests {
         assert_eq!(infn + pos, infn);
     }
 
-    fn check_pg_plane<P, L>(p: P, q: P)
+    fn check_pg_plane<Point, Line>(pt_p: Point, pt_q: Point)
     where
-        P: ProjPlane<L, i128> + std::fmt::Debug,
-        L: ProjPlane<P, i128> + std::fmt::Debug,
+        Point: ProjectivePlane<Line, i128> + std::fmt::Debug,
+        Line: ProjectivePlane<Point, i128> + std::fmt::Debug,
     {
-        let l = p.circ(&q);
-        assert_eq!(l, q.circ(&p));
-        assert!(l.incident(&p));
-        assert!(l.incident(&q));
-        let pq = P::plucker(&p, 2, &q, 3);
-        assert!(coincident(&p, &q, &pq));
+        let ln_l = pt_p.interact(&pt_q);
+        assert_eq!(ln_l, pt_q.interact(&pt_p));
+        assert!(ln_l.incident(&pt_p));
+        assert!(ln_l.incident(&pt_q));
+        let pq = Point::plucker(&pt_p, 2, &pt_q, 3);
+        assert!(coincident(&pt_p, &pt_q, &pq));
 
-        let h = harm_conj(&p, &q, &pq);
-        assert_eq!(harm_conj(&p, &q, &h), pq);
+        let h = harm_conj(&pt_p, &pt_q, &pq);
+        assert_eq!(harm_conj(&pt_p, &pt_q, &h), pq);
     }
 
     #[test]
     fn test_pg_point() {
-        let p = PgPoint::new([1, 3, 2]);
-        let q = PgPoint::new([-2, 1, -1]);
-        check_pg_plane(p, q);
+        let pt_p = PgPoint::new([1, 3, 2]);
+        let pt_q = PgPoint::new([-2, 1, -1]);
+        check_pg_plane(pt_p, pt_q);
     }
 
     #[test]
     fn test_pg_line() {
-        let p = PgLine::new([1, 3, 2]);
-        let q = PgLine::new([-2, 1, -1]);
-        check_pg_plane(p, q);
+        let pt_p = PgLine::new([1, 3, 2]);
+        let pt_q = PgLine::new([-2, 1, -1]);
+        check_pg_plane(pt_p, pt_q);
     }
 
-    fn check_ck_plane<P, L>(a1: P, a2: P, a3: P)
+    fn check_ck_plane<Point, Line>(a_1: Point, a_2: Point, a_3: Point)
     where
-        P: CKPlane<L, i128> + std::fmt::Debug,
-        L: CKPlane<P, i128> + std::fmt::Debug,
+        Point: CayleyKleinPlane<Line, i128> + std::fmt::Debug,
+        Line: CayleyKleinPlane<Point, i128> + std::fmt::Debug,
     {
-        let triangle = [a1, a2, a3];
+        let triangle = [a_1, a_2, a_3];
         let trilateral = tri_dual(&triangle);
-        let l1 = &trilateral[0];
-        assert!(l1.incident(&triangle[1]));
+        let l_1 = &trilateral[0];
+        assert!(l_1.incident(&triangle[1]));
 
-        let [t1, t2, t3] = tri_altitude(&triangle);
-        assert!(is_perpendicular(&t1, l1));
-        let o = orthocenter(&triangle);
-        assert_eq!(o, t2.circ(&t3));
+        let [t_1, t_2, t_3] = tri_altitude(&triangle);
+        assert!(is_perpendicular(&t_1, l_1));
+        let pt_o = orthocenter(&triangle);
+        assert_eq!(pt_o, t_2.interact(&t_3));
     }
 
     #[test]
     fn test_ell_point() {
-        let a1 = EllPoint::new([13, 23, 32]);
-        let a2 = EllPoint::new([44, -34, 2]);
-        let a3 = EllPoint::new([-2, 12, 23]);
-        check_ck_plane(a1, a2, a3);
+        let a_1 = EllPoint::new([13, 23, 32]);
+        let a_2 = EllPoint::new([44, -34, 2]);
+        let a_3 = EllPoint::new([-2, 12, 23]);
+        check_ck_plane(a_1, a_2, a_3);
     }
 
     #[test]
     fn test_ell_line() {
-        let a1 = EllLine::new([13, 23, 32]);
-        let a2 = EllLine::new([44, -34, 2]);
-        let a3 = EllLine::new([-2, 12, 23]);
-        check_ck_plane(a1, a2, a3);
+        let a_1 = EllLine::new([13, 23, 32]);
+        let a_2 = EllLine::new([44, -34, 2]);
+        let a_3 = EllLine::new([-2, 12, 23]);
+        check_ck_plane(a_1, a_2, a_3);
     }
 
     #[test]
     fn test_hyp_point() {
-        let a1 = HypPoint::new([13, 23, 32]);
-        let a2 = HypPoint::new([44, -34, 2]);
-        let a3 = HypPoint::new([-2, 12, 23]);
-        check_ck_plane(a1, a2, a3);
+        let a_1 = HypPoint::new([13, 23, 32]);
+        let a_2 = HypPoint::new([44, -34, 2]);
+        let a_3 = HypPoint::new([-2, 12, 23]);
+        check_ck_plane(a_1, a_2, a_3);
     }
 
     #[test]
     fn test_hyp_line() {
-        let a1 = HypLine::new([13, 23, 32]);
-        let a2 = HypLine::new([44, -34, 2]);
-        let a3 = HypLine::new([-2, 12, 23]);
-        check_ck_plane(a1, a2, a3);
+        let a_1 = HypLine::new([13, 23, 32]);
+        let a_2 = HypLine::new([44, -34, 2]);
+        let a_3 = HypLine::new([-2, 12, 23]);
+        check_ck_plane(a_1, a_2, a_3);
     }
 
     #[test]
     fn test_myck_point() {
-        let a1 = MyCKPoint::new([13, 23, 32]);
-        let a2 = MyCKPoint::new([44, -34, 2]);
-        let a3 = MyCKPoint::new([-2, 12, 23]);
-        check_ck_plane(a1, a2, a3);
+        let a_1 = MyCKPoint::new([13, 23, 32]);
+        let a_2 = MyCKPoint::new([44, -34, 2]);
+        let a_3 = MyCKPoint::new([-2, 12, 23]);
+        check_ck_plane(a_1, a_2, a_3);
     }
 
     #[test]
     fn test_myck_line() {
-        let a1 = MyCKLine::new([13, 23, 32]);
-        let a2 = MyCKLine::new([44, -34, 2]);
-        let a3 = MyCKLine::new([-2, 12, 23]);
-        check_ck_plane(a1, a2, a3);
+        let a_1 = MyCKLine::new([13, 23, 32]);
+        let a_2 = MyCKLine::new([44, -34, 2]);
+        let a_3 = MyCKLine::new([-2, 12, 23]);
+        check_ck_plane(a_1, a_2, a_3);
     }
 
     #[test]
     fn test_persp_point() {
-        let a1 = PerspPoint::new([13, 23, 32]);
-        let a2 = PerspPoint::new([44, -34, 2]);
-        let a3 = PerspPoint::new([-2, 12, 23]);
-        check_ck_plane(a1, a2, a3);
+        let a_1 = PerspPoint::new([13, 23, 32]);
+        let a_2 = PerspPoint::new([44, -34, 2]);
+        let a_3 = PerspPoint::new([-2, 12, 23]);
+        check_ck_plane(a_1, a_2, a_3);
     }
 
     // #[test]
     // fn test_persp_line() {
-    //     let a1 = PerspLine::new([13, 23, 32]);
-    //     let a2 = PerspLine::new([44, -34, 2]);
-    //     let a3 = PerspLine::new([-2, 12, 23]);
-    //     check_ck_plane(a1, a2, a3);
+    //     let a_1 = PerspLine::new([13, 23, 32]);
+    //     let a_2 = PerspLine::new([44, -34, 2]);
+    //     let a_3 = PerspLine::new([-2, 12, 23]);
+    //     check_ck_plane(a_1, a_2, a_3);
     // }
 
     #[test]
     fn test_euclid_point() {
-        let a1 = EuclidPoint::new([13, 23, 32]);
-        let a2 = EuclidPoint::new([44, -34, 2]);
-        let a3 = EuclidPoint::new([-2, 12, 23]);
-        check_ck_plane(a1, a2, a3);
+        let a_1 = EuclidPoint::new([13, 23, 32]);
+        let a_2 = EuclidPoint::new([44, -34, 2]);
+        let a_3 = EuclidPoint::new([-2, 12, 23]);
+        check_ck_plane(a_1, a_2, a_3);
     }
 
     #[quickcheck]
     fn test_pg_point_q(pz: i64, qz: i64) -> bool {
-        let p = PgPoint::new([1, 3, pz.into()]);
-        let q = PgPoint::new([-2, 1, qz.into()]);
-        p != q
+        let pt_p = PgPoint::new([1, 3, pz.into()]);
+        let pt_q = PgPoint::new([-2, 1, qz.into()]);
+        pt_p != pt_q
     }
 
     #[quickcheck]
     fn test_pg_point_q2(pz: i32, qz: i32) -> bool {
-        let p = PgPoint::new([100000003, 30000001, pz.into()]);
-        let q = PgPoint::new([-200000004, 100000005, qz.into()]);
-        let l = p.circ(&q);
-        l == q.circ(&p)
+        let pt_p = PgPoint::new([100000003, 30000001, pz.into()]);
+        let pt_q = PgPoint::new([-200000004, 100000005, qz.into()]);
+        let ln_l = pt_p.interact(&pt_q);
+        ln_l == pt_q.interact(&pt_p)
     }
 
     #[quickcheck]
     fn test_pg_point_q3(pz: i32, qz: i32) -> bool {
-        let p = PgPoint::new([100000003, 30000001, pz.into()]);
-        let q = PgPoint::new([-200000004, 100000005, qz.into()]);
-        let l = p.circ(&q);
-        l.incident(&p) && l.incident(&q)
+        let pt_p = PgPoint::new([100000003, 30000001, pz.into()]);
+        let pt_q = PgPoint::new([-200000004, 100000005, qz.into()]);
+        let ln_l = pt_p.interact(&pt_q);
+        ln_l.incident(&pt_p) && ln_l.incident(&pt_q)
     }
 }

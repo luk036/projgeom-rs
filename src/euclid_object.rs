@@ -1,39 +1,39 @@
 // Euclidean Geometry
 
-use crate::ck_plane::{CKPlane, CKPlanePrim};
+use crate::ck_plane::{CayleyKleinPlane, CayleyKleinPlanePrimitive};
 use crate::pg_object::{EuclidLine, EuclidPoint};
-use crate::pg_plane::{coincident, tri_dual, ProjPlane, ProjPlanePrim};
-// use crate::pg_object::{plckr, dot};
+use crate::pg_plane::{coincident, tri_dual, ProjectivePlane, ProjectivePlanePrimitive};
+// use crate::pg_object::{plucker_operation, dot_product};
 use crate::pg_object::dot1;
 
 // static I_RE: EuclidPoint = EuclidPoint { coord: [0, 1, 1] };
 // static I_IM: EuclidPoint = EuclidPoint { coord: [1, 0, 0] };
 static L_INF: EuclidLine = EuclidLine { coord: [0, 0, 1] };
 
-/// This code is implementing the `perp` method for the `CKPlanePrim` trait for the `EuclidPoint`
+/// This code is implementing the `perp` method for the `CayleyKleinPlanePrimitive` trait for the `EuclidPoint`
 /// struct. The `perp` method returns a perpendicular line to the given point. In this implementation,
 /// it always returns the line `L_INF`, which represents the line at infinity.
-impl CKPlanePrim<EuclidLine> for EuclidPoint {
+impl CayleyKleinPlanePrimitive<EuclidLine> for EuclidPoint {
     #[allow(dead_code)]
     fn perp(&self) -> EuclidLine {
         L_INF.clone()
     }
 }
 
-/// This code is implementing the `perp` method for the `CKPlanePrim` trait for the `EuclidLine` struct.
+/// This code is implementing the `perp` method for the `CayleyKleinPlanePrimitive` trait for the `EuclidLine` struct.
 /// The `perp` method returns a perpendicular point to the given line. In this implementation, it
 /// creates a new `EuclidPoint` with the x and y coordinates of the line and a z coordinate of 0. This
 /// represents a point that is perpendicular to the line in the xy-plane.
-impl CKPlanePrim<EuclidPoint> for EuclidLine {
+impl CayleyKleinPlanePrimitive<EuclidPoint> for EuclidLine {
     #[allow(dead_code)]
     fn perp(&self) -> EuclidPoint {
         EuclidPoint::new([self.coord[0], self.coord[1], 0])
     }
 }
 
-impl CKPlane<EuclidLine, i128> for EuclidPoint {}
+impl CayleyKleinPlane<EuclidLine, i128> for EuclidPoint {}
 
-impl CKPlane<EuclidPoint, i128> for EuclidLine {}
+impl CayleyKleinPlane<EuclidPoint, i128> for EuclidLine {}
 
 impl EuclidLine {
     /// The function checks if two EuclidLine objects are parallel.
@@ -78,7 +78,7 @@ impl EuclidLine {
     ///
     /// Arguments:
     ///
-    /// * `a`: The parameter `a` is of type `EuclidPoint`.
+    /// * `pt_a`: The parameter `pt_a` is of type `EuclidPoint`.
     ///
     /// Returns:
     ///
@@ -87,14 +87,14 @@ impl EuclidLine {
     ///
     /// Arguments:
     ///
-    /// * `a`: The parameter `a` is of type `EuclidPoint`.
+    /// * `pt_a`: The parameter `pt_a` is of type `EuclidPoint`.
     ///
     /// Returns:
     ///
     /// The `altitude` function returns an `EuclidLine` object.
     #[inline]
-    pub fn altitude(&self, a: &EuclidPoint) -> EuclidLine {
-        self.perp().circ(a)
+    pub fn altitude(&self, pt_a: &EuclidPoint) -> EuclidLine {
+        self.perp().interact(pt_a)
     }
 }
 
@@ -118,38 +118,38 @@ impl EuclidPoint {
 ///
 /// Arguments:
 ///
-/// * `tri`: The `tri` parameter is an array of `EuclidPoint` structs representing the three vertices of
+/// * `triangle`: The `triangle` parameter is an array of `EuclidPoint` structs representing the three vertices of
 /// a triangle.
 ///
 /// Returns:
 ///
-/// The function `tri_altitude` returns an array of `EuclidLine` objects, specifically `[t1, t2, t3]`.
+/// The function `tri_altitude` returns an array of `EuclidLine` objects, specifically `[t_1, t_2, t_3]`.
 #[allow(dead_code)]
-pub fn tri_altitude(tri: &[EuclidPoint; 3]) -> [EuclidLine; 3] {
-    let [l1, l2, l3] = tri_dual(tri);
-    let [a1, a2, a3] = tri;
-    assert!(!coincident(a1, a2, a3));
-    let t1 = l1.altitude(a1);
-    let t2 = l2.altitude(a2);
-    let t3 = l3.altitude(a3);
-    [t1, t2, t3]
+pub fn tri_altitude(triangle: &[EuclidPoint; 3]) -> [EuclidLine; 3] {
+    let [l_1, l_2, l_3] = tri_dual(triangle);
+    let [a_1, a_2, a_3] = triangle;
+    assert!(!coincident(a_1, a_2, a_3));
+    let t_1 = l_1.altitude(a_1);
+    let t_2 = l_2.altitude(a_2);
+    let t_3 = l_3.altitude(a_3);
+    [t_1, t_2, t_3]
 }
 
 /// The `orthocenter` function calculates the orthocenter of a triangle given its three vertices.
 ///
 /// Arguments:
 ///
-/// * `tri`: tri is an array of 3 EuclidPoint objects representing the vertices of a triangle.
+/// * `triangle`: triangle is an array of 3 EuclidPoint objects representing the vertices of a triangle.
 ///
 /// Returns:
 ///
 /// The function `orthocenter` returns an `EuclidPoint` object.
 #[allow(dead_code)]
 #[inline]
-pub fn orthocenter(tri: &[EuclidPoint; 3]) -> EuclidPoint {
-    let [a1, a2, a3] = tri;
-    assert!(!coincident(a1, a2, a3));
-    let t1 = a2.circ(a3).altitude(a1);
-    let t2 = a3.circ(a1).altitude(a2);
-    t1.circ(&t2)
+pub fn orthocenter(triangle: &[EuclidPoint; 3]) -> EuclidPoint {
+    let [a_1, a_2, a_3] = triangle;
+    assert!(!coincident(a_1, a_2, a_3));
+    let t_1 = a_2.interact(a_3).altitude(a_1);
+    let t_2 = a_3.interact(a_1).altitude(a_2);
+    t_1.interact(&t_2)
 }
