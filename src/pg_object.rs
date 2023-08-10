@@ -2,15 +2,15 @@ use crate::pg_plane::{ProjectivePlane, ProjectivePlanePrimitive};
 // use crate::pg_plane::{check_axiom, coincident};
 
 /// The `dot_product` function calculates the dot product of two 3-dimensional vectors.
-/// 
+///
 /// Arguments:
-/// 
+///
 /// * `v_a`: An array of three i128 values representing the first vector.
 /// * `v_b`: The parameter `v_b` is a reference to an array of `i128` integers with a length of 3. It
 /// represents a vector in .
-/// 
+///
 /// Returns:
-/// 
+///
 /// The dot_product function returns the dot product of two vectors, which is a scalar value of type
 /// i128.
 ///

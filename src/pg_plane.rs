@@ -87,14 +87,14 @@ where
 
 /// The `tri_dual` function takes a triangle and returns an array of lines that are dual to the
 /// triangle's vertices.
-/// 
+///
 /// Arguments:
-/// 
+///
 /// * `triangle`: The `triangle` parameter is an array of length 3 containing points that define a
 /// triangle in a projective plane. Each element of the array represents a vertex of the triangle.
-/// 
+///
 /// Returns:
-/// 
+///
 /// The function `tri_dual` returns an array of three elements, where each element is of type `Line`.
 #[inline]
 pub fn tri_dual<Point, Line>(triangle: &[Point; 3]) -> [Line; 3]
@@ -131,15 +131,15 @@ where
 
 /// The function `check_desargue` checks if two triangles satisfy the Desargue's theorem in projective
 /// geometry.
-/// 
+///
 /// Arguments:
-/// 
+///
 /// * `tri1`: An array of 3 points representing the first triangle in the projective plane.
 /// * `tri2`: tri2 is an array of 3 points representing the vertices of a triangle in a projective
 /// plane.
-/// 
+///
 /// Returns:
-/// 
+///
 /// The function `check_desargue` returns a boolean value.
 #[allow(dead_code)]
 pub fn check_desargue<Point, Line>(tri1: &[Point; 3], tri2: &[Point; 3]) -> bool
@@ -154,7 +154,6 @@ where
     (b1 && b2) || (!b1 && !b2)
 }
 
-
 pub trait ProjectivePlane<Dual, Value: Default + Eq>: ProjectivePlanePrimitive<Dual> {
     fn aux(&self) -> Dual; // Dual not incident with Self
     fn dot(&self, dual: &Dual) -> Value; // for basic measurement
@@ -162,9 +161,9 @@ pub trait ProjectivePlane<Dual, Value: Default + Eq>: ProjectivePlanePrimitive<D
 }
 
 /// The function `check_axiom2` checks if certain axioms hold true in a projective plane.
-/// 
+///
 /// Arguments:
-/// 
+///
 /// * `pt_p`: A point in the projective plane.
 /// * `pt_q`: The parameter `pt_q` represents a point in a projective plane.
 /// * `ln_l`: The parameter `ln_l` represents a line in a projective plane.
@@ -273,7 +272,7 @@ mod tests {
         fn incident(&self, _rhs: &LArch) -> bool {
             true
         }
-    
+
         #[inline]
         fn interact(&self, _rhs: &Self) -> LArch {
             LArch::new()
@@ -285,7 +284,7 @@ mod tests {
         fn incident(&self, _rhs: &PArch) -> bool {
             true
         }
-    
+
         #[inline]
         fn interact(&self, _rhs: &Self) -> PArch {
             PArch::new()
