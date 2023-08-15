@@ -146,7 +146,7 @@ macro_rules! define_line_for_point {
             }
 
             #[inline]
-            fn interact(&self, _rhs: &Self) -> $line {
+            fn meet(&self, _rhs: &Self) -> $line {
                 $line::new(cross_product(&self.coord, &_rhs.coord))
             }
         }

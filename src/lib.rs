@@ -148,8 +148,8 @@ mod tests {
         Point: ProjectivePlane<Line, i128> + std::fmt::Debug,
         Line: ProjectivePlane<Point, i128> + std::fmt::Debug,
     {
-        let ln_l = pt_p.interact(&pt_q);
-        assert_eq!(ln_l, pt_q.interact(&pt_p));
+        let ln_l = pt_p.meet(&pt_q);
+        assert_eq!(ln_l, pt_q.meet(&pt_p));
         assert!(ln_l.incident(&pt_p));
         assert!(ln_l.incident(&pt_q));
         let pq = Point::plucker(&pt_p, 2, &pt_q, 3);
@@ -186,7 +186,7 @@ mod tests {
         let [t_1, t_2, t_3] = tri_altitude(&triangle);
         assert!(is_perpendicular(&t_1, l_1));
         let pt_o = orthocenter(&triangle);
-        assert_eq!(pt_o, t_2.interact(&t_3));
+        assert_eq!(pt_o, t_2.meet(&t_3));
     }
 
     #[test]
@@ -272,15 +272,15 @@ mod tests {
     fn test_pg_point_q2(pz: i32, qz: i32) -> bool {
         let pt_p = PgPoint::new([100000003, 30000001, pz.into()]);
         let pt_q = PgPoint::new([-200000004, 100000005, qz.into()]);
-        let ln_l = pt_p.interact(&pt_q);
-        ln_l == pt_q.interact(&pt_p)
+        let ln_l = pt_p.meet(&pt_q);
+        ln_l == pt_q.meet(&pt_p)
     }
 
     #[quickcheck]
     fn test_pg_point_q3(pz: i32, qz: i32) -> bool {
         let pt_p = PgPoint::new([100000003, 30000001, pz.into()]);
         let pt_q = PgPoint::new([-200000004, 100000005, qz.into()]);
-        let ln_l = pt_p.interact(&pt_q);
+        let ln_l = pt_p.meet(&pt_q);
         ln_l.incident(&pt_p) && ln_l.incident(&pt_q)
     }
 }

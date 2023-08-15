@@ -45,7 +45,7 @@ impl PerspLine {
     /// a boolean value.
     #[inline]
     pub fn is_parallel(&self, other: &PerspLine) -> bool {
-        L_INF.dot(&self.interact(other)) == 0
+        L_INF.dot(&self.meet(other)) == 0
     }
 }
 

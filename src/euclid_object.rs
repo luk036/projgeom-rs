@@ -94,7 +94,7 @@ impl EuclidLine {
     /// The `altitude` function returns an `EuclidLine` object.
     #[inline]
     pub fn altitude(&self, pt_a: &EuclidPoint) -> EuclidLine {
-        self.perp().interact(pt_a)
+        self.perp().meet(pt_a)
     }
 }
 
@@ -149,7 +149,7 @@ pub fn tri_altitude(triangle: &[EuclidPoint; 3]) -> [EuclidLine; 3] {
 pub fn orthocenter(triangle: &[EuclidPoint; 3]) -> EuclidPoint {
     let [a_1, a_2, a_3] = triangle;
     assert!(!coincident(a_1, a_2, a_3));
-    let t_1 = a_2.interact(a_3).altitude(a_1);
-    let t_2 = a_3.interact(a_1).altitude(a_2);
-    t_1.interact(&t_2)
+    let t_1 = a_2.meet(a_3).altitude(a_1);
+    let t_2 = a_3.meet(a_1).altitude(a_2);
+    t_1.meet(&t_2)
 }

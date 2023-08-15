@@ -47,7 +47,7 @@ where
     Point: CayleyKleinPlanePrimitive<Line>,
     Line: CayleyKleinPlanePrimitive<Point>,
 {
-    ln_m.perp().interact(pt_p)
+    ln_m.perp().meet(pt_p)
 }
 
 /// The `orthocenter` function calculates the orthocenter of a triangle given its three vertices.
@@ -70,9 +70,9 @@ where
 {
     let [a_1, a_2, a_3] = triangle;
     assert!(!coincident(a_1, a_2, a_3));
-    let t_1 = altitude(a_1, &a_2.interact(a_3));
-    let t_2 = altitude(a_2, &a_3.interact(a_1));
-    t_1.interact(&t_2)
+    let t_1 = altitude(a_1, &a_2.meet(a_3));
+    let t_2 = altitude(a_2, &a_3.meet(a_1));
+    t_1.meet(&t_2)
 }
 
 /// The function `tri_altitude` calculates the altitudes of a triangle given its three vertices and

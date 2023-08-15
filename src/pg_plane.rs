@@ -2,7 +2,7 @@
 /// It requires two associated types: `Dual`, which represents the dual object (line or point) in the
 /// projective plane, and `Self`, which represents the object implementing the trait.
 pub trait ProjectivePlanePrimitive<Dual>: Eq {
-    fn interact(&self, rhs: &Self) -> Dual; // join or meet
+    fn meet(&self, rhs: &Self) -> Dual; // join or meet
     fn incident(&self, dual: &Dual) -> bool; // incidence
 }
 
@@ -21,8 +21,8 @@ where
     // assert_eq!(pt_p, pt_p);
     // assert_eq!(pt_p == pt_q, pt_q == pt_p);
     assert_eq!(pt_p.incident(ln_l), ln_l.incident(pt_p));
-    assert_eq!(pt_p.interact(pt_q), pt_q.interact(pt_p));
-    let ln_m = pt_p.interact(pt_q);
+    assert_eq!(pt_p.meet(pt_q), pt_q.meet(pt_p));
+    let ln_m = pt_p.meet(pt_q);
     assert!(ln_m.incident(pt_p) && ln_m.incident(pt_q));
 }
 
@@ -55,7 +55,7 @@ where
     Point: ProjectivePlanePrimitive<Line>,
     Line: ProjectivePlanePrimitive<Point>,
 {
-    pt_p.interact(pt_q).incident(pt_r)
+    pt_p.meet(pt_q).incident(pt_r)
 }
 
 /// The function `check_pappus` checks if three points on a projective plane and three lines on another
@@ -79,9 +79,9 @@ where
 {
     let [pt_a, pt_b, pt_c] = coline_1;
     let [pt_d, pt_e, pt_f] = coline_2;
-    let pt_g = (pt_a.interact(pt_e)).interact(&pt_b.interact(pt_d));
-    let pt_h = (pt_a.interact(pt_f)).interact(&pt_c.interact(pt_d));
-    let pt_i = (pt_b.interact(pt_f)).interact(&pt_c.interact(pt_e));
+    let pt_g = (pt_a.meet(pt_e)).meet(&pt_b.meet(pt_d));
+    let pt_h = (pt_a.meet(pt_f)).meet(&pt_c.meet(pt_d));
+    let pt_i = (pt_b.meet(pt_f)).meet(&pt_c.meet(pt_e));
     coincident(&pt_g, &pt_h, &pt_i)
 }
 
@@ -104,7 +104,7 @@ where
 {
     let [a_1, a_2, a_3] = triangle;
     assert!(!coincident(a_1, a_2, a_3));
-    [a_2.interact(a_3), a_1.interact(a_3), a_1.interact(a_2)]
+    [a_2.meet(a_3), a_1.meet(a_3), a_1.meet(a_2)]
 }
 
 /// The function `persp` determines whether two triangles are perspective.
@@ -125,8 +125,8 @@ where
 {
     let [pt_a, pt_b, pt_c] = tri1;
     let [pt_d, pt_e, pt_f] = tri2;
-    let pt_o = pt_a.interact(pt_d).interact(&pt_b.interact(pt_e));
-    pt_c.interact(pt_f).incident(&pt_o)
+    let pt_o = pt_a.meet(pt_d).meet(&pt_b.meet(pt_e));
+    pt_c.meet(pt_f).incident(&pt_o)
 }
 
 /// The function `check_desargue` checks if two triangles satisfy the Desargue's theorem in projective
@@ -185,7 +185,7 @@ pub fn check_axiom2<Point, Line, Value>(
 {
     assert!(pt_p.dot(ln_l) == ln_l.dot(pt_p));
     assert!(!pt_p.aux().incident(pt_p));
-    let ln_m = pt_p.interact(pt_q);
+    let ln_m = pt_p.meet(pt_q);
     assert!(ln_m.incident(&Point::plucker(pt_p, pt_a, pt_q, pt_b)));
 }
 
@@ -209,8 +209,8 @@ where
     Line: ProjectivePlane<Point, Value>,
 {
     assert!(coincident(pt_a, pt_b, pt_c));
-    let ln_ab = pt_a.interact(pt_b);
-    let ln_xc = ln_ab.aux().interact(pt_c);
+    let ln_ab = pt_a.meet(pt_b);
+    let ln_xc = ln_ab.aux().meet(pt_c);
     Point::plucker(pt_a, ln_xc.dot(pt_b), pt_b, ln_xc.dot(pt_a))
 }
 
@@ -237,8 +237,8 @@ where
     Point: ProjectivePlane<Line, Value>,
     Line: ProjectivePlane<Point, Value>,
 {
-    let ln_po = pt_p.interact(origin);
-    let pt_b = ln_po.interact(mirror);
+    let ln_po = pt_p.meet(origin);
+    let pt_b = ln_po.meet(mirror);
     harm_conj(origin, &pt_b, pt_p)
 }
 
@@ -274,7 +274,7 @@ mod tests {
         }
 
         #[inline]
-        fn interact(&self, _rhs: &Self) -> LArch {
+        fn meet(&self, _rhs: &Self) -> LArch {
             LArch::new()
         }
     }
@@ -286,7 +286,7 @@ mod tests {
         }
 
         #[inline]
-        fn interact(&self, _rhs: &Self) -> PArch {
+        fn meet(&self, _rhs: &Self) -> PArch {
             PArch::new()
         }
     }
