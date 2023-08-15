@@ -163,8 +163,8 @@ macro_rules! define_point_and_line {
 }
 
 define_point_and_line!(impl PgPoint, PgLine);
-define_point_and_line!(impl HypPoint, HypLine);
-define_point_and_line!(impl EllPoint, EllLine);
+define_point_and_line!(impl HyperbolicPoint, HyperbolicLine);
+define_point_and_line!(impl EllipticPoint, EllipticLine);
 define_point_and_line!(impl MyCKPoint, MyCKLine);
 define_point_and_line!(impl PerspPoint, PerspLine);
 define_point_and_line!(impl EuclidPoint, EuclidLine);

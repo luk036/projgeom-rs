@@ -10,9 +10,9 @@ pub mod pg_object;
 pub mod pg_plane;
 
 pub use crate::ck_plane::*;
-pub use crate::pg_object::{EllLine, EllPoint};
+pub use crate::pg_object::{EllipticLine, EllipticPoint};
 pub use crate::pg_object::{EuclidLine, EuclidPoint};
-pub use crate::pg_object::{HypLine, HypPoint};
+pub use crate::pg_object::{HyperbolicLine, HyperbolicPoint};
 pub use crate::pg_object::{MyCKLine, MyCKPoint};
 pub use crate::pg_object::{PerspLine, PerspPoint};
 pub use crate::pg_object::{PgLine, PgPoint};
@@ -191,33 +191,33 @@ mod tests {
 
     #[test]
     fn test_ell_point() {
-        let a_1 = EllPoint::new([13, 23, 32]);
-        let a_2 = EllPoint::new([44, -34, 2]);
-        let a_3 = EllPoint::new([-2, 12, 23]);
+        let a_1 = EllipticPoint::new([13, 23, 32]);
+        let a_2 = EllipticPoint::new([44, -34, 2]);
+        let a_3 = EllipticPoint::new([-2, 12, 23]);
         check_ck_plane(a_1, a_2, a_3);
     }
 
     #[test]
     fn test_ell_line() {
-        let a_1 = EllLine::new([13, 23, 32]);
-        let a_2 = EllLine::new([44, -34, 2]);
-        let a_3 = EllLine::new([-2, 12, 23]);
+        let a_1 = EllipticLine::new([13, 23, 32]);
+        let a_2 = EllipticLine::new([44, -34, 2]);
+        let a_3 = EllipticLine::new([-2, 12, 23]);
         check_ck_plane(a_1, a_2, a_3);
     }
 
     #[test]
     fn test_hyp_point() {
-        let a_1 = HypPoint::new([13, 23, 32]);
-        let a_2 = HypPoint::new([44, -34, 2]);
-        let a_3 = HypPoint::new([-2, 12, 23]);
+        let a_1 = HyperbolicPoint::new([13, 23, 32]);
+        let a_2 = HyperbolicPoint::new([44, -34, 2]);
+        let a_3 = HyperbolicPoint::new([-2, 12, 23]);
         check_ck_plane(a_1, a_2, a_3);
     }
 
     #[test]
     fn test_hyp_line() {
-        let a_1 = HypLine::new([13, 23, 32]);
-        let a_2 = HypLine::new([44, -34, 2]);
-        let a_3 = HypLine::new([-2, 12, 23]);
+        let a_1 = HyperbolicLine::new([13, 23, 32]);
+        let a_2 = HyperbolicLine::new([44, -34, 2]);
+        let a_3 = HyperbolicLine::new([-2, 12, 23]);
         check_ck_plane(a_1, a_2, a_3);
     }
 
