@@ -47,7 +47,7 @@ impl EuclidLine {
     /// The `is_parallel` function returns a boolean value indicating whether the current `EuclidLine`
     /// object is parallel to the `other` `EuclidLine` object.
     #[inline]
-    pub fn is_parallel(&self, other: &EuclidLine) -> bool {
+    pub const fn is_parallel(&self, other: &EuclidLine) -> bool {
         self.coord[0] * other.coord[1] == self.coord[1] * other.coord[0]
     }
 
@@ -70,7 +70,7 @@ impl EuclidLine {
     ///
     /// a boolean value, indicating whether the two lines are perpendicular to each other.
     #[inline]
-    pub fn is_perpendicular(&self, other: &EuclidLine) -> bool {
+    pub const fn is_perpendicular(&self, other: &EuclidLine) -> bool {
         dot1(&self.coord, &other.coord) == 0
     }
 
