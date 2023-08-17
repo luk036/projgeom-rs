@@ -134,7 +134,7 @@ macro_rules! define_line_for_point {
             } // basic measurement
 
             #[inline]
-            fn plucker(&self, lambda: i128, pt_q: &Self, mu: i128) -> Self {
+            fn parametrize(&self, lambda: i128, pt_q: &Self, mu: i128) -> Self {
                 Self::new(plucker_operation(lambda, &self.coord, mu, &pt_q.coord))
             }
         }

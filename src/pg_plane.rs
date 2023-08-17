@@ -149,15 +149,15 @@ where
 {
     let trid1 = &tri_dual(tri1);
     let trid2 = &tri_dual(tri2);
-    let b1 = persp(tri1, tri2);
-    let b2 = persp(trid1, trid2);
-    (b1 && b2) || (!b1 && !b2)
+    let bool1 = persp(tri1, tri2);
+    let bool2 = persp(trid1, trid2);
+    (bool1 && bool2) || (!bool1 && !bool2)
 }
 
 pub trait ProjectivePlane<Dual, Value: Default + Eq>: ProjectivePlanePrimitive<Dual> {
     fn aux(&self) -> Dual; // Dual not incident with Self
     fn dot(&self, dual: &Dual) -> Value; // for basic measurement
-    fn plucker(&self, lambda: Value, other: &Self, mu: Value) -> Self;
+    fn parametrize(&self, lambda: Value, other: &Self, mu: Value) -> Self;
 }
 
 /// The function `check_axiom2` checks if certain axioms hold true in a projective plane.
@@ -186,7 +186,7 @@ pub fn check_axiom2<Point, Line, Value>(
     assert!(pt_p.dot(ln_l) == ln_l.dot(pt_p));
     assert!(!pt_p.aux().incident(pt_p));
     let ln_m = pt_p.meet(pt_q);
-    assert!(ln_m.incident(&Point::plucker(pt_p, pt_a, pt_q, pt_b)));
+    assert!(ln_m.incident(&Point::parametrize(pt_p, pt_a, pt_q, pt_b)));
 }
 
 /// The `harm_conj` function calculates the harmonic conjugate of three points in a projective plane.
@@ -211,7 +211,7 @@ where
     assert!(coincident(pt_a, pt_b, pt_c));
     let ln_ab = pt_a.meet(pt_b);
     let ln_xc = ln_ab.aux().meet(pt_c);
-    Point::plucker(pt_a, ln_xc.dot(pt_b), pt_b, ln_xc.dot(pt_a))
+    Point::parametrize(pt_a, ln_xc.dot(pt_b), pt_b, ln_xc.dot(pt_a))
 }
 
 /// The function `involution` performs an involution transformation on a point `pt_p` with respect to an

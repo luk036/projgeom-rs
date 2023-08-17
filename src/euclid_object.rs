@@ -110,7 +110,7 @@ impl EuclidPoint {
     /// The `midpoint` function returns an instance of the `EuclidPoint` struct.
     #[inline]
     pub fn midpoint(&self, other: &EuclidPoint) -> EuclidPoint {
-        EuclidPoint::plucker(self, other.coord[2], other, self.coord[2])
+        EuclidPoint::parametrize(self, other.coord[2], other, self.coord[2])
     }
 }
 

@@ -25,7 +25,7 @@ impl CayleyKleinPlanePrimitive<PerspPoint> for PerspLine {
     fn perp(&self) -> PerspPoint {
         let alpha = I_RE.dot(self); // ???
         let beta = I_IM.dot(self); // ???
-        PerspPoint::plucker(&I_RE, alpha, &I_IM, beta)
+        PerspPoint::parametrize(&I_RE, alpha, &I_IM, beta)
     }
 }
 
@@ -64,6 +64,6 @@ impl PerspPoint {
     pub fn midpoint(&self, other: &PerspPoint) -> PerspPoint {
         let alpha = L_INF.dot(other);
         let beta = L_INF.dot(self);
-        PerspPoint::plucker(self, alpha, other, beta)
+        PerspPoint::parametrize(self, alpha, other, beta)
     }
 }

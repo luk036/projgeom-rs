@@ -152,7 +152,7 @@ mod tests {
         assert_eq!(ln_l, pt_q.meet(&pt_p));
         assert!(ln_l.incident(&pt_p));
         assert!(ln_l.incident(&pt_q));
-        let pq = Point::plucker(&pt_p, 2, &pt_q, 3);
+        let pq = Point::parametrize(&pt_p, 2, &pt_q, 3);
         assert!(coincident(&pt_p, &pt_q, &pq));
 
         let h = harm_conj(&pt_p, &pt_q, &pq);
