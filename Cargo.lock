@@ -36,7 +36,7 @@ dependencies = [
 [[package]]
 name = "fractions-rs"
 version = "0.1.0"
-source = "git+https://github.com/luk036/fractions-rs#91a86a81fddc1284928884772e359daddca820eb"
+source = "git+https://github.com/luk036/fractions-rs#bdc60b2a78ec498d2faed31d903c9620041eb784"
 dependencies = [
  "num-integer",
  "num-traits",
