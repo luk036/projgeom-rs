@@ -11,8 +11,10 @@ license = "MIT"
 [dependencies]
 num-integer = { version = "0.1.45" }
 num-traits = { version = "0.2.17" }
-fractions-rs = { git = "https://github.com/luk036/fractions-rs" }
-# fraction = { version = "0.10.0" }
+# fraction = { version = "0.1.1" }
+# fractions-rs = { git = "https://github.com/luk036/fractions-rs" }
+fractions-rs = { version = "0.1.1" }
+
 
 [dev-dependencies]
 quickcheck = "1"
