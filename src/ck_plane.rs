@@ -2,11 +2,11 @@ use crate::pg_plane::{coincident, involution, tri_dual};
 use crate::pg_plane::{ProjectivePlane, ProjectivePlanePrimitive};
 
 /// The `CayleyKleinPlanePrimitive` trait is a trait that extends the `ProjectivePlanePrimitive` trait. It adds an additional
-/// method `perp(&self) -> Line` to the trait. This method returns the perpendicular line to the given line
-/// `self`. The `Line` type parameter represents a line in the projective plane.
-pub trait CayleyKleinPlanePrimitive<Line>: ProjectivePlanePrimitive<Line> {
+/// method `perp(&self) -> Line` to the trait. This method returns the polar line to the given
+/// point or the pole of a given line.
+pub trait CayleyKleinPlanePrimitive<Dual>: ProjectivePlanePrimitive<Dual> {
     // type Dual: ProjectivePlanePrimitive;
-    fn perp(&self) -> Line;
+    fn perp(&self) -> Dual; // pole or polar
 }
 
 /// The function `is_perpendicular` checks if two lines are perpendicular to each other.
@@ -102,8 +102,8 @@ where
     [t_1, t_2, t_3]
 }
 
-pub trait CayleyKleinPlane<Line, Value: Default + Eq>:
-    ProjectivePlane<Line, Value> + CayleyKleinPlanePrimitive<Line>
+pub trait CayleyKleinPlane<Dual, Value: Default + Eq>:
+    ProjectivePlane<Dual, Value> + CayleyKleinPlanePrimitive<Dual>
 {
 }
 
