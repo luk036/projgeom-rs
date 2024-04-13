@@ -184,7 +184,7 @@ where
 }
 
 /// The `ProjectivePlane` trait is a trait that extends the `ProjectivePlanePrimitive` trait. It adds an additional
-/// `aux`, `dot`, and parametrize methods to the trait. 
+/// `aux`, `dot`, and parametrize methods to the trait.
 pub trait ProjectivePlane<Dual, Value: Default + Eq>: ProjectivePlanePrimitive<Dual> {
     fn aux(&self) -> Dual; // Dual not incident with Self
     fn dot(&self, dual: &Dual) -> Value; // for basic measurement
