@@ -5,14 +5,14 @@ use crate::pg_plane::{ProjectivePlane, ProjectivePlanePrimitive};
 ///
 /// Arguments:
 ///
-/// * `v_a`: An array of three i128 values representing the first vector.
-/// * `v_b`: The parameter `v_b` is a reference to an array of `i128` integers with a length of 3. It
+/// * `v_a`: An array of three i64 values representing the first vector.
+/// * `v_b`: The parameter `v_b` is a reference to an array of `i64` integers with a length of 3. It
 /// represents a vector in .
 ///
 /// Returns:
 ///
 /// The dot_product function returns the dot product of two vectors, which is a scalar value of type
-/// i128.
+/// i64.
 ///
 /// Examples:
 ///
@@ -22,7 +22,7 @@ use crate::pg_plane::{ProjectivePlane, ProjectivePlanePrimitive};
 /// assert_eq!(result, 26);
 /// ```
 #[inline]
-pub const fn dot_product(v_a: &[i128; 3], v_b: &[i128; 3]) -> i128 {
+pub const fn dot_product(v_a: &[i64; 3], v_b: &[i64; 3]) -> i64 {
     v_a[0] * v_b[0] + v_a[1] * v_b[1] + v_a[2] * v_b[2]
 }
 
@@ -36,7 +36,7 @@ pub const fn dot_product(v_a: &[i128; 3], v_b: &[i128; 3]) -> i128 {
 /// assert_eq!(result, 11);
 /// ```
 #[inline]
-pub const fn dot1(v_a: &[i128], v_b: &[i128]) -> i128 {
+pub const fn dot1(v_a: &[i64], v_b: &[i64]) -> i64 {
     v_a[0] * v_b[0] + v_a[1] * v_b[1]
 }
 
@@ -50,7 +50,7 @@ pub const fn dot1(v_a: &[i128], v_b: &[i128]) -> i128 {
 /// assert_eq!(result, -2);
 /// ```
 #[inline]
-pub const fn cross2(v_a: &[i128], v_b: &[i128]) -> i128 {
+pub const fn cross2(v_a: &[i64], v_b: &[i64]) -> i64 {
     v_a[0] * v_b[1] - v_a[1] * v_b[0]
 }
 
@@ -64,7 +64,7 @@ pub const fn cross2(v_a: &[i128], v_b: &[i128]) -> i128 {
 /// assert_eq!(v_a, [-2, 4, -2]);
 /// ```
 #[inline]
-pub const fn cross_product(v_a: &[i128; 3], v_b: &[i128; 3]) -> [i128; 3] {
+pub const fn cross_product(v_a: &[i64; 3], v_b: &[i64; 3]) -> [i64; 3] {
     [
         v_a[1] * v_b[2] - v_a[2] * v_b[1],
         v_a[2] * v_b[0] - v_a[0] * v_b[2],
@@ -83,11 +83,11 @@ pub const fn cross_product(v_a: &[i128; 3], v_b: &[i128; 3]) -> [i128; 3] {
 /// ```
 #[inline]
 pub const fn plucker_operation(
-    lambda_a: i128,
-    v_a: &[i128; 3],
-    mu_b: i128,
-    v_b: &[i128; 3],
-) -> [i128; 3] {
+    lambda_a: i64,
+    v_a: &[i64; 3],
+    mu_b: i64,
+    v_b: &[i64; 3],
+) -> [i64; 3] {
     [
         lambda_a * v_a[0] + mu_b * v_b[0],
         lambda_a * v_a[1] + mu_b * v_b[1],
@@ -100,17 +100,19 @@ macro_rules! define_point_or_line {
         #[derive(Debug, Clone)]
         pub struct $point {
             /// Homogeneous coordinate
-            pub coord: [i128; 3],
+            pub coord: [i64; 3],
         }
 
         impl $point {
+            /// Create a new point with the given coordinates.
             #[inline]
-            pub const fn new(coord: [i128; 3]) -> Self {
+            pub const fn new(coord: [i64; 3]) -> Self {
                 Self { coord }
             }
         }
 
         impl PartialEq for $point {
+            /// Check if two points are equal.
             #[inline]
             fn eq(&self, other: &$point) -> bool {
                 cross_product(&self.coord, &other.coord) == [0, 0, 0]
@@ -122,19 +124,21 @@ macro_rules! define_point_or_line {
 
 macro_rules! define_line_for_point {
     (impl $line:ident, $point:ident) => {
-        impl ProjectivePlane<$line, i128> for $point {
+        impl ProjectivePlane<$line, i64> for $point {
+            /// Return the Dual not incident with Self
             #[inline]
             fn aux(&self) -> $line {
                 $line::new(self.coord.clone())
             }
 
+            /// Return the dot product of Self and `line`
             #[inline]
-            fn dot(&self, line: &$line) -> i128 {
+            fn dot(&self, line: &$line) -> i64 {
                 dot_product(&self.coord, &line.coord)
             } // basic measurement
 
             #[inline]
-            fn parametrize(&self, lambda: i128, pt_q: &Self, mu: i128) -> Self {
+            fn parametrize(&self, lambda: i64, pt_q: &Self, mu: i64) -> Self {
                 Self::new(plucker_operation(lambda, &self.coord, mu, &pt_q.coord))
             }
         }

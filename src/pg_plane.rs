@@ -26,6 +26,7 @@ where
     assert!(ln_m.incident(pt_p) && ln_m.incident(pt_q));
 }
 
+#[doc = svgbobdoc::transform!(
 /// The `coincident` function checks if three points `pt_p`, `pt_q`, and `pt_r` are coincident in a projective
 /// plane.
 ///
@@ -39,6 +40,18 @@ where
 ///
 /// The function `coincident` returns a boolean value.
 ///
+/// ```svgbob
+///
+///          |  /
+///        \ | /       coincidence
+///         \|/
+///          o      -----o------o---o---
+///         /|\           A      B   C
+///        / | \
+///       l  |  \
+///          m   n
+/// ```
+///
 /// # Examples
 ///
 /// ```
@@ -49,6 +62,7 @@ where
 /// let pt_r = PgPoint::new([7, 8, 9]);
 /// assert!(coincident(&pt_p, &pt_q, &pt_r));
 /// ```
+)]
 #[inline]
 pub fn coincident<Point, Line>(pt_p: &Point, pt_q: &Point, pt_r: &Point) -> bool
 where
@@ -85,6 +99,7 @@ where
     coincident(&pt_g, &pt_h, &pt_i)
 }
 
+#[doc = svgbobdoc::transform!(
 /// The `tri_dual` function takes a triangle and returns an array of lines that are dual to the
 /// triangle's vertices.
 ///
@@ -93,9 +108,23 @@ where
 /// * `triangle`: The `triangle` parameter is an array of length 3 containing points that define a
 /// triangle in a projective plane. Each element of the array represents a vertex of the triangle.
 ///
+/// ```svgbob
+///                       a
+///            \         /
+///             \ A     /
+///      c ------o-----o--------
+///               \   / B
+///                \ /
+///               C o    triangle,
+///                / \     trilateral
+///               /   \
+///                    b
+/// ```
+///
 /// Returns:
 ///
 /// The function `tri_dual` returns an array of three elements, where each element is of type `Line`.
+)]
 #[inline]
 pub fn tri_dual<Point, Line>(triangle: &[Point; 3]) -> [Line; 3]
 where
@@ -154,6 +183,8 @@ where
     (bool1 && bool2) || (!bool1 && !bool2)
 }
 
+/// The `ProjectivePlane` trait is a trait that extends the `ProjectivePlanePrimitive` trait. It adds an additional
+/// `aux`, `dot`, and parametrize methods to the trait. 
 pub trait ProjectivePlane<Dual, Value: Default + Eq>: ProjectivePlanePrimitive<Dual> {
     fn aux(&self) -> Dual; // Dual not incident with Self
     fn dot(&self, dual: &Dual) -> Value; // for basic measurement
@@ -176,8 +207,8 @@ pub fn check_axiom2<Point, Line, Value>(
     pt_p: &Point,
     pt_q: &Point,
     ln_l: &Line,
-    pt_a: Value,
-    pt_b: Value,
+    alpha: Value,
+    beta: Value,
 ) where
     Value: Default + Eq,
     Point: ProjectivePlane<Line, Value>,
@@ -186,7 +217,7 @@ pub fn check_axiom2<Point, Line, Value>(
     assert!(pt_p.dot(ln_l) == ln_l.dot(pt_p));
     assert!(!pt_p.aux().incident(pt_p));
     let ln_m = pt_p.meet(pt_q);
-    assert!(ln_m.incident(&Point::parametrize(pt_p, pt_a, pt_q, pt_b)));
+    assert!(ln_m.incident(&pt_p.parametrize(alpha, pt_q, beta)));
 }
 
 /// The `harm_conj` function calculates the harmonic conjugate of three points in a projective plane.
@@ -211,7 +242,7 @@ where
     assert!(coincident(pt_a, pt_b, pt_c));
     let ln_ab = pt_a.meet(pt_b);
     let ln_xc = ln_ab.aux().meet(pt_c);
-    Point::parametrize(pt_a, ln_xc.dot(pt_b), pt_b, ln_xc.dot(pt_a))
+    pt_a.parametrize(ln_xc.dot(pt_b), pt_b, ln_xc.dot(pt_a))
 }
 
 /// The function `involution` performs an involution transformation on a point `pt_p` with respect to an

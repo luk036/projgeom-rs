@@ -29,9 +29,9 @@ impl CayleyKleinPlanePrimitive<PerspPoint> for PerspLine {
     }
 }
 
-impl CayleyKleinPlane<PerspLine, i128> for PerspPoint {}
+impl CayleyKleinPlane<PerspLine, i64> for PerspPoint {}
 
-impl CayleyKleinPlane<PerspPoint, i128> for PerspLine {}
+impl CayleyKleinPlane<PerspPoint, i64> for PerspLine {}
 
 impl PerspLine {
     /// The function checks if two perspective lines are parallel.

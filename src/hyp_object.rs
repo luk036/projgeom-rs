@@ -26,6 +26,6 @@ impl CayleyKleinPlanePrimitive<HyperbolicPoint> for HyperbolicLine {
     }
 }
 
-impl CayleyKleinPlane<HyperbolicLine, i128> for HyperbolicPoint {}
+impl CayleyKleinPlane<HyperbolicLine, i64> for HyperbolicPoint {}
 
-impl CayleyKleinPlane<HyperbolicPoint, i128> for HyperbolicLine {}
+impl CayleyKleinPlane<HyperbolicPoint, i64> for HyperbolicLine {}

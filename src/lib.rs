@@ -145,8 +145,8 @@ mod tests {
 
     fn check_pg_plane<Point, Line>(pt_p: Point, pt_q: Point)
     where
-        Point: ProjectivePlane<Line, i128> + std::fmt::Debug,
-        Line: ProjectivePlane<Point, i128> + std::fmt::Debug,
+        Point: ProjectivePlane<Line, i64> + std::fmt::Debug,
+        Line: ProjectivePlane<Point, i64> + std::fmt::Debug,
     {
         let ln_l = pt_p.meet(&pt_q);
         assert_eq!(ln_l, pt_q.meet(&pt_p));
@@ -175,8 +175,8 @@ mod tests {
 
     fn check_ck_plane<Point, Line>(a_1: Point, a_2: Point, a_3: Point)
     where
-        Point: CayleyKleinPlane<Line, i128> + std::fmt::Debug,
-        Line: CayleyKleinPlane<Point, i128> + std::fmt::Debug,
+        Point: CayleyKleinPlane<Line, i64> + std::fmt::Debug,
+        Line: CayleyKleinPlane<Point, i64> + std::fmt::Debug,
     {
         let triangle = [a_1, a_2, a_3];
         let trilateral = tri_dual(&triangle);
@@ -262,24 +262,24 @@ mod tests {
     }
 
     #[quickcheck]
-    fn test_pg_point_q(pz: i64, qz: i64) -> bool {
+    fn test_pg_point_q(pz: i32, qz: i32) -> bool {
         let pt_p = PgPoint::new([1, 3, pz.into()]);
         let pt_q = PgPoint::new([-2, 1, qz.into()]);
         pt_p != pt_q
     }
 
     #[quickcheck]
-    fn test_pg_point_q2(pz: i32, qz: i32) -> bool {
-        let pt_p = PgPoint::new([100000003, 30000001, pz.into()]);
-        let pt_q = PgPoint::new([-200000004, 100000005, qz.into()]);
+    fn test_pg_point_q2(pz: i16, qz: i16) -> bool {
+        let pt_p = PgPoint::new([10, 30, pz.into()]);
+        let pt_q = PgPoint::new([-20, 10, qz.into()]);
         let ln_l = pt_p.meet(&pt_q);
         ln_l == pt_q.meet(&pt_p)
     }
 
     #[quickcheck]
-    fn test_pg_point_q3(pz: i32, qz: i32) -> bool {
-        let pt_p = PgPoint::new([100000003, 30000001, pz.into()]);
-        let pt_q = PgPoint::new([-200000004, 100000005, qz.into()]);
+    fn test_pg_point_q3(pz: i16, qz: i16) -> bool {
+        let pt_p = PgPoint::new([10, 30, pz.into()]);
+        let pt_q = PgPoint::new([-20, 10, qz.into()]);
         let ln_l = pt_p.meet(&pt_q);
         ln_l.incident(&pt_p) && ln_l.incident(&pt_q)
     }

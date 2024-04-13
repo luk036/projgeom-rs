@@ -27,6 +27,6 @@ impl CayleyKleinPlanePrimitive<EllipticPoint> for EllipticLine {
     }
 }
 
-impl CayleyKleinPlane<EllipticLine, i128> for EllipticPoint {}
+impl CayleyKleinPlane<EllipticLine, i64> for EllipticPoint {}
 
-impl CayleyKleinPlane<EllipticPoint, i128> for EllipticLine {}
+impl CayleyKleinPlane<EllipticPoint, i64> for EllipticLine {}

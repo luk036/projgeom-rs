@@ -31,9 +31,9 @@ impl CayleyKleinPlanePrimitive<EuclidPoint> for EuclidLine {
     }
 }
 
-impl CayleyKleinPlane<EuclidLine, i128> for EuclidPoint {}
+impl CayleyKleinPlane<EuclidLine, i64> for EuclidPoint {}
 
-impl CayleyKleinPlane<EuclidPoint, i128> for EuclidLine {}
+impl CayleyKleinPlane<EuclidPoint, i64> for EuclidLine {}
 
 impl EuclidLine {
     /// The function checks if two EuclidLine objects are parallel.
@@ -51,15 +51,6 @@ impl EuclidLine {
         self.coord[0] * other.coord[1] == self.coord[1] * other.coord[0]
     }
 
-    /// The function checks if two Euclidean lines are perpendicular.
-    ///
-    /// Arguments:
-    ///
-    /// * `other`: `other` is a reference to an `EuclidLine` object.
-    ///
-    /// Returns:
-    ///
-    /// a boolean value, indicating whether the two lines are perpendicular to each other.
     /// The function checks if two Euclidean lines are perpendicular.
     ///
     /// Arguments:

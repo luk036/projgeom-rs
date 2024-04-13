@@ -15,6 +15,6 @@ impl CayleyKleinPlanePrimitive<MyCKPoint> for MyCKLine {
     }
 }
 
-impl CayleyKleinPlane<MyCKLine, i128> for MyCKPoint {}
+impl CayleyKleinPlane<MyCKLine, i64> for MyCKPoint {}
 
-impl CayleyKleinPlane<MyCKPoint, i128> for MyCKLine {}
+impl CayleyKleinPlane<MyCKPoint, i64> for MyCKLine {}
