@@ -3,7 +3,7 @@
 - allow integer arithmetic
 - computer vision + AR
 
-## Python (prototyping)
+## 🐍 Python (prototyping)
 
 Good:
 
@@ -19,7 +19,7 @@ Bad:
 
 ---
 
-## Rust
+## 🦀 Rust
 
 Good:
 
