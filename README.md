@@ -9,9 +9,9 @@
   <img src="./projective-geometry.svg" />
 </p>
 
-## Installation
+## 🛠️ Installation
 
-### Cargo
+### 📦 Cargo
 
 - Install the rust toolchain in order to have cargo installed by following
   [this](https://www.rust-lang.org/tools/install) guide.
