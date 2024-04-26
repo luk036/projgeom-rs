@@ -1,4 +1,4 @@
-# #️⃣ projgeom-rs
+# projgeom-rs
 
 [![Crates.io](https://img.shields.io/crates/v/projgeom-rs.svg)](https://crates.io/crates/projgeom-rs)
 [![Docs.rs](https://docs.rs/projgeom-rs/badge.svg)](https://docs.rs/projgeom-rs)
