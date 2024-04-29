@@ -1,5 +1,3 @@
-# #️⃣ projgeom-rs
-
 [![Crates.io](https://img.shields.io/crates/v/projgeom-rs.svg)](https://crates.io/crates/projgeom-rs)
 [![Docs.rs](https://docs.rs/projgeom-rs/badge.svg)](https://docs.rs/projgeom-rs)
 [![CI](https://github.com/luk036/projgeom-rs/workflows/CI/badge.svg)](https://github.com/luk036/projgeom-rs/actions)
@@ -8,6 +6,10 @@
 <p align="center">
   <img src="./projective-geometry.svg" />
 </p>
+
+# 🔯 projgeom-rs
+
+projective geometry in Rust
 
 ## 🛠️ Installation
 
