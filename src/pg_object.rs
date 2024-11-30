@@ -7,7 +7,7 @@ use crate::pg_plane::{ProjectivePlane, ProjectivePlanePrimitive};
 ///
 /// * `v_a`: An array of three i64 values representing the first vector.
 /// * `v_b`: The parameter `v_b` is a reference to an array of `i64` integers with a length of 3. It
-/// represents a vector in .
+///          represents a vector in .
 ///
 /// Returns:
 ///

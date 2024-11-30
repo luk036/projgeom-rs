@@ -15,7 +15,7 @@ pub trait CayleyKleinPlanePrimitive<Dual>: ProjectivePlanePrimitive<Dual> {
 ///
 /// * `m_1`: A reference to an object of type Line, which represents a line or a plane in a geometric space.
 /// * `m_2`: m_2 is a reference to an object of type Line, which is a generic type parameter. The specific
-/// type of Line is not specified in the function signature.
+///          type of Line is not specified in the function signature.
 ///
 /// Returns:
 ///
@@ -55,7 +55,7 @@ where
 /// Arguments:
 ///
 /// * `triangle`: The `triangle` parameter is an array of three elements of type `Point`. Each element represents a
-/// point in a triangle.
+///               point in a triangle.
 ///
 /// Returns:
 ///
