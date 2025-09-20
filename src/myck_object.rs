@@ -1,5 +1,5 @@
-use crate::{CayleyKleinPlane, CayleyKleinPlanePrimitive};
 use crate::pg_object::{MyCKLine, MyCKPoint};
+use crate::{CayleyKleinPlane, CayleyKleinPlanePrimitive};
 
 const MYCK_POINT_PERP_COEFFS: [i64; 3] = [-2, 1, -2];
 const MYCK_LINE_PERP_COEFFS: [i64; 3] = [-1, 2, -1];

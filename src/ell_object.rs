@@ -1,5 +1,5 @@
-use crate::{CayleyKleinPlane, CayleyKleinPlanePrimitive};
 use crate::pg_object::{EllipticLine, EllipticPoint};
+use crate::{CayleyKleinPlane, CayleyKleinPlanePrimitive};
 
 impl_cayley_klein_plane!(
     EllipticPoint,

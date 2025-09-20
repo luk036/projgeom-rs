@@ -1,8 +1,8 @@
 // Euclidean Geometry
 
-use crate::{CayleyKleinPlane, CayleyKleinPlanePrimitive};
 use crate::pg_object::{EuclidLine, EuclidPoint};
 use crate::pg_plane::{coincident, tri_dual, ProjectivePlane, ProjectivePlanePrimitive};
+use crate::{CayleyKleinPlane, CayleyKleinPlanePrimitive};
 // use crate::pg_object::{plucker_operation, dot_product};
 use crate::pg_object::dot1;
 

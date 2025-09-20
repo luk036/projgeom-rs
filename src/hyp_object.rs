@@ -1,5 +1,5 @@
-use crate::{CayleyKleinPlane, CayleyKleinPlanePrimitive};
 use crate::pg_object::{HyperbolicLine, HyperbolicPoint};
+use crate::{CayleyKleinPlane, CayleyKleinPlanePrimitive};
 
 const HYP_PERP_COEFFS: [i64; 3] = [1, 1, -1];
 

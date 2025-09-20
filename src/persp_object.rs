@@ -1,8 +1,8 @@
 // Perspective Geometry
 
-use crate::{CayleyKleinPlane, CayleyKleinPlanePrimitive};
 use crate::pg_object::{PerspLine, PerspPoint};
 use crate::pg_plane::{ProjectivePlane, ProjectivePlanePrimitive};
+use crate::{CayleyKleinPlane, CayleyKleinPlanePrimitive};
 // use crate::pg_object::{plucker_operation, dot};
 
 static I_RE: PerspPoint = PerspPoint { coord: [0, 1, 1] };

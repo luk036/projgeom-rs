@@ -1,5 +1,5 @@
-use projgeom_rs::*;
 use num_integer::gcd;
+use projgeom_rs::*;
 use quickcheck_macros::quickcheck;
 
 use fractions::Fraction;
