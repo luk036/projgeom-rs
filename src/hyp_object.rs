@@ -1,31 +1,23 @@
-use crate::ck_plane::{CayleyKleinPlane, CayleyKleinPlanePrimitive};
+use crate::{CayleyKleinPlane, CayleyKleinPlanePrimitive};
 use crate::pg_object::{HyperbolicLine, HyperbolicPoint};
 
-/// The code block is implementing the hyperbolic geometry of a point in the CayleyKleinPlanePrimitive trait for the
-/// HyperbolicPoint struct.
-impl CayleyKleinPlanePrimitive<HyperbolicLine> for HyperbolicPoint {
-    #[inline]
-    fn perp(&self) -> HyperbolicLine {
-        HyperbolicLine::new([self.coord[0], self.coord[1], -self.coord[2]])
+const HYP_PERP_COEFFS: [i64; 3] = [1, 1, -1];
+
+impl_cayley_klein_plane!(
+    HyperbolicPoint,
+    HyperbolicLine,
+    |p: &HyperbolicPoint| {
+        HyperbolicLine::new([
+            HYP_PERP_COEFFS[0] * p.coord[0],
+            HYP_PERP_COEFFS[1] * p.coord[1],
+            HYP_PERP_COEFFS[2] * p.coord[2],
+        ])
+    },
+    |l: &HyperbolicLine| {
+        HyperbolicPoint::new([
+            HYP_PERP_COEFFS[0] * l.coord[0],
+            HYP_PERP_COEFFS[1] * l.coord[1],
+            HYP_PERP_COEFFS[2] * l.coord[2],
+        ])
     }
-}
-
-/// The code block is implementing the hyperbolic geometry of a line in the CayleyKleinPlanePrimitive trait for the
-/// HyperbolicLine struct. It defines a method called `perp` that returns a perpendicular point to the line.
-/// The perpendicular point is created by negating the third coordinate of the line's coordinates and
-/// creating a new HyperbolicPoint with the updated coordinates.
-/// The code block is implementing the hyperbolic geometry of a line in the CayleyKleinPlanePrimitive trait for the
-/// HyperbolicLine struct. It defines a method called `perp` that returns a perpendicular point to the line.
-/// The perpendicular point is created by negating the third coordinate of the line's coordinates and
-/// creating a new HyperbolicPoint with the updated coordinates.
-/// Hyperbolic geometry of the line
-impl CayleyKleinPlanePrimitive<HyperbolicPoint> for HyperbolicLine {
-    #[inline]
-    fn perp(&self) -> HyperbolicPoint {
-        HyperbolicPoint::new([self.coord[0], self.coord[1], -self.coord[2]])
-    }
-}
-
-impl CayleyKleinPlane<HyperbolicLine, i64> for HyperbolicPoint {}
-
-impl CayleyKleinPlane<HyperbolicPoint, i64> for HyperbolicLine {}
+);

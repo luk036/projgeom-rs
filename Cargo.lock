@@ -103,9 +103,9 @@ dependencies = [
 
 [[package]]
 name = "fractions-rs"
-version = "0.1.4"
+version = "0.1.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "94828af944a736d17ff6eb3191187fda7c77cb443b2abd3a245788d7d7bb0aeb"
+checksum = "59eb58787231c0166e8ec789ebd1b52a1f3ee78058cf5579fe4ed1da5975a40a"
 dependencies = [
  "autocfg",
  "num-bigint",
@@ -395,7 +395,7 @@ dependencies = [
 
 [[package]]
 name = "projgeom-rs"
-version = "0.1.2"
+version = "0.1.3"
 dependencies = [
  "fractions-rs",
  "num-integer",
@@ -418,13 +418,13 @@ dependencies = [
 
 [[package]]
 name = "quickcheck_macros"
-version = "1.0.0"
+version = "1.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b22a693222d716a9587786f37ac3f6b4faedb5b80c23914e7303ff5a1d8016e9"
+checksum = "f71ee38b42f8459a88d3362be6f9b841ad2d5421844f61eb1c59c11bff3ac14a"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 1.0.109",
+ "syn 2.0.43",
 ]
 
 [[package]]

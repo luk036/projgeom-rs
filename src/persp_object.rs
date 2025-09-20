@@ -1,6 +1,6 @@
 // Perspective Geometry
 
-use crate::ck_plane::{CayleyKleinPlane, CayleyKleinPlanePrimitive};
+use crate::{CayleyKleinPlane, CayleyKleinPlanePrimitive};
 use crate::pg_object::{PerspLine, PerspPoint};
 use crate::pg_plane::{ProjectivePlane, ProjectivePlanePrimitive};
 // use crate::pg_object::{plucker_operation, dot};
@@ -9,29 +9,16 @@ static I_RE: PerspPoint = PerspPoint { coord: [0, 1, 1] };
 static I_IM: PerspPoint = PerspPoint { coord: [1, 0, 0] };
 static L_INF: PerspLine = PerspLine { coord: [0, -1, 1] };
 
-/// The code block is implementing the perspective geometry for the point `PerspPoint` in the context of
-/// the `CayleyKleinPlanePrimitive` trait for the line `PerspLine`.
-impl CayleyKleinPlanePrimitive<PerspLine> for PerspPoint {
-    #[inline]
-    fn perp(&self) -> PerspLine {
-        L_INF.clone()
-    }
-}
-
-/// The code block is implementing the perspective geometry for the line `PerspLine` in the context of
-/// the `CayleyKleinPlanePrimitive` trait for the point `PerspPoint`.
-impl CayleyKleinPlanePrimitive<PerspPoint> for PerspLine {
-    #[inline]
-    fn perp(&self) -> PerspPoint {
-        let alpha = I_RE.dot(self); // ???
-        let beta = I_IM.dot(self); // ???
+impl_cayley_klein_plane!(
+    PerspPoint,
+    PerspLine,
+    |_p: &PerspPoint| L_INF.clone(),
+    |l: &PerspLine| {
+        let alpha = I_RE.dot(l); // ???
+        let beta = I_IM.dot(l); // ???
         PerspPoint::parametrize(&I_RE, alpha, &I_IM, beta)
     }
-}
-
-impl CayleyKleinPlane<PerspLine, i64> for PerspPoint {}
-
-impl CayleyKleinPlane<PerspPoint, i64> for PerspLine {}
+);
 
 impl PerspLine {
     /// The function checks if two perspective lines are parallel.

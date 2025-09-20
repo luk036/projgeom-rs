@@ -128,3 +128,27 @@ where
 {
     involution(&mirror.perp(), mirror, pt_p)
 }
+
+/// Macro to implement the `CayleyKleinPlanePrimitive` and `CayleyKleinPlane` traits.
+#[macro_export]
+macro_rules! impl_cayley_klein_plane {
+    ($point:ty, $line:ty, $perp_point:expr, $perp_line:expr) => {
+        impl CayleyKleinPlanePrimitive<$line> for $point {
+            #[inline]
+            fn perp(&self) -> $line {
+                $perp_point(self)
+            }
+        }
+
+        impl CayleyKleinPlanePrimitive<$point> for $line {
+            #[inline]
+            fn perp(&self) -> $point {
+                $perp_line(self)
+            }
+        }
+
+        impl CayleyKleinPlane<$line, i64> for $point {}
+
+        impl CayleyKleinPlane<$point, i64> for $line {}
+    };
+}

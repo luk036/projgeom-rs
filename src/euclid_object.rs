@@ -1,6 +1,6 @@
 // Euclidean Geometry
 
-use crate::ck_plane::{CayleyKleinPlane, CayleyKleinPlanePrimitive};
+use crate::{CayleyKleinPlane, CayleyKleinPlanePrimitive};
 use crate::pg_object::{EuclidLine, EuclidPoint};
 use crate::pg_plane::{coincident, tri_dual, ProjectivePlane, ProjectivePlanePrimitive};
 // use crate::pg_object::{plucker_operation, dot_product};
@@ -10,30 +10,12 @@ use crate::pg_object::dot1;
 // static I_IM: EuclidPoint = EuclidPoint { coord: [1, 0, 0] };
 static L_INF: EuclidLine = EuclidLine { coord: [0, 0, 1] };
 
-/// This code is implementing the `perp` method for the `CayleyKleinPlanePrimitive` trait for the `EuclidPoint`
-/// struct. The `perp` method returns a perpendicular line to the given point. In this implementation,
-/// it always returns the line `L_INF`, which represents the line at infinity.
-impl CayleyKleinPlanePrimitive<EuclidLine> for EuclidPoint {
-    #[allow(dead_code)]
-    fn perp(&self) -> EuclidLine {
-        L_INF.clone()
-    }
-}
-
-/// This code is implementing the `perp` method for the `CayleyKleinPlanePrimitive` trait for the `EuclidLine` struct.
-/// The `perp` method returns a perpendicular point to the given line. In this implementation, it
-/// creates a new `EuclidPoint` with the x and y coordinates of the line and a z coordinate of 0. This
-/// represents a point that is perpendicular to the line in the xy-plane.
-impl CayleyKleinPlanePrimitive<EuclidPoint> for EuclidLine {
-    #[allow(dead_code)]
-    fn perp(&self) -> EuclidPoint {
-        EuclidPoint::new([self.coord[0], self.coord[1], 0])
-    }
-}
-
-impl CayleyKleinPlane<EuclidLine, i64> for EuclidPoint {}
-
-impl CayleyKleinPlane<EuclidPoint, i64> for EuclidLine {}
+impl_cayley_klein_plane!(
+    EuclidPoint,
+    EuclidLine,
+    |_p: &EuclidPoint| L_INF.clone(),
+    |l: &EuclidLine| EuclidPoint::new([l.coord[0], l.coord[1], 0])
+);
 
 impl EuclidLine {
     /// The function checks if two EuclidLine objects are parallel.
