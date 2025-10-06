@@ -4,6 +4,21 @@ use crate::pg_plane::{ProjectivePlane, ProjectivePlanePrimitive};
 /// The `CayleyKleinPlanePrimitive` trait is a trait that extends the `ProjectivePlanePrimitive` trait. It adds an additional
 /// method `perp(&self) -> Line` to the trait. This method returns the polar line to the given
 /// point or the pole of a given line.
+///
+/// # Examples
+///
+/// ```
+/// // This example would require concrete implementations of Point and Line
+/// // For instance, if you have `EuclidPoint` and `EuclidLine` that implement
+/// // `CayleyKleinPlanePrimitive`:
+/// // use projgeom_rs::{EuclidPoint, EuclidLine, CayleyKleinPlanePrimitive};
+/// //
+/// // let p = EuclidPoint::new(1, 2, 1);
+/// // let l = p.perp(); // Get the polar line of point p
+/// //
+/// // let m = EuclidLine::new(1, 2, 3);
+/// // let q = m.perp(); // Get the pole of line m
+/// ```
 pub trait CayleyKleinPlanePrimitive<Dual>: ProjectivePlanePrimitive<Dual> {
     // type Dual: ProjectivePlanePrimitive;
     fn perp(&self) -> Dual; // pole or polar
@@ -20,6 +35,19 @@ pub trait CayleyKleinPlanePrimitive<Dual>: ProjectivePlanePrimitive<Dual> {
 /// Returns:
 ///
 /// a boolean value.
+///
+/// # Examples
+///
+/// ```
+/// use projgeom_rs::{EuclidPoint, EuclidLine, is_perpendicular};
+///
+/// let l1 = EuclidLine::new([1, 0, -1]); // x = 1
+/// let l2 = EuclidLine::new([0, 1, -1]); // y = 1
+/// assert!(is_perpendicular(&l1, &l2));
+///
+/// let l3 = EuclidLine::new([1, 1, -1]); // x + y = 1
+/// assert!(!is_perpendicular(&l1, &l3));
+/// ```
 #[allow(dead_code)]
 #[inline]
 pub fn is_perpendicular<Point, Line>(m_1: &Line, m_2: &Line) -> bool
@@ -40,6 +68,20 @@ where
 /// Returns:
 ///
 /// The function `altitude` returns a value of type `Line`.
+///
+/// # Examples
+///
+/// ```
+/// use projgeom_rs::{EuclidPoint, EuclidLine, altitude};
+///
+/// let p = EuclidPoint::new([1, 2, 1]);
+/// let l = EuclidLine::new([1, 0, -1]); // x = 1
+/// let alt = altitude(&p, &l);
+/// // In Euclidean geometry, the altitude from a point to a line is perpendicular to the line
+/// // and passes through the point. The line x=1 has normal (1,0). The line through (1,2) perpendicular
+/// // to x=1 is y=2. So the altitude should be (0,1,-2).
+/// assert_eq!(alt, EuclidLine::new([0, 1, -2]));
+/// ```
 #[allow(dead_code)]
 #[inline]
 pub fn altitude<Point, Line>(pt_p: &Point, ln_m: &Line) -> Line
@@ -61,6 +103,21 @@ where
 ///
 /// The function `orthocenter` returns a value of type `Point`, which is the type parameter specified in the
 /// function signature.
+///
+/// # Examples
+///
+/// ```
+/// use projgeom_rs::{EuclidPoint, orthocenter};
+///
+/// let p1 = EuclidPoint::new([0, 0, 1]);
+/// let p2 = EuclidPoint::new([2, 0, 1]);
+/// let p3 = EuclidPoint::new([1, 3, 1]);
+/// let triangle = [p1, p2, p3];
+/// let orthocenter_pt = orthocenter(&triangle);
+/// // For a triangle with vertices (0,0), (2,0), (1,3), the orthocenter is (1, 1/3)
+/// // In homogeneous coordinates, this would be (3, 1, 3)
+/// assert_eq!(orthocenter_pt, EuclidPoint::new([3, 1, 3]));
+/// ```
 #[allow(dead_code)]
 #[inline]
 pub fn orthocenter<Point, Line>(triangle: &[Point; 3]) -> Point
@@ -86,6 +143,24 @@ where
 ///
 /// The function `tri_altitude` returns an array of three elements, where each element represents the
 /// altitude of a vertex in a triangle.
+///
+/// # Examples
+///
+/// ```
+/// use projgeom_rs::{EuclidPoint, EuclidLine, tri_altitude};
+///
+/// let p1 = EuclidPoint::new([0, 0, 1]);
+/// let p2 = EuclidPoint::new([2, 0, 1]);
+/// let p3 = EuclidPoint::new([1, 3, 1]);
+/// let triangle = [p1, p2, p3];
+/// let altitudes = tri_altitude(&triangle);
+/// // For p1(0,0), opposite side is line p2p3 (EuclidLine::new(3, -1, -6)). Perpendicular through (0,0) is (1,3,0).
+/// assert_eq!(altitudes[0], EuclidLine::new([-1, 3, 0]));
+/// // For p2(2,0), opposite side is line p1p3 (EuclidLine::new(3, -1, 0)). Perpendicular through (2,0) is (1,3,-2).
+/// assert_eq!(altitudes[1], EuclidLine::new([1, 3, -2]));
+/// // For p3(1,3), opposite side is line p1p2 (EuclidLine::new(0, 1, 0)). Perpendicular through (1,3) is (1,0,-1).
+/// assert_eq!(altitudes[2], EuclidLine::new([2, 0, -2]));
+/// ```
 #[allow(dead_code)]
 #[inline]
 pub fn tri_altitude<Point, Line>(triangle: &[Point; 3]) -> [Line; 3]
@@ -118,6 +193,24 @@ pub trait CayleyKleinPlane<Dual, Value: Default + Eq>:
 ///
 /// The function `reflect` returns a value of type `Point`, which is the same type as the input parameter
 /// `pt_p`.
+///
+/// # Examples
+///
+/// ```
+/// use projgeom_rs::{EuclidPoint, EuclidLine, reflect};
+///
+/// let p = EuclidPoint::new([1, 2, 1]); // Point (1,2)
+/// let mirror = EuclidLine::new([1, 0, 0]); // Line x = 0 (y-axis)
+/// let reflected_p = reflect(&mirror, &p);
+/// // Reflecting (1,2) across x=0 should give (-1,2)
+/// assert_eq!(reflected_p, EuclidPoint::new([-1, 2, 1]));
+///
+/// let p2 = EuclidPoint::new([3, 3, 1]); // Point (3,3)
+/// let mirror2 = EuclidLine::new([0, 1, -2]); // Line y = 2
+/// let reflected_p2 = reflect(&mirror2, &p2);
+/// // Reflecting (3,3) across y=2 should give (3,1)
+/// assert_eq!(reflected_p2, EuclidPoint::new([3, 1, 1]));
+/// ```
 #[allow(dead_code)]
 #[inline]
 pub fn reflect<Point, Line, Value>(mirror: &Line, pt_p: &Point) -> Point

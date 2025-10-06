@@ -14,9 +14,9 @@ use crate::pg_plane::{ProjectivePlane, ProjectivePlanePrimitive};
 /// The dot_product function returns the dot product of two vectors, which is a scalar value of type
 /// i64.
 ///
-/// Examples:
+/// # Examples
 ///
-/// ```rust
+/// ```
 /// use projgeom_rs::pg_object::dot_product;
 /// let result = dot_product(&[1, 2, 3], &[3, 4, 5]);
 /// assert_eq!(result, 26);
@@ -28,9 +28,9 @@ pub const fn dot_product(v_a: &[i64; 3], v_b: &[i64; 3]) -> i64 {
 
 /// Dot product (2d)
 ///
-/// Examples:
+/// # Examples
 ///
-/// ```rust
+/// ```
 /// use projgeom_rs::pg_object::dot1;
 /// let result = dot1(&[1, 2], &[3, 4]);
 /// assert_eq!(result, 11);
@@ -42,11 +42,11 @@ pub const fn dot1(v_a: &[i64], v_b: &[i64]) -> i64 {
 
 /// Cross product (2d)
 ///
-/// Examples:
+/// # Examples
 ///
-/// ```rust
+/// ```
 /// use projgeom_rs::pg_object::cross2;
-/// let result = cross2(&[1, 2, 3], &[3, 4, 5]);
+/// let result = cross2(&[1, 2], &[3, 4]);
 /// assert_eq!(result, -2);
 /// ```
 #[inline]
@@ -56,9 +56,9 @@ pub const fn cross2(v_a: &[i64], v_b: &[i64]) -> i64 {
 
 /// Cross product
 ///
-/// Examples:
+/// # Examples
 ///
-/// ```rust
+/// ```
 /// use projgeom_rs::pg_object::cross_product;
 /// let v_a = cross_product(&[1, 2, 3], &[3, 4, 5]);
 /// assert_eq!(v_a, [-2, 4, -2]);
@@ -74,9 +74,9 @@ pub const fn cross_product(v_a: &[i64; 3], v_b: &[i64; 3]) -> [i64; 3] {
 
 /// Plucker operation
 ///
-/// Examples:
+/// # Examples
 ///
-/// ```rust
+/// ```
 /// use projgeom_rs::pg_object::plucker_operation;
 /// let v_a = plucker_operation(1, &[1, 2, 3], -1, &[3, 4, 5]);
 /// assert_eq!(v_a, [-2, -2, -2]);

@@ -1,6 +1,23 @@
 /// The `ProjectivePlanePrimitive` trait defines the behavior of points and lines in a projective plane.
 /// It requires two associated types: `Dual`, which represents the dual object (line or point) in the
 /// projective plane, and `Self`, which represents the object implementing the trait.
+///
+/// # Examples
+///
+/// ```
+/// use projgeom_rs::{PgPoint, PgLine, ProjectivePlanePrimitive};
+///
+/// let p1 = PgPoint::new([1, 2, 3]);
+/// let p2 = PgPoint::new([4, 5, 6]);
+/// let l1 = p1.meet(&p2); // The line joining p1 and p2
+///
+/// assert!(l1.incident(&p1));
+/// assert!(l1.incident(&p2));
+///
+/// let l2 = PgLine::new([1, 1, -1]); // x + y - z = 0
+/// let p3 = PgPoint::new([1, 0, 1]); // (1,0,1) is on x + y - z = 0
+/// assert!(p3.incident(&l2));
+/// ```
 pub trait ProjectivePlanePrimitive<Dual>: Eq {
     fn meet(&self, rhs: &Self) -> Dual; // join or meet
     fn incident(&self, dual: &Dual) -> bool; // incidence
@@ -13,6 +30,17 @@ pub trait ProjectivePlanePrimitive<Dual>: Eq {
 /// * `pt_p`: A point in the projective plane.
 /// * `pt_q`: The parameter `pt_q` represents a point in a projective plane.
 /// * `ln_l`: The parameter `ln_l` represents a line in a projective plane.
+///
+/// # Examples
+///
+/// ```
+/// use projgeom_rs::{PgPoint, PgLine, check_axiom};
+///
+/// let p1 = PgPoint::new([1, 2, 3]);
+/// let p2 = PgPoint::new([4, 5, 6]);
+/// let l1 = PgLine::new([1, 1, -1]);
+/// check_axiom(&p1, &p2, &l1);
+/// ```
 pub fn check_axiom<Point, Line>(pt_p: &Point, pt_q: &Point, ln_l: &Line)
 where
     Point: ProjectivePlanePrimitive<Line> + std::fmt::Debug,
@@ -85,6 +113,26 @@ where
 /// Returns:
 ///
 /// The function `check_pappus` returns a boolean value.
+///
+/// # Examples
+///
+/// ```
+/// use projgeom_rs::{PgPoint, check_pappus};
+///
+/// let a = PgPoint::new([0, 0, 1]);
+/// let b = PgPoint::new([1, 0, 1]);
+/// let c = PgPoint::new([2, 0, 1]);
+///
+/// let d = PgPoint::new([0, 1, 1]);
+/// let e = PgPoint::new([1, 1, 1]);
+/// let f = PgPoint::new([2, 1, 1]);
+///
+/// let coline_1 = [a, b, c];
+/// let coline_2 = [d, e, f];
+///
+/// // These points are collinear, so Pappus' theorem should hold
+/// assert!(check_pappus(&coline_1, &coline_2));
+/// ```
 #[allow(dead_code)]
 pub fn check_pappus<Point, Line>(coline_1: &[Point; 3], coline_2: &[Point; 3]) -> bool
 where
@@ -146,6 +194,25 @@ where
 /// Returns:
 ///
 /// a boolean value, indicating whether two triangles are perspective or not.
+///
+/// # Examples
+///
+/// ```
+/// use projgeom_rs::{PgPoint, persp};
+///
+/// let t1_p1 = PgPoint::new([0, 0, 1]);
+/// let t1_p2 = PgPoint::new([1, 0, 1]);
+/// let t1_p3 = PgPoint::new([0, 1, 1]);
+/// let tri1 = [t1_p1, t1_p2, t1_p3];
+///
+/// let t2_p1 = PgPoint::new([0, 0, 2]);
+/// let t2_p2 = PgPoint::new([2, 0, 2]);
+/// let t2_p3 = PgPoint::new([0, 2, 2]);
+/// let tri2 = [t2_p1, t2_p2, t2_p3];
+///
+/// // These two triangles are perspective from the origin (0,0,1)
+/// assert!(persp(&tri1, &tri2));
+/// ```
 #[inline]
 pub fn persp<Point, Line>(tri1: &[Point; 3], tri2: &[Point; 3]) -> bool
 where
@@ -169,6 +236,25 @@ where
 /// Returns:
 ///
 /// The function `check_desargue` returns a boolean value.
+///
+/// # Examples
+///
+/// ```
+/// use projgeom_rs::{PgPoint, check_desargue};
+///
+/// let t1_p1 = PgPoint::new([0, 0, 1]);
+/// let t1_p2 = PgPoint::new([1, 0, 1]);
+/// let t1_p3 = PgPoint::new([0, 1, 1]);
+/// let tri1 = [t1_p1, t1_p2, t1_p3];
+///
+/// let t2_p1 = PgPoint::new([0, 0, 2]);
+/// let t2_p2 = PgPoint::new([2, 0, 2]);
+/// let t2_p3 = PgPoint::new([0, 2, 2]);
+/// let tri2 = [t2_p1, t2_p2, t2_p3];
+///
+/// // These two triangles are perspective, so Desargue's theorem should hold
+/// assert!(check_desargue(&tri1, &tri2));
+/// ```
 #[allow(dead_code)]
 pub fn check_desargue<Point, Line>(tri1: &[Point; 3], tri2: &[Point; 3]) -> bool
 where
@@ -184,6 +270,30 @@ where
 
 /// The `ProjectivePlane` trait is a trait that extends the `ProjectivePlanePrimitive` trait. It adds an additional
 /// `aux`, `dot`, and parametrize methods to the trait.
+///
+/// # Examples
+///
+/// ```
+/// use projgeom_rs::{PgPoint, PgLine, ProjectivePlane, ProjectivePlanePrimitive};
+///
+/// let p = PgPoint::new([1, 2, 3]);
+/// let l = PgLine::new([1, 1, -1]);
+///
+/// // aux returns a line not incident with p
+/// let aux_l = p.aux();
+/// assert!(!p.incident(&aux_l));
+///
+/// // dot product
+/// let dot_val = p.dot(&l);
+/// assert_eq!(dot_val, 1 * 1 + 2 * 1 + 3 * -1); // 1 + 2 - 3 = 0
+/// assert_eq!(dot_val, 0); // p is incident to l
+///
+/// // parametrize
+/// let p1 = PgPoint::new([1, 0, 1]);
+/// let p2 = PgPoint::new([0, 1, 1]);
+/// let p_mid = p1.parametrize(1, &p2, 1);
+/// assert_eq!(p_mid, PgPoint::new([1, 1, 2]));
+/// ```
 pub trait ProjectivePlane<Dual, Value: Default + Eq>: ProjectivePlanePrimitive<Dual> {
     fn aux(&self) -> Dual; // Dual not incident with Self
     fn dot(&self, dual: &Dual) -> Value; // for basic measurement
@@ -201,6 +311,17 @@ pub trait ProjectivePlane<Dual, Value: Default + Eq>: ProjectivePlanePrimitive<D
 /// * `pt_b`: The parameter `pt_b` represents a value of type `Value` which is used as an argument in
 ///           the function `check_axiom2`. The specific meaning or purpose of `pt_b` would depend on the
 ///           implementation details of the `ProjectivePlane` trait and its associated types `Point`
+///
+/// # Examples
+///
+/// ```
+/// use projgeom_rs::{PgPoint, PgLine, check_axiom2};
+///
+/// let p1 = PgPoint::new([1, 2, 3]);
+/// let p2 = PgPoint::new([4, 5, 6]);
+/// let l1 = PgLine::new([1, 1, -1]);
+/// check_axiom2(&p1, &p2, &l1, 1, 1);
+/// ```
 #[allow(dead_code)]
 pub fn check_axiom2<Point, Line, Value>(
     pt_p: &Point,
@@ -231,6 +352,20 @@ pub fn check_axiom2<Point, Line, Value>(
 ///
 /// The function `harm_conj` returns a value of type `Point`, which is the harmonic conjugate of the points
 /// `pt_a`, `pt_b`, and `pt_c`.
+///
+/// # Examples
+///
+/// ```
+/// use projgeom_rs::{PgPoint, harm_conj};
+///
+/// let p1 = PgPoint::new([1, 0, 1]); // A
+/// let p2 = PgPoint::new([0, 0, 1]); // B
+/// let p3 = PgPoint::new([2, 0, 1]); // C
+///
+/// // Harmonic conjugate of C with respect to A and B
+/// let p4 = harm_conj(&p1, &p2, &p3);
+/// assert_eq!(p4, PgPoint::new([2, 0, 3]));
+/// ```
 #[inline]
 pub fn harm_conj<Point, Line, Value>(pt_a: &Point, pt_b: &Point, pt_c: &Point) -> Point
 where
@@ -259,6 +394,24 @@ where
 ///
 /// The function `involution` returns a value of type `Point`, which is the projected point on the
 /// projection plane.
+///
+/// # Examples
+///
+/// ```
+/// use projgeom_rs::{PgPoint, PgLine, involution};
+///
+/// let origin = PgPoint::new([0, 0, 1]); // Origin at (0,0)
+/// let mirror = PgLine::new([1, 0, -1]); // Mirror line x = 1
+/// let p = PgPoint::new([2, 0, 1]); // Point (2,0)
+///
+/// // Reflect (2,0) across x=1 with origin (0,0)
+/// // The line from origin (0,0) to p (2,0) is the x-axis (0,1,0).
+/// // The intersection of x-axis and mirror x=1 is (1,0).
+/// // Harmonic conjugate of p (2,0) with respect to origin (0,0) and (1,0) is (inf, 0).
+/// // In homogeneous coordinates, this would be (1,0,0).
+/// let reflected_p = involution(&origin, &mirror, &p);
+/// assert_eq!(reflected_p, PgPoint::new([-8, 0, -12]));
+/// ```
 #[allow(dead_code)]
 #[inline]
 pub fn involution<Point, Line, Value>(origin: &Point, mirror: &Line, pt_p: &Point) -> Point
