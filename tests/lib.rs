@@ -344,7 +344,7 @@ mod pg_object_tests {
         let l = PgLine::new([1, 1, 0]); // Line x + y = 0 in Euclidean plane
 
         // Point (1,1) is not on line x+y=0
-        assert_ne!(p.incident(&l), true);
+        assert!(!p.incident(&l));
 
         let p_on_l = PgPoint::new([1, -1, 1]); // Point (1,-1) on line x+y=0
         assert!(p_on_l.incident(&l));
@@ -357,7 +357,7 @@ mod pg_object_tests {
     fn test_pg_line_incident() {
         let l_not_incident = PgLine::new([1, 0, 0]); // Line x=0
         let p_not_incident = PgPoint::new([1, 1, 1]); // Point (1,1)
-        assert_ne!(l_not_incident.incident(&p_not_incident), true);
+        assert!(!l_not_incident.incident(&p_not_incident));
 
         let l_on_p = PgLine::new([1, 1, -2]); // Line x+y-2=0, passes through (1,1)
         let p = PgPoint::new([1, 1, 1]); // Point (1,1)
