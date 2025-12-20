@@ -7,7 +7,7 @@ use crate::pg_plane::{ProjectivePlane, ProjectivePlanePrimitive};
 ///
 /// # Examples
 ///
-/// ```
+/// ```text
 /// // This example would require concrete implementations of Point and Line
 /// // For instance, if you have `EuclidPoint` and `EuclidLine` that implement
 /// // `CayleyKleinPlanePrimitive`:

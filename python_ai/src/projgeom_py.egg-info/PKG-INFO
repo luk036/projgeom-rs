@@ -1,0 +1,152 @@
+Metadata-Version: 2.4
+Name: projgeom-py
+Version: 0.1.3
+Summary: Projective Geometry in Python
+Author-email: Converted from Rust <converted@example.com>
+License: MIT
+Keywords: geometry,projective,mathematics
+Classifier: Development Status :: 3 - Alpha
+Classifier: Intended Audience :: Science/Research
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Topic :: Scientific/Engineering :: Mathematics
+Requires-Python: >=3.12
+Description-Content-Type: text/markdown
+Provides-Extra: dev
+Requires-Dist: pytest>=7.0.0; extra == "dev"
+Requires-Dist: pytest-quickcheck>=0.9.0; extra == "dev"
+Requires-Dist: black>=22.0.0; extra == "dev"
+Requires-Dist: mypy>=1.0.0; extra == "dev"
+Requires-Dist: ruff>=0.0.287; extra == "dev"
+
+# 🔯 projgeom-py
+
+Projective Geometry in Python
+
+This is a Python conversion of the original Rust [projgeom-rs](https://github.com/luk036/projgeom-rs) library.
+
+## 🛠️ Installation
+
+### 📦 pip
+
+```bash
+pip install projgeom-py
+```
+
+### 📦 Development Installation
+
+```bash
+git clone https://github.com/luk036/projgeom-rs.git
+cd projgeom-rs/python_ai
+pip install -e ".[dev]"
+```
+
+## 📜 Usage
+
+### Basic Projective Geometry
+
+```python
+from projgeom import PgPoint, PgLine
+
+# Create points and lines
+p1 = PgPoint([1, 2, 3])
+p2 = PgPoint([4, 5, 6])
+l1 = PgLine([1, 1, -1])
+
+# Check incidence
+assert p1.incident(l1) == l1.incident(p1)
+
+# Join two points to get a line
+line = p1.meet(p2)
+assert line.incident(p1) and line.incident(p2)
+
+# Parametrize between points
+mid = p1.parametrize(1, p2, 1)
+```
+
+### Euclidean Geometry
+
+```python
+from projgeom import EuclidPoint, EuclidLine
+
+# Create Euclidean objects
+p = EuclidPoint([1, 2, 1])  # Point (1,2)
+l = EuclidLine([1, 0, -1])  # Line x = 1
+
+# Check parallelism and perpendicularity
+l1 = EuclidLine([1, 0, -1])  # x = 1
+l2 = EuclidLine([2, 0, -5])  # x = 2.5 (parallel to l1)
+assert l1.is_parallel(l2)
+
+l3 = EuclidLine([0, 1, -1])  # y = 1
+assert l1.is_perpendicular(l3)
+
+# Calculate midpoint
+p1 = EuclidPoint([0, 0, 1])
+p2 = EuclidPoint([2, 4, 1])
+mid = p1.midpoint(p2)  # (1,2)
+```
+
+### Cayley-Klein Geometries
+
+```python
+from projgeom import (
+    HyperbolicPoint, HyperbolicLine,
+    EllipticPoint, EllipticLine,
+    orthocenter, altitude, reflect
+)
+
+# Create a triangle
+a = HyperbolicPoint([13, 23, 32])
+b = HyperbolicPoint([44, -34, 2])
+c = HyperbolicPoint([-2, 12, 23])
+triangle = [a, b, c]
+
+# Calculate orthocenter
+h = orthocenter(triangle)
+
+# Calculate altitude
+alt = altitude(a, b.meet(c))
+
+# Reflect a point
+mirror = HyperbolicLine([1, 0, -1])
+reflected = reflect(mirror, a)
+```
+
+## 📜 License
+
+Licensed under either of
+
+- Apache License, Version 2.0
+  ([LICENSE-APACHE](LICENSE-APACHE) or http://www.apache.org/licenses/LICENSE-2.0)
+- MIT license
+  ([LICENSE-MIT](LICENSE-MIT) or http://opensource.org/licenses/MIT)
+
+at your option.
+
+## 🤝 Contribution
+
+Unless you explicitly state otherwise, any contribution intentionally submitted
+for inclusion in the work by you, as defined in the Apache-2.0 license, shall be
+dual licensed as above, without any additional terms or conditions.
+
+## 🧪 Testing
+
+```bash
+# Run all tests
+pytest
+
+# Run tests with coverage
+pytest --cov=projgeom
+
+# Run type checking
+mypy src/projgeom
+
+# Run linting
+ruff check src/projgeom
+```
