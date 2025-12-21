@@ -26,12 +26,12 @@ constexpr bool coincident(
     const PgPoint<Scalar>& pt_p,
     const PgPoint<Scalar>& pt_q,
     const PgPoint<Scalar>& pt_r) noexcept {
-    const auto& a = pt_p.coord;
-    const auto& b = pt_q.coord;
-    const auto& c = pt_r.coord;
+    const auto& coord_a = pt_p.coord;
+    const auto& coord_b = pt_q.coord;
+    const auto& coord_c = pt_r.coord;
     
-    const auto cross_ab = cross_product(a, b);
-    return dot_product(cross_ab, c) == 0;
+    const auto cross_ab = cross_product(coord_a, coord_b);
+    return dot_product(cross_ab, coord_c) == 0;
 }
 
 template<SignedIntegral Scalar = int64_t>
@@ -39,12 +39,12 @@ constexpr bool coincident(
     const PgLine<Scalar>& ln_l,
     const PgLine<Scalar>& ln_m,
     const PgLine<Scalar>& ln_n) noexcept {
-    const auto& a = ln_l.coord;
-    const auto& b = ln_m.coord;
-    const auto& c = ln_n.coord;
+    const auto& coord_a = ln_l.coord;
+    const auto& coord_b = ln_m.coord;
+    const auto& coord_c = ln_n.coord;
     
-    const auto cross_ab = cross_product(a, b);
-    return dot_product(cross_ab, c) == 0;
+    const auto cross_ab = cross_product(coord_a, coord_b);
+    return dot_product(cross_ab, coord_c) == 0;
 }
 
 template<SignedIntegral Scalar = int64_t>
@@ -52,18 +52,18 @@ constexpr PgPoint<Scalar> harm_conj(
     const PgPoint<Scalar>& pt_p,
     const PgPoint<Scalar>& pt_q,
     const PgPoint<Scalar>& pt_r) noexcept {
-    const auto& a = pt_p.coord;
-    const auto& b = pt_q.coord;
-    const auto& c = pt_r.coord;
+    const auto& coord_a = pt_p.coord;
+    const auto& coord_b = pt_q.coord;
+    const auto& coord_c = pt_r.coord;
     
-    const auto dot_ab = dot_product(a, b);
-    const auto dot_ac = dot_product(a, c);
-    const auto dot_bc = dot_product(b, c);
+    const auto dot_ab = dot_product(coord_a, coord_b);
+    const auto dot_ac = dot_product(coord_a, coord_c);
+    const auto dot_bc = dot_product(coord_b, coord_c);
     
     const Scalar lambda = 2 * dot_bc * dot_ab - dot_ac * dot_ab;
     const Scalar mu = 2 * dot_ac * dot_ab - dot_bc * dot_ab;
     
-    return PgPoint<Scalar>(plucker_operation(lambda, a, mu, b));
+    return PgPoint<Scalar>(plucker_operation(lambda, coord_a, mu, coord_b));
 }
 
 template<SignedIntegral Scalar = int64_t>
@@ -71,18 +71,18 @@ constexpr PgLine<Scalar> harm_conj(
     const PgLine<Scalar>& ln_l,
     const PgLine<Scalar>& ln_m,
     const PgLine<Scalar>& ln_n) noexcept {
-    const auto& a = ln_l.coord;
-    const auto& b = ln_m.coord;
-    const auto& c = ln_n.coord;
+    const auto& coord_a = ln_l.coord;
+    const auto& coord_b = ln_m.coord;
+    const auto& coord_c = ln_n.coord;
     
-    const auto dot_ab = dot_product(a, b);
-    const auto dot_ac = dot_product(a, c);
-    const auto dot_bc = dot_product(b, c);
+    const auto dot_ab = dot_product(coord_a, coord_b);
+    const auto dot_ac = dot_product(coord_a, coord_c);
+    const auto dot_bc = dot_product(coord_b, coord_c);
     
     const Scalar lambda = 2 * dot_bc * dot_ab - dot_ac * dot_ab;
     const Scalar mu = 2 * dot_ac * dot_ab - dot_bc * dot_ab;
     
-    return PgLine<Scalar>(plucker_operation(lambda, a, mu, b));
+    return PgLine<Scalar>(plucker_operation(lambda, coord_a, mu, coord_b));
 }
 
 template<SignedIntegral Scalar>

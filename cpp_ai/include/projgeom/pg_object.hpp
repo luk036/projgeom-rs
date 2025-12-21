@@ -55,9 +55,9 @@ struct PgPoint {
     constexpr explicit PgPoint(std::array<Scalar, 3> c) noexcept : coord(std::move(c)) {}
     
     constexpr bool operator==(const PgPoint& other) const noexcept {
-        const auto& a = coord;
-        const auto& b = other.coord;
-        return cross_product(a, b) == std::array<Scalar, 3>{0, 0, 0};
+        const auto& coord_a = coord;
+        const auto& coord_b = other.coord;
+        return cross_product(coord_a, coord_b) == std::array<Scalar, 3>{0, 0, 0};
     }
     
     constexpr bool operator!=(const PgPoint& other) const noexcept {
@@ -81,9 +81,9 @@ struct PgLine {
     constexpr explicit PgLine(std::array<Scalar, 3> c) noexcept : coord(std::move(c)) {}
     
     constexpr bool operator==(const PgLine& other) const noexcept {
-        const auto& a = coord;
-        const auto& b = other.coord;
-        return cross_product(a, b) == std::array<Scalar, 3>{0, 0, 0};
+        const auto& coord_a = coord;
+        const auto& coord_b = other.coord;
+        return cross_product(coord_a, coord_b) == std::array<Scalar, 3>{0, 0, 0};
     }
     
     constexpr bool operator!=(const PgLine& other) const noexcept {

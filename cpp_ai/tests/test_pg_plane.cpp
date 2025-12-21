@@ -4,23 +4,23 @@
 TEST_SUITE("pg_plane") {
     TEST_CASE("PgPoint incident") {
         SUBCASE("Point not on line") {
-            projgeom::PgPoint p({1, 1, 1}); // Point (1,1) in Euclidean plane
-            projgeom::PgLine l({1, 1, 0}); // Line x + y = 0 in Euclidean plane
+            projgeom::PgPoint point({1, 1, 1}); // Point (1,1) in Euclidean plane
+            projgeom::PgLine line({1, 1, 0}); // Line x + y = 0 in Euclidean plane
             
             // Point (1,1) is not on line x+y=0
-            CHECK(!p.incident(l));
+            CHECK(!point.incident(line));
         }
         
         SUBCASE("Point on line") {
             projgeom::PgPoint p_on_l({1, -1, 1}); // Point (1,-1) on line x+y=0
-            projgeom::PgLine l({1, 1, 0}); // Line x+y=0
+            projgeom::PgLine line({1, 1, 0}); // Line x+y=0
             
-            CHECK(p_on_l.incident(l));
+            CHECK(p_on_l.incident(line));
             
-            projgeom::PgPoint p({1, 1, 1}); // Point (1,1)
+            projgeom::PgPoint point({1, 1, 1}); // Point (1,1)
             projgeom::PgLine l_through_p({1, -1, 0}); // Line x-y=0, passes through (1,1)
             
-            CHECK(p.incident(l_through_p));
+            CHECK(point.incident(l_through_p));
         }
     }
     
@@ -69,18 +69,18 @@ TEST_SUITE("pg_plane") {
     
     TEST_CASE("PgLine meet") {
         SUBCASE("Meet of two lines at origin") {
-            projgeom::PgLine l1({1, 0, 0}); // Line x=0 (y-axis)
-            projgeom::PgLine l2({0, 1, 0}); // Line y=0 (x-axis)
+            projgeom::PgLine line1({1, 0, 0}); // Line x=0 (y-axis)
+            projgeom::PgLine line2({0, 1, 0}); // Line y=0 (x-axis)
             projgeom::PgPoint origin({0, 0, 1}); // Origin (0,0)
             
             // Meet of two lines is their intersection point
-            CHECK(l1.meet(l2) == origin);
+            CHECK(line1.meet(line2) == origin);
         }
         
         SUBCASE("Meet of two Euclidean lines") {
-            projgeom::PgLine l3({1, -1, 0}); // Line x - y = 0
-            projgeom::PgLine l4({1, 1, -2}); // Line x + y - 2 = 0
-            projgeom::PgPoint intersection_point = l3.meet(l4);
+            projgeom::PgLine line3({1, -1, 0}); // Line x - y = 0
+            projgeom::PgLine line4({1, 1, -2}); // Line x + y - 2 = 0
+            projgeom::PgPoint intersection_point = line3.meet(line4);
             
             // Intersection of x-y=0 and x+y-2=0 is (1,1)
             // cross_product([1,-1,0], [1,1,-2]) = [(-1)*(-2) - 0*1, 0*1 - 1*(-2), 1*1 - (-1)*1] = [2, 2, 2]
@@ -110,22 +110,22 @@ TEST_SUITE("pg_plane") {
     }
     
     TEST_CASE("PgLine parametrize") {
-        projgeom::PgLine l1({1, 0, 0});
-        projgeom::PgLine l2({0, 1, 0});
+        projgeom::PgLine line1({1, 0, 0});
+        projgeom::PgLine line2({0, 1, 0});
         
         SUBCASE("Parametrize with lambda=1, mu=1") {
-            projgeom::PgLine l_mid = l1.parametrize(1, l2, 1);
+            projgeom::PgLine l_mid = line1.parametrize(1, line2, 1);
             CHECK(l_mid == projgeom::PgLine({1, 1, 0}));
         }
         
         SUBCASE("Parametrize with lambda=2, mu=1") {
-            projgeom::PgLine l_weighted = l1.parametrize(2, l2, 1);
+            projgeom::PgLine l_weighted = line1.parametrize(2, line2, 1);
             CHECK(l_weighted == projgeom::PgLine({2, 1, 0}));
         }
         
         SUBCASE("Parametrize with lambda=0, mu=1") {
-            projgeom::PgLine l_only_l2 = l1.parametrize(0, l2, 1);
-            CHECK(l_only_l2 == l2);
+            projgeom::PgLine l_only_line2 = line1.parametrize(0, line2, 1);
+            CHECK(l_only_line2 == line2);
         }
     }
     
@@ -153,22 +153,22 @@ TEST_SUITE("pg_plane") {
         projgeom::PgPoint p3({1, 1, 2});
         
         SUBCASE("Harmonic conjugate of points") {
-            projgeom::PgPoint h = projgeom::harm_conj(p1, p2, p3);
-            projgeom::PgPoint p3_again = projgeom::harm_conj(p1, p2, h);
+            projgeom::PgPoint harmonic = projgeom::harm_conj(p1, p2, p3);
+            projgeom::PgPoint p3_again = projgeom::harm_conj(p1, p2, harmonic);
             
             // Should get back original point
             CHECK(p3 == p3_again);
         }
         
         SUBCASE("Harmonic conjugate of lines") {
-            projgeom::PgLine l1({1, 0, 1});
-            projgeom::PgLine l2({0, 1, 1});
-            projgeom::PgLine l3({1, 1, 2});
+            projgeom::PgLine line1({1, 0, 1});
+            projgeom::PgLine line2({0, 1, 1});
+            projgeom::PgLine line3({1, 1, 2});
             
-            projgeom::PgLine h = projgeom::harm_conj(l1, l2, l3);
-            projgeom::PgLine l3_again = projgeom::harm_conj(l1, l2, h);
+            projgeom::PgLine harmonic = projgeom::harm_conj(line1, line2, line3);
+            projgeom::PgLine line3_again = projgeom::harm_conj(line1, line2, harmonic);
             
-            CHECK(l3 == l3_again);
+            CHECK(line3 == line3_again);
         }
     }
 }
