@@ -7,7 +7,7 @@ use crate::pg_plane::{ProjectivePlane, ProjectivePlanePrimitive};
 ///
 /// * `v_a`: An array of three i64 values representing the first vector.
 /// * `v_b`: The parameter `v_b` is a reference to an array of `i64` integers with a length of 3. It
-///          represents a vector in .
+///   represents a vector in .
 ///
 /// Returns:
 ///
@@ -22,8 +22,8 @@ use crate::pg_plane::{ProjectivePlane, ProjectivePlanePrimitive};
 /// assert_eq!(result, 26);
 /// ```
 #[inline]
-pub const fn dot_product(v_a: &[i64; 3], v_b: &[i64; 3]) -> i64 {
-    v_a[0] * v_b[0] + v_a[1] * v_b[1] + v_a[2] * v_b[2]
+pub const fn dot_product(vec_a: &[i64; 3], vec_b: &[i64; 3]) -> i64 {
+    vec_a[0] * vec_b[0] + vec_a[1] * vec_b[1] + vec_a[2] * vec_b[2]
 }
 
 /// Dot product (2d)
@@ -36,8 +36,8 @@ pub const fn dot_product(v_a: &[i64; 3], v_b: &[i64; 3]) -> i64 {
 /// assert_eq!(result, 11);
 /// ```
 #[inline]
-pub const fn dot1(v_a: &[i64], v_b: &[i64]) -> i64 {
-    v_a[0] * v_b[0] + v_a[1] * v_b[1]
+pub const fn dot1(vec_a: &[i64], vec_b: &[i64]) -> i64 {
+    vec_a[0] * vec_b[0] + vec_a[1] * vec_b[1]
 }
 
 /// Cross product (2d)
@@ -50,8 +50,8 @@ pub const fn dot1(v_a: &[i64], v_b: &[i64]) -> i64 {
 /// assert_eq!(result, -2);
 /// ```
 #[inline]
-pub const fn cross2(v_a: &[i64], v_b: &[i64]) -> i64 {
-    v_a[0] * v_b[1] - v_a[1] * v_b[0]
+pub const fn cross2(vec_a: &[i64], vec_b: &[i64]) -> i64 {
+    vec_a[0] * vec_b[1] - vec_a[1] * vec_b[0]
 }
 
 /// Cross product
@@ -64,11 +64,11 @@ pub const fn cross2(v_a: &[i64], v_b: &[i64]) -> i64 {
 /// assert_eq!(v_a, [-2, 4, -2]);
 /// ```
 #[inline]
-pub const fn cross_product(v_a: &[i64; 3], v_b: &[i64; 3]) -> [i64; 3] {
+pub const fn cross_product(vec_a: &[i64; 3], vec_b: &[i64; 3]) -> [i64; 3] {
     [
-        v_a[1] * v_b[2] - v_a[2] * v_b[1],
-        v_a[2] * v_b[0] - v_a[0] * v_b[2],
-        v_a[0] * v_b[1] - v_a[1] * v_b[0],
+        vec_a[1] * vec_b[2] - vec_a[2] * vec_b[1],
+        vec_a[2] * vec_b[0] - vec_a[0] * vec_b[2],
+        vec_a[0] * vec_b[1] - vec_a[1] * vec_b[0],
     ]
 }
 
@@ -84,14 +84,14 @@ pub const fn cross_product(v_a: &[i64; 3], v_b: &[i64; 3]) -> [i64; 3] {
 #[inline]
 pub const fn plucker_operation(
     lambda_a: i64,
-    v_a: &[i64; 3],
+    vec_a: &[i64; 3],
     mu_b: i64,
-    v_b: &[i64; 3],
+    vec_b: &[i64; 3],
 ) -> [i64; 3] {
     [
-        lambda_a * v_a[0] + mu_b * v_b[0],
-        lambda_a * v_a[1] + mu_b * v_b[1],
-        lambda_a * v_a[2] + mu_b * v_b[2],
+        lambda_a * vec_a[0] + mu_b * vec_b[0],
+        lambda_a * vec_a[1] + mu_b * vec_b[1],
+        lambda_a * vec_a[2] + mu_b * vec_b[2],
     ]
 }
 
@@ -138,8 +138,13 @@ macro_rules! define_line_for_point {
             } // basic measurement
 
             #[inline]
-            fn parametrize(&self, lambda: i64, pt_q: &Self, mu: i64) -> Self {
-                Self::new(plucker_operation(lambda, &self.coord, mu, &pt_q.coord))
+            fn parametrize(&self, lambda_val: i64, point_q: &Self, mu_val: i64) -> Self {
+                Self::new(plucker_operation(
+                    lambda_val,
+                    &self.coord,
+                    mu_val,
+                    &point_q.coord,
+                ))
             }
         }
 

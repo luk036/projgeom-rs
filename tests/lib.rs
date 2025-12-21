@@ -9,85 +9,85 @@ fn it_works() {
     let result = gcd(4, -6);
     assert_eq!(result, 2);
 
-    let f = Fraction::new(30, -40);
-    assert_eq!(f, Fraction::new(-3, 4));
+    let frac_f = Fraction::new(30, -40);
+    assert_eq!(frac_f, Fraction::new(-3, 4));
 
-    let h = Fraction::from(30);
-    assert_eq!(h, Fraction::new(30, 1));
+    let frac_h = Fraction::from(30);
+    assert_eq!(frac_h, Fraction::new(30, 1));
 
-    let g = Fraction::<i32>::default();
-    assert_eq!(g, Fraction::new(0, 1));
+    let frac_g = Fraction::<i32>::default();
+    assert_eq!(frac_g, Fraction::new(0, 1));
 }
 
 #[test]
 fn test_cross() {
-    let f = Fraction::new(30, 40);
-    let h = Fraction::from(3);
-    let result = Fraction::cross(&f, &h);
+    let frac_f = Fraction::new(30, 40);
+    let frac_h = Fraction::from(3);
+    let result = Fraction::cross(&frac_f, &frac_h);
     assert_eq!(result, -9);
-    assert_eq!(h, 3);
+    assert_eq!(frac_h, 3);
     // assert_eq!(result, 30);
 }
 
 #[test]
 fn test_ordering() {
-    let f = Fraction::new(3, 4);
-    assert!(f != 1i32);
-    assert!(1i32 != f);
-    assert!(f < 1i32);
-    assert!(1i32 > f);
+    let frac_f = Fraction::new(3, 4);
+    assert!(frac_f != 1i32);
+    assert!(1i32 != frac_f);
+    assert!(frac_f < 1i32);
+    assert!(1i32 > frac_f);
     // assert_eq!(result, 30);
 }
 
 #[test]
 fn test_mul_div_assign() {
-    let mut f = Fraction::new(3, 4);
-    let g = Fraction::new(5, 6);
-    f *= g;
-    assert_eq!(f, Fraction::new(5, 8));
-    f /= g;
-    assert_eq!(f, Fraction::new(3, 4));
-    f *= 2;
-    assert_eq!(f, Fraction::new(3, 2));
-    f /= 2;
-    assert_eq!(f, Fraction::new(3, 4));
-    f /= 0;
-    assert_eq!(f, Fraction::new(1, 0));
-    assert_eq!(-g, Fraction::new(-5, 6));
+    let mut frac_f = Fraction::new(3, 4);
+    let frac_g = Fraction::new(5, 6);
+    frac_f *= frac_g;
+    assert_eq!(frac_f, Fraction::new(5, 8));
+    frac_f /= frac_g;
+    assert_eq!(frac_f, Fraction::new(3, 4));
+    frac_f *= 2;
+    assert_eq!(frac_f, Fraction::new(3, 2));
+    frac_f /= 2;
+    assert_eq!(frac_f, Fraction::new(3, 4));
+    frac_f /= 0;
+    assert_eq!(frac_f, Fraction::new(1, 0));
+    assert_eq!(-frac_g, Fraction::new(-5, 6));
 }
 
 #[test]
 fn test_add_sub_assign() {
-    let mut f = Fraction::new(3, 4);
-    let g = Fraction::new(5, 6);
-    f -= g;
-    assert_eq!(f, Fraction::new(-1, 12));
-    f += g;
-    assert_eq!(f, Fraction::new(3, 4));
-    f -= 2;
-    assert_eq!(f, Fraction::new(-5, 4));
-    f += 2;
-    assert_eq!(f, Fraction::new(3, 4));
+    let mut frac_f = Fraction::new(3, 4);
+    let frac_g = Fraction::new(5, 6);
+    frac_f -= frac_g;
+    assert_eq!(frac_f, Fraction::new(-1, 12));
+    frac_f += frac_g;
+    assert_eq!(frac_f, Fraction::new(3, 4));
+    frac_f -= 2;
+    assert_eq!(frac_f, Fraction::new(-5, 4));
+    frac_f += 2;
+    assert_eq!(frac_f, Fraction::new(3, 4));
 }
 
 #[test]
 fn test_mul_div() {
-    let f = Fraction::new(3, 4);
-    let g = Fraction::new(5, 6);
-    assert_eq!(f * g, Fraction::new(5, 8));
-    assert_eq!(f / g, Fraction::new(9, 10));
-    assert_eq!(f * 2, Fraction::new(3, 2));
-    assert_eq!(f / 2, Fraction::new(3, 8));
+    let frac_f = Fraction::new(3, 4);
+    let frac_g = Fraction::new(5, 6);
+    assert_eq!(frac_f * frac_g, Fraction::new(5, 8));
+    assert_eq!(frac_f / frac_g, Fraction::new(9, 10));
+    assert_eq!(frac_f * 2, Fraction::new(3, 2));
+    assert_eq!(frac_f / 2, Fraction::new(3, 8));
 }
 
 #[test]
 fn test_add_sub() {
-    let f = Fraction::new(3, 4);
-    let g = Fraction::new(5, 6);
-    assert_eq!(f - g, Fraction::new(-1, 12));
-    assert_eq!(f + g, Fraction::new(19, 12));
-    assert_eq!(f - 2, Fraction::new(-5, 4));
-    assert_eq!(f + 2, Fraction::new(11, 4));
+    let frac_f = Fraction::new(3, 4);
+    let frac_g = Fraction::new(5, 6);
+    assert_eq!(frac_f - frac_g, Fraction::new(-1, 12));
+    assert_eq!(frac_f + frac_g, Fraction::new(19, 12));
+    assert_eq!(frac_f - 2, Fraction::new(-5, 4));
+    assert_eq!(frac_f + 2, Fraction::new(11, 4));
 }
 
 #[test]
@@ -124,11 +124,11 @@ where
     assert_eq!(ln_l, pt_q.meet(&pt_p));
     assert!(ln_l.incident(&pt_p));
     assert!(ln_l.incident(&pt_q));
-    let pq = Point::parametrize(&pt_p, 2, &pt_q, 3);
-    assert!(coincident(&pt_p, &pt_q, &pq));
+    let point_pq = Point::parametrize(&pt_p, 2, &pt_q, 3);
+    assert!(coincident(&pt_p, &pt_q, &point_pq));
 
-    let h = harm_conj(&pt_p, &pt_q, &pq);
-    assert_eq!(harm_conj(&pt_p, &pt_q, &h), pq);
+    let harm_h = harm_conj(&pt_p, &pt_q, &point_pq);
+    assert_eq!(harm_conj(&pt_p, &pt_q, &harm_h), point_pq);
 }
 
 #[test]
@@ -308,14 +308,14 @@ mod pg_object_tests {
 
     #[test]
     fn test_pg_point_new() {
-        let p = PgPoint::new([1, 2, 3]);
-        assert_eq!(p.coord, [1, 2, 3]);
+        let point_p = PgPoint::new([1, 2, 3]);
+        assert_eq!(point_p.coord, [1, 2, 3]);
     }
 
     #[test]
     fn test_pg_line_new() {
-        let l = PgLine::new([1, 2, 3]);
-        assert_eq!(l.coord, [1, 2, 3]);
+        let line_l = PgLine::new([1, 2, 3]);
+        assert_eq!(line_l.coord, [1, 2, 3]);
     }
 
     #[test]
@@ -340,17 +340,17 @@ mod pg_object_tests {
 
     #[test]
     fn test_pg_point_incident() {
-        let p = PgPoint::new([1, 1, 1]); // Point (1,1) in Euclidean plane
-        let l = PgLine::new([1, 1, 0]); // Line x + y = 0 in Euclidean plane
+        let point_p = PgPoint::new([1, 1, 1]); // Point (1,1) in Euclidean plane
+        let line_l = PgLine::new([1, 1, 0]); // Line x + y = 0 in Euclidean plane
 
         // Point (1,1) is not on line x+y=0
-        assert!(!p.incident(&l));
+        assert!(!point_p.incident(&line_l));
 
         let p_on_l = PgPoint::new([1, -1, 1]); // Point (1,-1) on line x+y=0
-        assert!(p_on_l.incident(&l));
+        assert!(p_on_l.incident(&line_l));
 
         let l_through_p = PgLine::new([1, -1, 0]); // Line x-y=0, passes through (1,1)
-        assert!(p.incident(&l_through_p));
+        assert!(point_p.incident(&l_through_p));
     }
 
     #[test]
@@ -360,12 +360,12 @@ mod pg_object_tests {
         assert!(!l_not_incident.incident(&p_not_incident));
 
         let l_on_p = PgLine::new([1, 1, -2]); // Line x+y-2=0, passes through (1,1)
-        let p = PgPoint::new([1, 1, 1]); // Point (1,1)
-        assert!(l_on_p.incident(&p));
+        let point_p = PgPoint::new([1, 1, 1]); // Point (1,1)
+        assert!(l_on_p.incident(&point_p));
 
-        let l = PgLine::new([1, -1, 0]); // Line x-y=0
+        let line_l = PgLine::new([1, -1, 0]); // Line x-y=0
         let p_on_l = PgPoint::new([1, 1, 1]); // Point (1,1)
-        assert!(l.incident(&p_on_l));
+        assert!(line_l.incident(&p_on_l));
     }
 
     #[test]

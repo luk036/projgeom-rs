@@ -142,7 +142,7 @@ impl EuclidPoint {
 /// Arguments:
 ///
 /// * `triangle`: The `triangle` parameter is an array of `EuclidPoint` structs representing the three vertices of
-///               a triangle.
+///   a triangle.
 ///
 /// Returns:
 ///

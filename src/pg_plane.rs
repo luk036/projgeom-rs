@@ -107,8 +107,8 @@ where
 ///
 /// * `coline_1`: The parameter `coline_1` is an array of length 3 containing elements of type `Point`.
 /// * `coline_2`: The `coline_2` parameter is an array of three points `[pt_d, pt_e, pt_f]` in a projective plane. Each
-///               point is represented by a type `Point` that implements the `ProjectivePlanePrimitive<Line>` trait, and `Line` is a type
-///               that implements the `ProjectivePlane
+///   point is represented by a type `Point` that implements the `ProjectivePlanePrimitive<Line>` trait, and `Line` is a type
+///   that implements the `ProjectivePlane
 ///
 /// Returns:
 ///
@@ -297,7 +297,7 @@ where
 pub trait ProjectivePlane<Dual, Value: Default + Eq>: ProjectivePlanePrimitive<Dual> {
     fn aux(&self) -> Dual; // Dual not incident with Self
     fn dot(&self, dual: &Dual) -> Value; // for basic measurement
-    fn parametrize(&self, lambda: Value, other: &Self, mu: Value) -> Self;
+    fn parametrize(&self, lambda_val: Value, other: &Self, mu_val: Value) -> Self;
 }
 
 /// The function `check_axiom2` checks if certain axioms hold true in a projective plane.
@@ -309,8 +309,8 @@ pub trait ProjectivePlane<Dual, Value: Default + Eq>: ProjectivePlanePrimitive<D
 /// * `ln_l`: The parameter `ln_l` represents a line in a projective plane.
 /// * `pt_a`: The parameter `pt_a` represents a point in the projective plane.
 /// * `pt_b`: The parameter `pt_b` represents a value of type `Value` which is used as an argument in
-///           the function `check_axiom2`. The specific meaning or purpose of `pt_b` would depend on the
-///           implementation details of the `ProjectivePlane` trait and its associated types `Point`
+///   the function `check_axiom2`. The specific meaning or purpose of `pt_b` would depend on the
+///   implementation details of the `ProjectivePlane` trait and its associated types `Point`
 ///
 /// # Examples
 ///
@@ -386,8 +386,8 @@ where
 ///
 /// * `origin`: The `origin` parameter represents the origin point in the projective plane.
 /// * `mirror`: The `mirror` parameter represents a mirror line or mirror plane in a projective
-///             geometry. It is used to perform an involution transformation on a point `pt_p` with respect to an
-///             origin point `origin`.
+///   geometry. It is used to perform an involution transformation on a point `pt_p` with respect to an
+///   origin point `origin`.
 /// * `pt_p`: The parameter `pt_p` represents a point in the projective plane.
 ///
 /// Returns:

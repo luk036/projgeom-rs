@@ -30,7 +30,7 @@ pub trait CayleyKleinPlanePrimitive<Dual>: ProjectivePlanePrimitive<Dual> {
 ///
 /// * `m_1`: A reference to an object of type Line, which represents a line or a plane in a geometric space.
 /// * `m_2`: m_2 is a reference to an object of type Line, which is a generic type parameter. The specific
-///          type of Line is not specified in the function signature.
+///   type of Line is not specified in the function signature.
 ///
 /// Returns:
 ///
@@ -50,12 +50,12 @@ pub trait CayleyKleinPlanePrimitive<Dual>: ProjectivePlanePrimitive<Dual> {
 /// ```
 #[allow(dead_code)]
 #[inline]
-pub fn is_perpendicular<Point, Line>(m_1: &Line, m_2: &Line) -> bool
+pub fn is_perpendicular<Point, Line>(line_1: &Line, line_2: &Line) -> bool
 where
     Point: CayleyKleinPlanePrimitive<Line>,
     Line: CayleyKleinPlanePrimitive<Point>,
 {
-    m_1.perp().incident(m_2)
+    line_1.perp().incident(line_2)
 }
 
 /// The `altitude` function calculates the altitude of a point `pt_p` with respect to a line `ln_m`.
@@ -84,12 +84,12 @@ where
 /// ```
 #[allow(dead_code)]
 #[inline]
-pub fn altitude<Point, Line>(pt_p: &Point, ln_m: &Line) -> Line
+pub fn altitude<Point, Line>(point_p: &Point, line_m: &Line) -> Line
 where
     Point: CayleyKleinPlanePrimitive<Line>,
     Line: CayleyKleinPlanePrimitive<Point>,
 {
-    ln_m.perp().meet(pt_p)
+    line_m.perp().meet(point_p)
 }
 
 /// The `orthocenter` function calculates the orthocenter of a triangle given its three vertices.
@@ -97,7 +97,7 @@ where
 /// Arguments:
 ///
 /// * `triangle`: The `triangle` parameter is an array of three elements of type `Point`. Each element represents a
-///               point in a triangle.
+///   point in a triangle.
 ///
 /// Returns:
 ///
@@ -213,13 +213,13 @@ pub trait CayleyKleinPlane<Dual, Value: Default + Eq>:
 /// ```
 #[allow(dead_code)]
 #[inline]
-pub fn reflect<Point, Line, Value>(mirror: &Line, pt_p: &Point) -> Point
+pub fn reflect<Point, Line, Value>(mirror: &Line, point_p: &Point) -> Point
 where
     Value: Default + Eq,
     Point: CayleyKleinPlane<Line, Value>,
     Line: CayleyKleinPlane<Point, Value>,
 {
-    involution(&mirror.perp(), mirror, pt_p)
+    involution(&mirror.perp(), mirror, point_p)
 }
 
 /// Macro to implement the `CayleyKleinPlanePrimitive` and `CayleyKleinPlane` traits.
