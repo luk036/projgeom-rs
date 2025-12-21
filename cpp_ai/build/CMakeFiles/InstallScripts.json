@@ -1,0 +1,8 @@
+{
+	"InstallScripts" : 
+	[
+		"/data/data/com.termux/files/home/github/rs/projgeom-rs/cpp_ai/build/cmake_install.cmake",
+		"/data/data/com.termux/files/home/github/rs/projgeom-rs/cpp_ai/build/_deps/doctest-build/cmake_install.cmake"
+	],
+	"Parallel" : false
+}
