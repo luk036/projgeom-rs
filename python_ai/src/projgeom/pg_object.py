@@ -8,7 +8,7 @@ from __future__ import annotations
 
 from typing import TypeVar
 
-T = TypeVar("T", bound=int)
+ValueType = TypeVar("ValueType", bound=int)
 
 
 def dot_product(v_a: list[int], v_b: list[int]) -> int:

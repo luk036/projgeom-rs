@@ -13,15 +13,15 @@ I_IM = PerspPoint([1, 0, 0])
 L_INF = PerspLine([0, -1, 1])
 
 
-def _perp_point(p: PerspPoint) -> PerspLine:
+def _perp_point(point: PerspPoint) -> PerspLine:
     """Return the polar line of a perspective point (always the line at infinity)."""
     return PerspLine(L_INF.coord.copy())
 
 
-def _perp_line(l: PerspLine) -> PerspPoint:
+def _perp_line(line: PerspLine) -> PerspPoint:
     """Return the pole of a perspective line."""
-    alpha = I_RE.dot(l)
-    beta = I_IM.dot(l)
+    alpha = I_RE.dot(line)
+    beta = I_IM.dot(line)
     return PerspPoint.parametrize(I_RE, alpha, I_IM, beta)
 
 

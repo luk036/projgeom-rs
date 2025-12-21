@@ -12,14 +12,14 @@ from .pg_plane import coincident, tri_dual
 L_INF = EuclidLine([0, 0, 1])
 
 
-def _perp_point(p: EuclidPoint) -> EuclidLine:
+def _perp_point(point: EuclidPoint) -> EuclidLine:
     """Return the polar line of a Euclidean point (always the line at infinity)."""
     return EuclidLine(L_INF.coord.copy())
 
 
-def _perp_line(l: EuclidLine) -> EuclidPoint:
+def _perp_line(line: EuclidLine) -> EuclidPoint:
     """Return the pole of a Euclidean line."""
-    return EuclidPoint([l.coord[0], l.coord[1], 0])
+    return EuclidPoint([line.coord[0], line.coord[1], 0])
 
 
 # Implement CayleyKleinPlanePrimitive for EuclidPoint

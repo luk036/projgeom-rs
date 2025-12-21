@@ -6,7 +6,7 @@ and related operations.
 
 from __future__ import annotations
 
-from typing import Generic, TypeVar
+from typing import TypeVar
 
 from .pg_plane import ProjectivePlane, ProjectivePlanePrimitive, coincident, involution, tri_dual
 
@@ -14,7 +14,7 @@ Dual = TypeVar("Dual")
 Value = TypeVar("Value", bound=int)
 
 
-class CayleyKleinPlanePrimitive(ProjectivePlanePrimitive[Dual], Generic[Dual]):
+class CayleyKleinPlanePrimitive[Dual](ProjectivePlanePrimitive[Dual]):
     """The `CayleyKleinPlanePrimitive` trait is a trait that extends the `ProjectivePlanePrimitive` trait.
     It adds an additional method `perp(&self) -> Line` to the trait. This method returns the polar line to the given
     point or the pole of a given line.
@@ -64,10 +64,9 @@ def tri_altitude(triangle: list[Point]) -> list[Line]:
     return [t_1, t_2, t_3]
 
 
-class CayleyKleinPlane(
+class CayleyKleinPlane[Dual, Value: int](
     ProjectivePlane[Dual, Value],
     CayleyKleinPlanePrimitive[Dual],
-    Generic[Dual, Value],
 ):
     """Cayley-Klein plane trait combining ProjectivePlane and CayleyKleinPlanePrimitive."""
 

@@ -5,18 +5,17 @@ from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from projgeom import (
-        PgPoint,
-        PgLine,
-        EuclidPoint,
-        EuclidLine,
-        EllipticPoint,
         EllipticLine,
-        HyperbolicPoint,
+        EllipticPoint,
+        EuclidLine,
+        EuclidPoint,
         HyperbolicLine,
-        MyCKPoint,
+        HyperbolicPoint,
         MyCKLine,
+        MyCKPoint,
         PerspPoint,
-        PerspLine,
+        PgLine,
+        PgPoint,
     )
 
 from projgeom import (
@@ -87,14 +86,14 @@ def test_plucker_operation() -> None:
 
 def test_pg_point_creation() -> None:
     """Test PgPoint creation."""
-    p = PgPoint([1, 2, 3])
-    assert p.coord == [1, 2, 3]
+    point = PgPoint([1, 2, 3])
+    assert point.coord == [1, 2, 3]
 
 
 def test_pg_line_creation() -> None:
     """Test PgLine creation."""
-    l = PgLine([1, 2, 3])
-    assert l.coord == [1, 2, 3]
+    line = PgLine([1, 2, 3])
+    assert line.coord == [1, 2, 3]
 
 
 def test_pg_point_equality() -> None:
@@ -119,17 +118,17 @@ def test_pg_line_equality() -> None:
 
 def test_pg_point_incident() -> None:
     """Test point-line incidence."""
-    p = PgPoint([1, 1, 1])  # Point (1,1) in Euclidean plane
-    l = PgLine([1, 1, 0])  # Line x + y = 0 in Euclidean plane
+    point = PgPoint([1, 1, 1])  # Point (1,1) in Euclidean plane
+    line = PgLine([1, 1, 0])  # Line x + y = 0 in Euclidean plane
 
     # Point (1,1) is not on line x+y=0
-    assert not p.incident(l)
+    assert not point.incident(line)
 
     p_on_l = PgPoint([1, -1, 1])  # Point (1,-1) on line x+y=0
-    assert p_on_l.incident(l)
+    assert p_on_l.incident(line)
 
     l_through_p = PgLine([1, -1, 0])  # Line x-y=0, passes through (1,1)
-    assert p.incident(l_through_p)
+    assert point.incident(l_through_p)
 
 
 def test_pg_point_meet() -> None:
@@ -152,16 +151,16 @@ def test_pg_point_meet() -> None:
 
 def test_pg_line_meet() -> None:
     """Test line meet operation."""
-    l1 = PgLine([1, 0, 0])  # Line x=0 (y-axis)
-    l2 = PgLine([0, 1, 0])  # Line y=0 (x-axis)
+    line1 = PgLine([1, 0, 0])  # Line x=0 (y-axis)
+    line2 = PgLine([0, 1, 0])  # Line y=0 (x-axis)
     origin = PgPoint([0, 0, 1])  # Origin (0,0)
 
     # Meet of two lines is their intersection point
-    assert l1.meet(l2) == origin
+    assert line1.meet(line2) == origin
 
-    l3 = PgLine([1, -1, 0])  # Line x - y = 0
+    line3 = PgLine([1, -1, 0])  # Line x - y = 0
     l4 = PgLine([1, 1, -2])  # Line x + y - 2 = 0
-    intersection_point = l3.meet(l4)
+    intersection_point = line3.meet(l4)
     # Intersection of x-y=0 and x+y-2=0 is (1,1)
     # cross_product([1,-1,0], [1,1,-2]) = [(-1)*(-2) - 0*1, 0*1 - 1*(-2), 1*1 - (-1)*1] = [2, 2, 2]
     # This is homogeneous to [1, 1, 1]
@@ -195,8 +194,8 @@ def check_pg_plane(pt_p: "PgPoint", pt_q: "PgPoint") -> None:
     pq = pt_p.parametrize(2, pt_q, 3)
     assert coincident(pt_p, pt_q, pq)
 
-    h = harm_conj(pt_p, pt_q, pq)
-    assert harm_conj(pt_p, pt_q, h) == pq
+    harmonic = harm_conj(pt_p, pt_q, pq)
+    assert harm_conj(pt_p, pt_q, harmonic) == pq
 
 
 def test_pg_point_plane() -> None:
@@ -215,14 +214,14 @@ def test_pg_line_plane() -> None:
 
 def check_ck_plane(a_1: "PgPoint", a_2: "PgPoint", a_3: "PgPoint") -> None:
     """Helper function to check Cayley-Klein plane properties."""
-    triangle: list["PgPoint"] = [a_1, a_2, a_3]
-    trilateral: list["PgLine"] = tri_dual(triangle)
-    l_1: "PgLine" = trilateral[0]
+    triangle: list[PgPoint] = [a_1, a_2, a_3]
+    trilateral: list[PgLine] = tri_dual(triangle)
+    l_1: PgLine = trilateral[0]
     assert l_1.incident(triangle[1])
 
-    t_1: "PgLine"
-    t_2: "PgLine" 
-    t_3: "PgLine"
+    t_1: PgLine
+    t_2: PgLine
+    t_3: PgLine
     t_1, t_2, t_3 = tri_altitude(triangle)
     assert is_perpendicular(t_1, l_1)
     pt_o = orthocenter(triangle)
@@ -295,22 +294,22 @@ def test_euclid_point() -> None:
 
 def test_euclid_line_parallel() -> None:
     """Test Euclidean line parallelism."""
-    l1 = EuclidLine([1, 0, -1])  # x = 1
-    l2 = EuclidLine([2, 0, -5])  # x = 2.5 (parallel to l1)
-    assert l1.is_parallel(l2)
+    line1 = EuclidLine([1, 0, -1])  # x = 1
+    line2 = EuclidLine([2, 0, -5])  # x = 2.5 (parallel to line1)
+    assert line1.is_parallel(line2)
 
-    l3 = EuclidLine([0, 1, -1])  # y = 1 (not parallel to l1)
-    assert not l1.is_parallel(l3)
+    line3 = EuclidLine([0, 1, -1])  # y = 1 (not parallel to line1)
+    assert not line1.is_parallel(line3)
 
 
 def test_euclid_line_perpendicular() -> None:
     """Test Euclidean line perpendicularity."""
-    l1 = EuclidLine([1, 0, -1])  # x = 1
-    l2 = EuclidLine([0, 1, -1])  # y = 1
-    assert l1.is_perpendicular(l2)
+    line1 = EuclidLine([1, 0, -1])  # x = 1
+    line2 = EuclidLine([0, 1, -1])  # y = 1
+    assert line1.is_perpendicular(line2)
 
-    l3 = EuclidLine([1, 1, -1])  # x + y = 1
-    assert not l1.is_perpendicular(l3)
+    line3 = EuclidLine([1, 1, -1])  # x + y = 1
+    assert not line1.is_perpendicular(line3)
 
 
 def test_euclid_point_midpoint() -> None:
@@ -324,16 +323,16 @@ def test_euclid_point_midpoint() -> None:
 
 def test_pappus() -> None:
     """Test Pappus' theorem."""
-    a = PgPoint([0, 0, 1])
-    b = PgPoint([1, 0, 1])
-    c = PgPoint([2, 0, 1])
+    point_a = PgPoint([0, 0, 1])
+    point_b = PgPoint([1, 0, 1])
+    point_c = PgPoint([2, 0, 1])
 
-    d = PgPoint([0, 1, 1])
-    e = PgPoint([1, 1, 1])
-    f = PgPoint([2, 1, 1])
+    point_d = PgPoint([0, 1, 1])
+    point_e = PgPoint([1, 1, 1])
+    point_f = PgPoint([2, 1, 1])
 
-    coline_1 = [a, b, c]
-    coline_2 = [d, e, f]
+    coline_1 = [point_a, point_b, point_c]
+    coline_2 = [point_d, point_e, point_f]
 
     # These points are collinear, so Pappus' theorem should hold
     assert check_pappus(coline_1, coline_2)
@@ -358,9 +357,9 @@ def test_desargue() -> None:
 
 def test_reflect() -> None:
     """Test point reflection."""
-    p = EuclidPoint([1, 2, 1])  # Point (1,2)
+    point = EuclidPoint([1, 2, 1])  # Point (1,2)
     mirror = EuclidLine([1, 0, 0])  # Line x = 0 (y-axis)
-    reflected_p = reflect(mirror, p)
+    reflected_p = reflect(mirror, point)
     # Reflecting (1,2) across x=0 should give (-1,2)
     assert reflected_p == EuclidPoint([-1, 2, 1])
 

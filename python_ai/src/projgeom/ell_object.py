@@ -8,14 +8,14 @@ from .ck_plane import CayleyKleinPlane
 from .pg_object import EllipticLine, EllipticPoint
 
 
-def _perp_point(p: EllipticPoint) -> EllipticLine:
+def _perp_point(point: EllipticPoint) -> EllipticLine:
     """Return the polar line of an elliptic point."""
-    return EllipticLine(p.coord.copy())
+    return EllipticLine(point.coord.copy())
 
 
-def _perp_line(l: EllipticLine) -> EllipticPoint:
+def _perp_line(line: EllipticLine) -> EllipticPoint:
     """Return the pole of an elliptic line."""
-    return EllipticPoint(l.coord.copy())
+    return EllipticPoint(line.coord.copy())
 
 
 # Implement CayleyKleinPlanePrimitive for EllipticPoint

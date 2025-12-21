@@ -11,24 +11,24 @@ from .pg_object import HyperbolicLine, HyperbolicPoint
 HYP_PERP_COEFFS = [1, 1, -1]
 
 
-def _perp_point(p: HyperbolicPoint) -> HyperbolicLine:
+def _perp_point(point: HyperbolicPoint) -> HyperbolicLine:
     """Return the polar line of a hyperbolic point."""
     return HyperbolicLine(
         [
-            HYP_PERP_COEFFS[0] * p.coord[0],
-            HYP_PERP_COEFFS[1] * p.coord[1],
-            HYP_PERP_COEFFS[2] * p.coord[2],
+            HYP_PERP_COEFFS[0] * point.coord[0],
+            HYP_PERP_COEFFS[1] * point.coord[1],
+            HYP_PERP_COEFFS[2] * point.coord[2],
         ]
     )
 
 
-def _perp_line(l: HyperbolicLine) -> HyperbolicPoint:
+def _perp_line(line: HyperbolicLine) -> HyperbolicPoint:
     """Return the pole of a hyperbolic line."""
     return HyperbolicPoint(
         [
-            HYP_PERP_COEFFS[0] * l.coord[0],
-            HYP_PERP_COEFFS[1] * l.coord[1],
-            HYP_PERP_COEFFS[2] * l.coord[2],
+            HYP_PERP_COEFFS[0] * line.coord[0],
+            HYP_PERP_COEFFS[1] * line.coord[1],
+            HYP_PERP_COEFFS[2] * line.coord[2],
         ]
     )
 

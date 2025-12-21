@@ -3,6 +3,7 @@
 
 import os
 import sys
+import traceback
 
 # Add src to path
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "src"))
@@ -35,8 +36,6 @@ def run_basic_tests():
         return True
 
     except Exception:
-        import traceback
-
         traceback.print_exc()
         return False
 

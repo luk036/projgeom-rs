@@ -6,7 +6,7 @@ This module defines the core traits and functions for projective plane geometry.
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from typing import Generic, TypeVar
+from typing import TypeVar
 
 Dual = TypeVar("Dual")
 
@@ -17,7 +17,7 @@ Self = TypeVar("Self", bound="ProjectivePlanePrimitive")
 ProjectivePlaneSelf = TypeVar("ProjectivePlaneSelf", bound="ProjectivePlane")
 
 
-class ProjectivePlanePrimitive(Generic[Dual], ABC):
+class ProjectivePlanePrimitive[Dual](ABC):
     """The `ProjectivePlanePrimitive` trait defines the behavior of points and lines in a projective plane.
 
     It requires two associated types: `Dual`, which represents the dual object (line or point) in the
@@ -41,8 +41,16 @@ class ProjectivePlanePrimitive(Generic[Dual], ABC):
             return False
         return self.incident(other) and other.incident(self)
 
+    def __hash__(self) -> int:
+        """Default hash implementation."""
+        return hash(self.__class__.__name__)
 
-def check_axiom(pt_p: ProjectivePlanePrimitive[Line], pt_q: ProjectivePlanePrimitive[Line], ln_l: ProjectivePlanePrimitive[Point]) -> None:
+
+def check_axiom(
+    pt_p: ProjectivePlanePrimitive[Line],
+    pt_q: ProjectivePlanePrimitive[Line],
+    ln_l: ProjectivePlanePrimitive[Point],
+) -> None:
     """Check if certain axioms hold for points and lines in a projective plane."""
     assert pt_p.incident(ln_l) == ln_l.incident(pt_p)
     assert pt_p.meet(pt_q) == pt_q.meet(pt_p)
@@ -51,12 +59,18 @@ def check_axiom(pt_p: ProjectivePlanePrimitive[Line], pt_q: ProjectivePlanePrimi
     assert ln_m.incident(pt_q)
 
 
-def coincident(pt_p: ProjectivePlanePrimitive[Line], pt_q: ProjectivePlanePrimitive[Line], pt_r: ProjectivePlanePrimitive[Line]) -> bool:
+def coincident(
+    pt_p: ProjectivePlanePrimitive[Line],
+    pt_q: ProjectivePlanePrimitive[Line],
+    pt_r: ProjectivePlanePrimitive[Line],
+) -> bool:
     """Check if three points `pt_p`, `pt_q`, and `pt_r` are coincident in a projective plane."""
     return pt_p.meet(pt_q).incident(pt_r)
 
 
-def check_pappus(coline_1: list[ProjectivePlanePrimitive[Line]], coline_2: list[ProjectivePlanePrimitive[Line]]) -> bool:
+def check_pappus(
+    coline_1: list[ProjectivePlanePrimitive[Line]], coline_2: list[ProjectivePlanePrimitive[Line]]
+) -> bool:
     """Check if three points on a projective plane and three lines on another
     projective plane satisfy Pappus' theorem.
     """
@@ -72,7 +86,9 @@ def check_pappus(coline_1: list[ProjectivePlanePrimitive[Line]], coline_2: list[
     return coincident(pt_g, pt_h, pt_i)
 
 
-def tri_dual(triangle: list[ProjectivePlanePrimitive[Line]]) -> list[ProjectivePlanePrimitive[Point]]:
+def tri_dual(
+    triangle: list[ProjectivePlanePrimitive[Line]],
+) -> list[ProjectivePlanePrimitive[Point]]:
     """The `tri_dual` function takes a triangle and returns an array of lines that are dual to the
     triangle's vertices.
 
@@ -92,7 +108,9 @@ def tri_dual(triangle: list[ProjectivePlanePrimitive[Line]]) -> list[ProjectiveP
     return [a_2.meet(a_3), a_1.meet(a_3), a_1.meet(a_2)]
 
 
-def persp(tri1: list[ProjectivePlanePrimitive[Line]], tri2: list[ProjectivePlanePrimitive[Line]]) -> bool:
+def persp(
+    tri1: list[ProjectivePlanePrimitive[Line]], tri2: list[ProjectivePlanePrimitive[Line]]
+) -> bool:
     """Determine whether two triangles are perspective."""
     if len(tri1) != 3 or len(tri2) != 3:
         msg = "Both triangles must have exactly 3 points"
@@ -104,7 +122,9 @@ def persp(tri1: list[ProjectivePlanePrimitive[Line]], tri2: list[ProjectivePlane
     return pt_c.meet(pt_f).incident(pt_o)
 
 
-def check_desargue(tri1: list[ProjectivePlanePrimitive[Line]], tri2: list[ProjectivePlanePrimitive[Line]]) -> bool:
+def check_desargue(
+    tri1: list[ProjectivePlanePrimitive[Line]], tri2: list[ProjectivePlanePrimitive[Line]]
+) -> bool:
     """Check if two triangles satisfy the Desargue's theorem in projective geometry."""
     trid1: list[ProjectivePlanePrimitive[Point]] = tri_dual(tri1)
     trid2: list[ProjectivePlanePrimitive[Point]] = tri_dual(tri2)
@@ -113,7 +133,7 @@ def check_desargue(tri1: list[ProjectivePlanePrimitive[Line]], tri2: list[Projec
     return (bool1 and bool2) or (not bool1 and not bool2)
 
 
-class ProjectivePlane(ProjectivePlanePrimitive[Dual], Generic[Dual, Value], ABC):
+class ProjectivePlane[Dual, Value](ProjectivePlanePrimitive[Dual], ABC):
     """The `ProjectivePlane` trait is a trait that extends the `ProjectivePlanePrimitive` trait.
     It adds additional `aux`, `dot`, and parametrize methods to the trait.
     """
@@ -135,11 +155,11 @@ class ProjectivePlane(ProjectivePlanePrimitive[Dual], Generic[Dual, Value], ABC)
 
 
 def check_axiom2(
-    pt_p: ProjectivePlane[ProjectivePlanePrimitive[Point], Value], 
-    pt_q: ProjectivePlane[ProjectivePlanePrimitive[Point], Value], 
-    ln_l: ProjectivePlane[ProjectivePlanePrimitive[Line], Value], 
-    alpha: Value, 
-    beta: Value
+    pt_p: ProjectivePlane[ProjectivePlanePrimitive[Point], Value],
+    pt_q: ProjectivePlane[ProjectivePlanePrimitive[Point], Value],
+    ln_l: ProjectivePlane[ProjectivePlanePrimitive[Line], Value],
+    alpha: Value,
+    beta: Value,
 ) -> None:
     """Check if certain axioms hold true in a projective plane."""
     assert pt_p.dot(ln_l) == ln_l.dot(pt_p)
@@ -148,7 +168,11 @@ def check_axiom2(
     assert ln_m.incident(pt_p.parametrize(alpha, pt_q, beta))
 
 
-def harm_conj(pt_a: ProjectivePlane[ProjectivePlanePrimitive[Point], Value], pt_b: ProjectivePlane[ProjectivePlanePrimitive[Point], Value], pt_c: ProjectivePlane[ProjectivePlanePrimitive[Point], Value]) -> ProjectivePlane[ProjectivePlanePrimitive[Point], Value]:
+def harm_conj(
+    pt_a: ProjectivePlane[ProjectivePlanePrimitive[Point], Value],
+    pt_b: ProjectivePlane[ProjectivePlanePrimitive[Point], Value],
+    pt_c: ProjectivePlane[ProjectivePlanePrimitive[Point], Value],
+) -> ProjectivePlane[ProjectivePlanePrimitive[Point], Value]:
     """Calculate the harmonic conjugate of three points in a projective plane."""
     assert coincident(pt_a, pt_b, pt_c), "Points must be collinear"
     ln_ab = pt_a.meet(pt_b)
@@ -156,7 +180,11 @@ def harm_conj(pt_a: ProjectivePlane[ProjectivePlanePrimitive[Point], Value], pt_
     return pt_a.parametrize(ln_xc.dot(pt_b), pt_b, ln_xc.dot(pt_a))
 
 
-def involution(origin: ProjectivePlane[ProjectivePlanePrimitive[Point], Value], mirror: ProjectivePlane[ProjectivePlanePrimitive[Line], Value], pt_p: ProjectivePlane[ProjectivePlanePrimitive[Point], Value]) -> ProjectivePlane[ProjectivePlanePrimitive[Point], Value]:
+def involution(
+    origin: ProjectivePlane[ProjectivePlanePrimitive[Point], Value],
+    mirror: ProjectivePlane[ProjectivePlanePrimitive[Line], Value],
+    pt_p: ProjectivePlane[ProjectivePlanePrimitive[Point], Value],
+) -> ProjectivePlane[ProjectivePlanePrimitive[Point], Value]:
     """Perform an involution transformation on a point `pt_p` with respect to an
     origin point `origin` and a mirror line `mirror`.
     """

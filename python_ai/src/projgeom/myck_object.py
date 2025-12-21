@@ -12,24 +12,24 @@ MYCK_POINT_PERP_COEFFS = [-2, 1, -2]
 MYCK_LINE_PERP_COEFFS = [-1, 2, -1]
 
 
-def _perp_point(p: MyCKPoint) -> MyCKLine:
+def _perp_point(point: MyCKPoint) -> MyCKLine:
     """Return the polar line of a MyCK point."""
     return MyCKLine(
         [
-            MYCK_POINT_PERP_COEFFS[0] * p.coord[0],
-            MYCK_POINT_PERP_COEFFS[1] * p.coord[1],
-            MYCK_POINT_PERP_COEFFS[2] * p.coord[2],
+            MYCK_POINT_PERP_COEFFS[0] * point.coord[0],
+            MYCK_POINT_PERP_COEFFS[1] * point.coord[1],
+            MYCK_POINT_PERP_COEFFS[2] * point.coord[2],
         ]
     )
 
 
-def _perp_line(l: MyCKLine) -> MyCKPoint:
+def _perp_line(line: MyCKLine) -> MyCKPoint:
     """Return the pole of a MyCK line."""
     return MyCKPoint(
         [
-            MYCK_LINE_PERP_COEFFS[0] * l.coord[0],
-            MYCK_LINE_PERP_COEFFS[1] * l.coord[1],
-            MYCK_LINE_PERP_COEFFS[2] * l.coord[2],
+            MYCK_LINE_PERP_COEFFS[0] * line.coord[0],
+            MYCK_LINE_PERP_COEFFS[1] * line.coord[1],
+            MYCK_LINE_PERP_COEFFS[2] * line.coord[2],
         ]
     )
 
