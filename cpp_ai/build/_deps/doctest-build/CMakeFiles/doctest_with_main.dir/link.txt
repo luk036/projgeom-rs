@@ -1,2 +1,0 @@
-/data/data/com.termux/files/usr/bin/llvm-ar qc libdoctest_with_main.a CMakeFiles/doctest_with_main.dir/doctest/parts/doctest.cpp.o
-/data/data/com.termux/files/usr/bin/llvm-ranlib libdoctest_with_main.a
