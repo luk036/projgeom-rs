@@ -8,8 +8,9 @@ namespace projgeom {
 template<SignedIntegral Scalar> struct PerspPoint;
 template<SignedIntegral Scalar> struct PerspLine;
 
-// Constant declarations (defined below after structs)
-template<SignedIntegral Scalar> extern const PgLine<Scalar> L_INF;
+// Constant definitions (needed before struct definitions)
+template<SignedIntegral Scalar>
+inline constexpr PgLine<Scalar> L_INF = PgLine<Scalar>({0, -1, 1});
 
 template<SignedIntegral Scalar = int64_t>
 struct PerspPoint : PgPoint<Scalar> {
@@ -66,10 +67,6 @@ struct PerspLine : PgLine<Scalar> {
         return *this == L_INF<Scalar> || other == L_INF<Scalar>;
     }
 };
-
-// Constant definitions
-template<SignedIntegral Scalar>
-inline constexpr PgLine<Scalar> L_INF = PgLine<Scalar>({0, -1, 1});
 
 // Note: I_RE and I_IM are not defined due to circular dependency issues
 // They would need to be PerspPoint<Scalar> but that creates dependency issues

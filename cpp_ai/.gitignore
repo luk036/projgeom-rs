@@ -2,28 +2,15 @@
 build/
 .xmake/
 
-# CMake build files
-CMakeCache.txt
-CMakeFiles/
-cmake_install.cmake
-Makefile
-CTestTestfile.cmake
-
-# Compiled object files
+# Object files
 *.o
 *.obj
-*.ko
-
-# Precompiled headers
-*.gch
-*.pch
 
 # Libraries
 *.a
 *.lib
 *.dll
 *.so
-*.so.*
 *.dylib
 
 # Executables
@@ -33,27 +20,22 @@ CTestTestfile.cmake
 
 # IDE files
 .vscode/
-.idea/
-*.swp
-*.swo
+*.vcxproj*
+*.sln
+*.user
+
+# Temporary files
+*.tmp
+*.temp
 *~
 
-# macOS
-.DS_Store
+# Debug files
+*.pdb
+*.ilk
 
-# Test coverage
-*.gcda
-*.gcno
-*.gcov
+# Logs
+*.log
 
-# Profiling data
-*.profraw
-
-# Dependency directories
-_deps/
-
-# xmake build cache
-.xmake/
-
-# Doctest downloaded files
-doctest/
+# Test outputs
+test_*.exe
+simple_test*
