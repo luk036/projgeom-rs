@@ -44,7 +44,9 @@ def _is_perpendicular(self: EuclidLine, other: EuclidLine) -> bool:
 
 
 def _altitude(self: EuclidLine, pt_a: EuclidPoint) -> EuclidLine:
-    """Calculate the perpendicular line from a given point to a line."""
+    """Calculate the perpendicular line from a given point to a line.
+    Note: This function uses perp() which returns the polar line of the current line,
+    and then finds the intersection with the given point to create the altitude."""
     return self.perp().meet(pt_a)
 
 

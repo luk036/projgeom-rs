@@ -58,7 +58,7 @@ struct EuclidLine : PgLine<Scalar> {
     }
     
     constexpr EuclidLine perp() const noexcept {
-        // Perpendicular line (rotate normal vector by 90 degrees)
+        // Polar line of the current line (returns the pole point as a line)
         return EuclidLine(std::array{-this->coord[1], this->coord[0], this->coord[2]});
     }
     

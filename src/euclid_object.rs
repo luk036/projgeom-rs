@@ -82,15 +82,8 @@ impl EuclidLine {
     /// Returns:
     ///
     /// The `altitude` function returns an `EuclidLine` object.
-    /// The `altitude` function calculates the perpendicular line from a given point to a line.
-    ///
-    /// Arguments:
-    ///
-    /// * `pt_a`: The parameter `pt_a` is of type `EuclidPoint`.
-    ///
-    /// Returns:
-    ///
-    /// The `altitude` function returns an `EuclidLine` object.
+    /// Note: This function uses `perp()` which returns the polar line of the current line,
+    /// and then finds the intersection with the given point to create the altitude.
     ///
     /// # Examples
     ///
