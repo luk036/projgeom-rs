@@ -22,8 +22,13 @@ use crate::pg_plane::{ProjectivePlane, ProjectivePlanePrimitive};
 /// assert_eq!(result, 26);
 /// ```
 #[inline]
-pub const fn dot_product(vec_a: &[i64; 3], vec_b: &[i64; 3]) -> i64 {
-    vec_a[0] * vec_b[0] + vec_a[1] * vec_b[1] + vec_a[2] * vec_b[2]
+pub fn dot_product(vec_a: &[i64; 3], vec_b: &[i64; 3]) -> i64 {
+    // Use wrapping operations to avoid overflow
+    vec_a[0].wrapping_mul(vec_b[0]).wrapping_add(
+        vec_a[1].wrapping_mul(vec_b[1]).wrapping_add(
+            vec_a[2].wrapping_mul(vec_b[2])
+        )
+    )
 }
 
 /// Dot product (2d)
@@ -64,11 +69,11 @@ pub const fn cross2(vec_a: &[i64], vec_b: &[i64]) -> i64 {
 /// assert_eq!(v_a, [-2, 4, -2]);
 /// ```
 #[inline]
-pub const fn cross_product(vec_a: &[i64; 3], vec_b: &[i64; 3]) -> [i64; 3] {
+pub fn cross_product(vec_a: &[i64; 3], vec_b: &[i64; 3]) -> [i64; 3] {
     [
-        vec_a[1] * vec_b[2] - vec_a[2] * vec_b[1],
-        vec_a[2] * vec_b[0] - vec_a[0] * vec_b[2],
-        vec_a[0] * vec_b[1] - vec_a[1] * vec_b[0],
+        vec_a[1].wrapping_mul(vec_b[2]).wrapping_sub(vec_a[2].wrapping_mul(vec_b[1])),
+        vec_a[2].wrapping_mul(vec_b[0]).wrapping_sub(vec_a[0].wrapping_mul(vec_b[2])),
+        vec_a[0].wrapping_mul(vec_b[1]).wrapping_sub(vec_a[1].wrapping_mul(vec_b[0])),
     ]
 }
 
@@ -82,16 +87,16 @@ pub const fn cross_product(vec_a: &[i64; 3], vec_b: &[i64; 3]) -> [i64; 3] {
 /// assert_eq!(v_a, [-2, -2, -2]);
 /// ```
 #[inline]
-pub const fn plucker_operation(
+pub fn plucker_operation(
     lambda_a: i64,
     vec_a: &[i64; 3],
     mu_b: i64,
     vec_b: &[i64; 3],
 ) -> [i64; 3] {
     [
-        lambda_a * vec_a[0] + mu_b * vec_b[0],
-        lambda_a * vec_a[1] + mu_b * vec_b[1],
-        lambda_a * vec_a[2] + mu_b * vec_b[2],
+        lambda_a.wrapping_mul(vec_a[0]).wrapping_add(mu_b.wrapping_mul(vec_b[0])),
+        lambda_a.wrapping_mul(vec_a[1]).wrapping_add(mu_b.wrapping_mul(vec_b[1])),
+        lambda_a.wrapping_mul(vec_a[2]).wrapping_add(mu_b.wrapping_mul(vec_b[2])),
     ]
 }
 
