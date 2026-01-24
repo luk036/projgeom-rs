@@ -3,6 +3,8 @@ use projgeom_rs::*;
 use quickcheck_macros::quickcheck;
 
 use fractions::Fraction;
+use projgeom_rs::pg_plane::ProjectivePlane;
+use projgeom_rs::ck_plane::CayleyKleinPlane;
 
 // Simplified property-based tests for fractions
 mod fraction_tests {

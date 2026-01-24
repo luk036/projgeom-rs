@@ -121,6 +121,33 @@ macro_rules! define_point_or_line {
             pub const fn new(coord: [i64; 3]) -> Self {
                 Self { coord }
             }
+
+            /// Create a new point from individual coordinates.
+            #[inline]
+            pub const fn from_coords(x: i64, y: i64, z: i64) -> Self {
+                Self { coord: [x, y, z] }
+            }
+        }
+
+        impl From<[i64; 3]> for $point {
+            #[inline]
+            fn from(coord: [i64; 3]) -> Self {
+                Self { coord }
+            }
+        }
+
+        impl From<(i64, i64, i64)> for $point {
+            #[inline]
+            fn from(coords: (i64, i64, i64)) -> Self {
+                Self { coord: [coords.0, coords.1, coords.2] }
+            }
+        }
+
+        impl From<&[i64; 3]> for $point {
+            #[inline]
+            fn from(coord: &[i64; 3]) -> Self {
+                Self { coord: *coord }
+            }
         }
 
         impl PartialEq for $point {
