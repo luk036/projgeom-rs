@@ -6,7 +6,7 @@
 use crate::pg_object::{PgPoint, PgLine};
 use crate::pg_plane::ProjectivePlanePrimitive;
 use std::ffi::{CStr, CString};
-use std::os::raw::{c_char, c_int, c_void};
+use std::os::raw::{c_char, c_int};
 
 /// Opaque pointer to a PgPoint
 #[repr(C)]

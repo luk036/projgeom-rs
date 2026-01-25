@@ -5,7 +5,7 @@
 
 use projgeom_rs::{EuclidPoint, EuclidLine, reflect, orthocenter, tri_altitude};
 use projgeom_rs::pg_plane::ProjectivePlanePrimitive;
-use projgeom_rs::ck_plane::{CayleyKleinPlane, CayleyKleinPlanePrimitive};
+use projgeom_rs::ck_plane::CayleyKleinPlanePrimitive;
 
 fn main() {
     println!("=== Euclidean Geometry Example ===\n");

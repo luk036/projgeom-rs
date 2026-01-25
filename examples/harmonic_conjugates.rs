@@ -4,7 +4,7 @@
 //! in projective geometry.
 
 use projgeom_rs::{PgPoint, harm_conj, coincident};
-use projgeom_rs::pg_plane::{ProjectivePlane, ProjectivePlanePrimitive};
+use projgeom_rs::pg_plane::ProjectivePlane;
 
 fn main() {
     println!("=== Harmonic Conjugates Example ===\n");

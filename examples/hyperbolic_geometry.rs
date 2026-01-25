@@ -3,7 +3,7 @@
 //! This example demonstrates operations in hyperbolic geometry,
 //! including perpendicular lines and triangle properties.
 
-use projgeom_rs::{HyperbolicPoint, HyperbolicLine, CayleyKleinPlane, orthocenter, tri_altitude};
+use projgeom_rs::{HyperbolicPoint, HyperbolicLine, orthocenter, tri_altitude};
 use projgeom_rs::pg_plane::ProjectivePlanePrimitive;
 use projgeom_rs::ck_plane::CayleyKleinPlanePrimitive;
 

@@ -4,7 +4,6 @@
 //! parabolas, and hyperbolas) in projective geometry.
 
 use crate::pg_object::{PgPoint, PgLine};
-use crate::pg_plane::ProjectivePlanePrimitive;
 use fractions::Fraction;
 
 /// Represents a conic section in homogeneous coordinates
@@ -38,8 +37,8 @@ impl Conic {
         // Circle equation: (x-cx)^2 + (y-cy)^2 = r^2
         // In homogeneous coordinates: x^2 + y^2 - 2cx*x*z - 2cy*y*z + (cx^2 + cy^2 - r^2)*z^2 = 0
         let matrix = [
-            [Fraction::<i64>::new(1, 1), Fraction::<i64>::new(0, 1), -cx.clone()],
-            [Fraction::<i64>::new(0, 1), Fraction::<i64>::new(1, 1), -cy.clone()],
+            [Fraction::<i64>::new(1, 1), Fraction::<i64>::new(0, 1), -cx],
+            [Fraction::<i64>::new(0, 1), Fraction::<i64>::new(1, 1), -cy],
             [-cx, -cy, cx * cx + cy * cy - r2],
         ];
 
@@ -83,15 +82,15 @@ impl Conic {
         let z = Fraction::<i64>::new(point.coord[2], 1);
 
         // Compute x^T Q x
-        let result = x.clone() * (self.matrix[0][0].clone() * x.clone()
-            + self.matrix[0][1].clone() * y.clone()
-            + self.matrix[0][2].clone() * z.clone())
-            + y.clone() * (self.matrix[1][0].clone() * x.clone()
-            + self.matrix[1][1].clone() * y.clone()
-            + self.matrix[1][2].clone() * z.clone())
-            + z.clone() * (self.matrix[2][0].clone() * x
-            + self.matrix[2][1].clone() * y
-            + self.matrix[2][2].clone() * z);
+        let result = x * (self.matrix[0][0] * x
+            + self.matrix[0][1] * y
+            + self.matrix[0][2] * z)
+            + y * (self.matrix[1][0] * x
+            + self.matrix[1][1] * y
+            + self.matrix[1][2] * z)
+            + z * (self.matrix[2][0] * x
+            + self.matrix[2][1] * y
+            + self.matrix[2][2] * z);
 
         result == Fraction::<i64>::new(0, 1)
     }
@@ -111,15 +110,15 @@ impl Conic {
         let z = Fraction::<i64>::new(point.coord[2], 1);
 
         // Polar line: Q * x
-        let a = self.matrix[0][0].clone() * x.clone()
-            + self.matrix[0][1].clone() * y.clone()
-            + self.matrix[0][2].clone() * z.clone();
-        let b = self.matrix[1][0].clone() * x.clone()
-            + self.matrix[1][1].clone() * y.clone()
-            + self.matrix[1][2].clone() * z.clone();
-        let c = self.matrix[2][0].clone() * x
-            + self.matrix[2][1].clone() * y
-            + self.matrix[2][2].clone() * z;
+        let a = self.matrix[0][0] * x
+            + self.matrix[0][1] * y
+            + self.matrix[0][2] * z;
+        let b = self.matrix[1][0] * x
+            + self.matrix[1][1] * y
+            + self.matrix[1][2] * z;
+        let c = self.matrix[2][0] * x
+            + self.matrix[2][1] * y
+            + self.matrix[2][2] * z;
 
         PgLine::new([
             a.numer() / a.denom(),
@@ -138,10 +137,6 @@ impl Conic {
     ///
     /// The pole point
     pub fn pole(&self, line: &PgLine) -> PgPoint {
-        let a = Fraction::<i64>::new(line.coord[0], 1);
-        let b = Fraction::<i64>::new(line.coord[1], 1);
-        let c = Fraction::<i64>::new(line.coord[2], 1);
-
         // Pole: Q^{-1} * line
         // For now, we'll use a simplified approach
         // A full implementation would require computing the inverse of Q
@@ -173,7 +168,7 @@ impl Conic {
     /// # Returns
     ///
     /// A vector of intersection points (0, 1, or 2 points)
-    pub fn intersect(&self, line: &PgLine) -> Vec<PgPoint> {
+    pub fn intersect(&self, _line: &PgLine) -> Vec<PgPoint> {
         // Solve for intersection of line and conic
         // This requires solving a quadratic equation
 
@@ -191,10 +186,10 @@ impl Conic {
     /// - Negative: Hyperbola
     pub fn discriminant(&self) -> Fraction<i64> {
         // Compute the determinant of the 2x2 upper-left submatrix
-        let a = self.matrix[0][0].clone();
-        let b = self.matrix[0][1].clone();
-        let d = self.matrix[1][0].clone();
-        let e = self.matrix[1][1].clone();
+        let a = self.matrix[0][0];
+        let b = self.matrix[0][1];
+        let d = self.matrix[1][0];
+        let e = self.matrix[1][1];
 
         a * e - b * d
     }

@@ -5,9 +5,8 @@
 
 use crate::pg_object::{PgPoint, PgLine};
 use crate::pg_plane::ProjectivePlane;
-use num_integer::gcd;
-use num_traits::{Signed, Zero};
 use fractions::Fraction;
+use num_integer::gcd;
 
 /// Represents the orientation of three points in the plane
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]

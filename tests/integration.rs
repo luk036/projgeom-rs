@@ -4,9 +4,7 @@
 //! constructions and theorems across different geometry types.
 
 use projgeom_rs::*;
-use fractions::Fraction;
 use projgeom_rs::pg_plane::ProjectivePlanePrimitive;
-use projgeom_rs::ck_plane::CayleyKleinPlane;
 
 #[test]
 fn test_desargues_theorem() {

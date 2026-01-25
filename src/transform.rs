@@ -4,7 +4,6 @@
 //! rotations, translations, projections, and projective transformations.
 
 use crate::pg_object::{PgPoint, PgLine};
-use crate::pg_plane::ProjectivePlanePrimitive;
 use fractions::Fraction;
 
 /// A 3x3 transformation matrix for projective geometry
@@ -51,7 +50,7 @@ impl Transform {
     pub fn rotation(angle_cos: Fraction<i64>, angle_sin: Fraction<i64>) -> Self {
         Transform {
             matrix: [
-                [angle_cos.clone(), -angle_sin.clone(), Fraction::<i64>::new(0, 1)],
+                [angle_cos, -angle_sin, Fraction::<i64>::new(0, 1)],
                 [angle_sin, angle_cos, Fraction::<i64>::new(0, 1)],
                 [Fraction::<i64>::new(0, 1), Fraction::<i64>::new(0, 1), Fraction::<i64>::new(1, 1)],
             ],
@@ -83,7 +82,7 @@ impl Transform {
     pub fn shear(shx: Fraction<i64>, shy: Fraction<i64>) -> Self {
         Transform {
             matrix: [
-                [Fraction::<i64>::new(1, 1), shx.clone(), Fraction::<i64>::new(0, 1)],
+                [Fraction::<i64>::new(1, 1), shx, Fraction::<i64>::new(0, 1)],
                 [shy, Fraction::<i64>::new(1, 1), Fraction::<i64>::new(0, 1)],
                 [Fraction::<i64>::new(0, 1), Fraction::<i64>::new(0, 1), Fraction::<i64>::new(1, 1)],
             ],
@@ -98,7 +97,7 @@ impl Transform {
             for j in 0..3 {
                 let mut sum = Fraction::<i64>::new(0, 1);
                 for k in 0..3 {
-                    sum = sum + self.matrix[i][k].clone() * other.matrix[k][j].clone();
+                    sum += self.matrix[i][k] * other.matrix[k][j];
                 }
                 result.matrix[i][j] = sum;
             }
@@ -113,15 +112,15 @@ impl Transform {
         let y = Fraction::<i64>::new(point.coord[1], 1);
         let z = Fraction::<i64>::new(point.coord[2], 1);
 
-        let x_new = self.matrix[0][0].clone() * x.clone()
-            + self.matrix[0][1].clone() * y.clone()
-            + self.matrix[0][2].clone() * z.clone();
-        let y_new = self.matrix[1][0].clone() * x.clone()
-            + self.matrix[1][1].clone() * y.clone()
-            + self.matrix[1][2].clone() * z.clone();
-        let z_new = self.matrix[2][0].clone() * x
-            + self.matrix[2][1].clone() * y
-            + self.matrix[2][2].clone() * z;
+        let x_new = self.matrix[0][0] * x
+            + self.matrix[0][1] * y
+            + self.matrix[0][2] * z;
+        let y_new = self.matrix[1][0] * x
+            + self.matrix[1][1] * y
+            + self.matrix[1][2] * z;
+        let z_new = self.matrix[2][0] * x
+            + self.matrix[2][1] * y
+            + self.matrix[2][2] * z;
 
         // Convert back to integer coordinates if possible
         PgPoint::new([
@@ -139,15 +138,15 @@ impl Transform {
         let y = Fraction::<i64>::new(line.coord[1], 1);
         let z = Fraction::<i64>::new(line.coord[2], 1);
 
-        let x_new = inverse.matrix[0][0].clone() * x.clone()
-            + inverse.matrix[1][0].clone() * y.clone()
-            + inverse.matrix[2][0].clone() * z.clone();
-        let y_new = inverse.matrix[0][1].clone() * x.clone()
-            + inverse.matrix[1][1].clone() * y.clone()
-            + inverse.matrix[2][1].clone() * z.clone();
-        let z_new = inverse.matrix[0][2].clone() * x
-            + inverse.matrix[1][2].clone() * y
-            + inverse.matrix[2][2].clone() * z;
+        let x_new = inverse.matrix[0][0] * x
+            + inverse.matrix[1][0] * y
+            + inverse.matrix[2][0] * z;
+        let y_new = inverse.matrix[0][1] * x
+            + inverse.matrix[1][1] * y
+            + inverse.matrix[2][1] * z;
+        let z_new = inverse.matrix[0][2] * x
+            + inverse.matrix[1][2] * y
+            + inverse.matrix[2][2] * z;
 
         PgLine::new([
             x_new.numer() / x_new.denom(),
@@ -159,20 +158,20 @@ impl Transform {
     /// Compute the inverse of this transformation
     pub fn inverse(&self) -> Transform {
         // Compute the inverse of a 3x3 matrix
-        let a = self.matrix[0][0].clone();
-        let b = self.matrix[0][1].clone();
-        let c = self.matrix[0][2].clone();
-        let d = self.matrix[1][0].clone();
-        let e = self.matrix[1][1].clone();
-        let f = self.matrix[1][2].clone();
-        let g = self.matrix[2][0].clone();
-        let h = self.matrix[2][1].clone();
-        let i = self.matrix[2][2].clone();
+        let a = self.matrix[0][0];
+        let b = self.matrix[0][1];
+        let c = self.matrix[0][2];
+        let d = self.matrix[1][0];
+        let e = self.matrix[1][1];
+        let f = self.matrix[1][2];
+        let g = self.matrix[2][0];
+        let h = self.matrix[2][1];
+        let i = self.matrix[2][2];
 
         // Compute determinant
-        let det = a.clone() * (e.clone() * i.clone() - f.clone() * h.clone())
-            - b.clone() * (d.clone() * i.clone() - f.clone() * g.clone())
-            + c.clone() * (d.clone() * h.clone() - e.clone() * g.clone());
+        let det = a * (e * i - f * h)
+            - b * (d * i - f * g)
+            + c * (d * h - e * g);
 
         if det == Fraction::<i64>::new(0, 1) {
             panic!("Cannot compute inverse of singular matrix");
@@ -183,19 +182,19 @@ impl Transform {
         // Compute adjugate matrix
         let matrix = [
             [
-                inv_det.clone() * (e.clone() * i.clone() - f.clone() * h.clone()),
-                inv_det.clone() * (c.clone() * h.clone() - b.clone() * i.clone()),
-                inv_det.clone() * (b.clone() * f.clone() - c.clone() * e.clone()),
+                inv_det * (e * i - f * h),
+                inv_det * (c * h - b * i),
+                inv_det * (b * f - c * e),
             ],
             [
-                inv_det.clone() * (f.clone() * g.clone() - d.clone() * i.clone()),
-                inv_det.clone() * (a.clone() * i.clone() - c.clone() * g.clone()),
-                inv_det.clone() * (c.clone() * d.clone() - a.clone() * f.clone()),
+                inv_det * (f * g - d * i),
+                inv_det * (a * i - c * g),
+                inv_det * (c * d - a * f),
             ],
             [
-                inv_det.clone() * (d.clone() * h.clone() - e.clone() * g.clone()),
-                inv_det.clone() * (b.clone() * g.clone() - a.clone() * h.clone()),
-                inv_det.clone() * (a.clone() * e.clone() - b.clone() * d.clone()),
+                inv_det * (d * h - e * g),
+                inv_det * (b * g - a * h),
+                inv_det * (a * e - b * d),
             ],
         ];
 
@@ -258,7 +257,7 @@ pub fn scale_point(point: &PgPoint, sx: Fraction<i64>, sy: Fraction<i64>) -> PgP
 /// # Returns
 ///
 /// The transformation matrix
-pub fn projective_transform(src: &[PgPoint; 4], dst: &[PgPoint; 4]) -> Transform {
+pub fn projective_transform(_src: &[PgPoint; 4], _dst: &[PgPoint; 4]) -> Transform {
     // This is a simplified implementation
     // A full implementation would require solving a system of linear equations
     // to find the transformation matrix that maps src to dst
