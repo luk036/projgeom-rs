@@ -3,8 +3,8 @@
 //! This example demonstrates the computation of harmonic conjugates
 //! in projective geometry.
 
-use projgeom_rs::{PgPoint, harm_conj, coincident};
 use projgeom_rs::pg_plane::ProjectivePlane;
+use projgeom_rs::{coincident, harm_conj, PgPoint};
 
 fn main() {
     println!("=== Harmonic Conjugates Example ===\n");

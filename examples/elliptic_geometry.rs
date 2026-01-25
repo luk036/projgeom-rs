@@ -3,9 +3,9 @@
 //! This example demonstrates operations in elliptic geometry,
 //! including perpendicular lines, orthocenters, and altitudes.
 
-use projgeom_rs::{EllipticPoint, EllipticLine, orthocenter, tri_altitude, tri_dual, is_perpendicular};
+use projgeom_rs::ck_plane::CayleyKleinPlanePrimitive;
 use projgeom_rs::pg_plane::ProjectivePlanePrimitive;
-use projgeom_rs::ck_plane::{CayleyKleinPlane, CayleyKleinPlanePrimitive};
+use projgeom_rs::{is_perpendicular, orthocenter, tri_altitude, tri_dual, EllipticPoint};
 
 fn main() {
     println!("=== Elliptic Geometry Example ===\n");

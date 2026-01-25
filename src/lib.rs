@@ -5,8 +5,8 @@ pub mod cross_ratio;
 // pub mod hyperbolic;
 // pub mod elliptic;
 pub mod ell_object;
-pub mod euclid_object;
 pub mod error;
+pub mod euclid_object;
 pub mod ffi;
 pub mod hyp_object;
 pub mod myck_object;
@@ -19,7 +19,10 @@ pub mod visualization;
 
 pub use crate::ck_plane::*;
 pub use crate::conic::{Conic, ConicType};
-pub use crate::cross_ratio::{cross_ratio, cross_ratio_lines, is_harmonic_division, projective_transform_point, projective_transform_line};
+pub use crate::cross_ratio::{
+    cross_ratio, cross_ratio_lines, is_harmonic_division, projective_transform_line,
+    projective_transform_point,
+};
 pub use crate::error::{GeometryError, Result};
 pub use crate::pg_object::{EllipticLine, EllipticPoint};
 pub use crate::pg_object::{EuclidLine, EuclidPoint};

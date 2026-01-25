@@ -3,8 +3,8 @@
 //! This example demonstrates basic operations in projective geometry,
 //! including point-line incidence, line intersection, and parametrization.
 
-use projgeom_rs::{PgPoint, PgLine, ProjectivePlane};
 use projgeom_rs::pg_plane::ProjectivePlanePrimitive;
+use projgeom_rs::{PgLine, PgPoint, ProjectivePlane};
 
 fn main() {
     println!("=== Projective Geometry Example ===\n");

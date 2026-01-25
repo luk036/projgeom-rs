@@ -3,9 +3,9 @@
 //! This example demonstrates operations in Euclidean geometry,
 //! including reflections and perpendicular lines.
 
-use projgeom_rs::{EuclidPoint, EuclidLine, reflect, orthocenter, tri_altitude};
-use projgeom_rs::pg_plane::ProjectivePlanePrimitive;
 use projgeom_rs::ck_plane::CayleyKleinPlanePrimitive;
+use projgeom_rs::pg_plane::ProjectivePlanePrimitive;
+use projgeom_rs::{orthocenter, reflect, tri_altitude, EuclidLine, EuclidPoint};
 
 fn main() {
     println!("=== Euclidean Geometry Example ===\n");

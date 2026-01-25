@@ -3,7 +3,7 @@
 //! This module provides various geometric transformations including
 //! rotations, translations, projections, and projective transformations.
 
-use crate::pg_object::{PgPoint, PgLine};
+use crate::pg_object::{PgLine, PgPoint};
 use fractions::Fraction;
 
 /// A 3x3 transformation matrix for projective geometry
@@ -18,9 +18,21 @@ impl Transform {
     pub fn identity() -> Self {
         Transform {
             matrix: [
-                [Fraction::<i64>::new(1, 1), Fraction::<i64>::new(0, 1), Fraction::<i64>::new(0, 1)],
-                [Fraction::<i64>::new(0, 1), Fraction::<i64>::new(1, 1), Fraction::<i64>::new(0, 1)],
-                [Fraction::<i64>::new(0, 1), Fraction::<i64>::new(0, 1), Fraction::<i64>::new(1, 1)],
+                [
+                    Fraction::<i64>::new(1, 1),
+                    Fraction::<i64>::new(0, 1),
+                    Fraction::<i64>::new(0, 1),
+                ],
+                [
+                    Fraction::<i64>::new(0, 1),
+                    Fraction::<i64>::new(1, 1),
+                    Fraction::<i64>::new(0, 1),
+                ],
+                [
+                    Fraction::<i64>::new(0, 1),
+                    Fraction::<i64>::new(0, 1),
+                    Fraction::<i64>::new(1, 1),
+                ],
             ],
         }
     }
@@ -34,9 +46,21 @@ impl Transform {
     pub fn translation(tx: i64, ty: i64) -> Self {
         Transform {
             matrix: [
-                [Fraction::<i64>::new(1, 1), Fraction::<i64>::new(0, 1), Fraction::<i64>::new(tx, 1)],
-                [Fraction::<i64>::new(0, 1), Fraction::<i64>::new(1, 1), Fraction::<i64>::new(ty, 1)],
-                [Fraction::<i64>::new(0, 1), Fraction::<i64>::new(0, 1), Fraction::<i64>::new(1, 1)],
+                [
+                    Fraction::<i64>::new(1, 1),
+                    Fraction::<i64>::new(0, 1),
+                    Fraction::<i64>::new(tx, 1),
+                ],
+                [
+                    Fraction::<i64>::new(0, 1),
+                    Fraction::<i64>::new(1, 1),
+                    Fraction::<i64>::new(ty, 1),
+                ],
+                [
+                    Fraction::<i64>::new(0, 1),
+                    Fraction::<i64>::new(0, 1),
+                    Fraction::<i64>::new(1, 1),
+                ],
             ],
         }
     }
@@ -52,7 +76,11 @@ impl Transform {
             matrix: [
                 [angle_cos, -angle_sin, Fraction::<i64>::new(0, 1)],
                 [angle_sin, angle_cos, Fraction::<i64>::new(0, 1)],
-                [Fraction::<i64>::new(0, 1), Fraction::<i64>::new(0, 1), Fraction::<i64>::new(1, 1)],
+                [
+                    Fraction::<i64>::new(0, 1),
+                    Fraction::<i64>::new(0, 1),
+                    Fraction::<i64>::new(1, 1),
+                ],
             ],
         }
     }
@@ -68,7 +96,11 @@ impl Transform {
             matrix: [
                 [sx, Fraction::<i64>::new(0, 1), Fraction::<i64>::new(0, 1)],
                 [Fraction::<i64>::new(0, 1), sy, Fraction::<i64>::new(0, 1)],
-                [Fraction::<i64>::new(0, 1), Fraction::<i64>::new(0, 1), Fraction::<i64>::new(1, 1)],
+                [
+                    Fraction::<i64>::new(0, 1),
+                    Fraction::<i64>::new(0, 1),
+                    Fraction::<i64>::new(1, 1),
+                ],
             ],
         }
     }
@@ -84,7 +116,11 @@ impl Transform {
             matrix: [
                 [Fraction::<i64>::new(1, 1), shx, Fraction::<i64>::new(0, 1)],
                 [shy, Fraction::<i64>::new(1, 1), Fraction::<i64>::new(0, 1)],
-                [Fraction::<i64>::new(0, 1), Fraction::<i64>::new(0, 1), Fraction::<i64>::new(1, 1)],
+                [
+                    Fraction::<i64>::new(0, 1),
+                    Fraction::<i64>::new(0, 1),
+                    Fraction::<i64>::new(1, 1),
+                ],
             ],
         }
     }
@@ -112,15 +148,9 @@ impl Transform {
         let y = Fraction::<i64>::new(point.coord[1], 1);
         let z = Fraction::<i64>::new(point.coord[2], 1);
 
-        let x_new = self.matrix[0][0] * x
-            + self.matrix[0][1] * y
-            + self.matrix[0][2] * z;
-        let y_new = self.matrix[1][0] * x
-            + self.matrix[1][1] * y
-            + self.matrix[1][2] * z;
-        let z_new = self.matrix[2][0] * x
-            + self.matrix[2][1] * y
-            + self.matrix[2][2] * z;
+        let x_new = self.matrix[0][0] * x + self.matrix[0][1] * y + self.matrix[0][2] * z;
+        let y_new = self.matrix[1][0] * x + self.matrix[1][1] * y + self.matrix[1][2] * z;
+        let z_new = self.matrix[2][0] * x + self.matrix[2][1] * y + self.matrix[2][2] * z;
 
         // Convert back to integer coordinates if possible
         PgPoint::new([
@@ -138,15 +168,9 @@ impl Transform {
         let y = Fraction::<i64>::new(line.coord[1], 1);
         let z = Fraction::<i64>::new(line.coord[2], 1);
 
-        let x_new = inverse.matrix[0][0] * x
-            + inverse.matrix[1][0] * y
-            + inverse.matrix[2][0] * z;
-        let y_new = inverse.matrix[0][1] * x
-            + inverse.matrix[1][1] * y
-            + inverse.matrix[2][1] * z;
-        let z_new = inverse.matrix[0][2] * x
-            + inverse.matrix[1][2] * y
-            + inverse.matrix[2][2] * z;
+        let x_new = inverse.matrix[0][0] * x + inverse.matrix[1][0] * y + inverse.matrix[2][0] * z;
+        let y_new = inverse.matrix[0][1] * x + inverse.matrix[1][1] * y + inverse.matrix[2][1] * z;
+        let z_new = inverse.matrix[0][2] * x + inverse.matrix[1][2] * y + inverse.matrix[2][2] * z;
 
         PgLine::new([
             x_new.numer() / x_new.denom(),
@@ -169,9 +193,7 @@ impl Transform {
         let i = self.matrix[2][2];
 
         // Compute determinant
-        let det = a * (e * i - f * h)
-            - b * (d * i - f * g)
-            + c * (d * h - e * g);
+        let det = a * (e * i - f * h) - b * (d * i - f * g) + c * (d * h - e * g);
 
         if det == Fraction::<i64>::new(0, 1) {
             panic!("Cannot compute inverse of singular matrix");
@@ -215,7 +237,11 @@ impl Default for Transform {
 /// * `point` - The point to rotate
 /// * `angle_cos` - Cosine of the rotation angle
 /// * `angle_sin` - Sine of the rotation angle
-pub fn rotate_point(point: &PgPoint, angle_cos: Fraction<i64>, angle_sin: Fraction<i64>) -> PgPoint {
+pub fn rotate_point(
+    point: &PgPoint,
+    angle_cos: Fraction<i64>,
+    angle_sin: Fraction<i64>,
+) -> PgPoint {
     let transform = Transform::rotation(angle_cos, angle_sin);
     transform.apply_point(point)
 }

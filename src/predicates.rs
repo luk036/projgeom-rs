@@ -3,7 +3,7 @@
 //! This module provides various geometric predicates such as orientation,
 //! distance calculations, and angle computations for projective geometry.
 
-use crate::pg_object::{PgPoint, PgLine};
+use crate::pg_object::{PgLine, PgPoint};
 use crate::pg_plane::ProjectivePlane;
 use fractions::Fraction;
 use num_integer::gcd;
@@ -281,7 +281,10 @@ fn to_affine(point: &PgPoint) -> (i64, i64) {
     if point.coord[2] == 0 {
         panic!("Cannot convert point at infinity to affine coordinates");
     }
-    (point.coord[0] / point.coord[2], point.coord[1] / point.coord[2])
+    (
+        point.coord[0] / point.coord[2],
+        point.coord[1] / point.coord[2],
+    )
 }
 
 /// Check if a point is at infinity

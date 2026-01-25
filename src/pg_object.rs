@@ -139,7 +139,9 @@ macro_rules! define_point_or_line {
         impl From<(i64, i64, i64)> for $point {
             #[inline]
             fn from(coords: (i64, i64, i64)) -> Self {
-                Self { coord: [coords.0, coords.1, coords.2] }
+                Self {
+                    coord: [coords.0, coords.1, coords.2],
+                }
             }
         }
 

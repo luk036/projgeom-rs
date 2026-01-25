@@ -3,8 +3,8 @@
 //! This module contains integration tests that verify complex geometric
 //! constructions and theorems across different geometry types.
 
-use projgeom_rs::*;
 use projgeom_rs::pg_plane::ProjectivePlanePrimitive;
+use projgeom_rs::*;
 
 #[test]
 fn test_desargues_theorem() {
@@ -28,7 +28,11 @@ fn test_desargues_theorem() {
     let line_c1c2 = c1.meet(&c2);
 
     // All three lines should intersect at P
-    assert!(coincident(&line_a1a2.meet(&line_b1b2), &p, &line_a1a2.meet(&line_c1c2)));
+    assert!(coincident(
+        &line_a1a2.meet(&line_b1b2),
+        &p,
+        &line_a1a2.meet(&line_c1c2)
+    ));
 
     // Find the intersection points of corresponding sides
     let ab = a1.meet(&b1).meet(&a2.meet(&b2));
@@ -45,13 +49,13 @@ fn test_pappus_theorem() {
     // the three intersection points of opposite sides of the hexagon are collinear.
 
     // First line with three points
-    let l1 = PgLine::new([0, 0, 1]);
+    let _l1 = PgLine::new([0, 0, 1]);
     let a = PgPoint::new([1, 0, 1]);
     let b = PgPoint::new([2, 0, 1]);
     let c = PgPoint::new([3, 0, 1]);
 
     // Second line with three points
-    let l2 = PgLine::new([1, 1, 0]);
+    let _l2 = PgLine::new([1, 1, 0]);
     let d = PgPoint::new([1, -1, 1]);
     let e = PgPoint::new([2, -2, 1]);
     let f = PgPoint::new([3, -3, 1]);

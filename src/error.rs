@@ -31,7 +31,9 @@ impl fmt::Display for GeometryError {
         match self {
             GeometryError::Overflow(msg) => write!(f, "Arithmetic overflow: {}", msg),
             GeometryError::DivisionByZero => write!(f, "Division by zero"),
-            GeometryError::InvalidCoordinates => write!(f, "Invalid homogeneous coordinates (all zeros)"),
+            GeometryError::InvalidCoordinates => {
+                write!(f, "Invalid homogeneous coordinates (all zeros)")
+            }
             GeometryError::PointAtInfinity => write!(f, "Point is at infinity"),
             GeometryError::CoincidentPoints => write!(f, "Points are coincident"),
             GeometryError::CoincidentLines => write!(f, "Lines are coincident"),

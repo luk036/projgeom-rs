@@ -3,7 +3,7 @@
 //! This module provides C-compatible functions for interfacing with
 //! the projgeom-rs library from C or C++ code.
 
-use crate::pg_object::{PgPoint, PgLine};
+use crate::pg_object::{PgLine, PgPoint};
 use crate::pg_plane::ProjectivePlanePrimitive;
 use std::ffi::{CStr, CString};
 use std::os::raw::{c_char, c_int};
@@ -175,7 +175,11 @@ pub unsafe extern "C" fn pg_point_incident(
     let p = &*(point as *const PgPoint);
     let l = &*(line as *const PgLine);
 
-    if p.incident(l) { 1 } else { 0 }
+    if p.incident(l) {
+        1
+    } else {
+        0
+    }
 }
 
 /// Check if two points are equal
@@ -184,10 +188,7 @@ pub unsafe extern "C" fn pg_point_incident(
 ///
 /// All pointers must be valid and non-null.
 #[no_mangle]
-pub unsafe extern "C" fn pg_point_eq(
-    p1: *const PgPointFFI,
-    p2: *const PgPointFFI,
-) -> c_int {
+pub unsafe extern "C" fn pg_point_eq(p1: *const PgPointFFI, p2: *const PgPointFFI) -> c_int {
     if p1.is_null() || p2.is_null() {
         return 0;
     }
@@ -195,7 +196,11 @@ pub unsafe extern "C" fn pg_point_eq(
     let point1 = &*(p1 as *const PgPoint);
     let point2 = &*(p2 as *const PgPoint);
 
-    if point1 == point2 { 1 } else { 0 }
+    if point1 == point2 {
+        1
+    } else {
+        0
+    }
 }
 
 /// Check if two lines are equal
@@ -204,10 +209,7 @@ pub unsafe extern "C" fn pg_point_eq(
 ///
 /// All pointers must be valid and non-null.
 #[no_mangle]
-pub unsafe extern "C" fn pg_line_eq(
-    l1: *const PgLineFFI,
-    l2: *const PgLineFFI,
-) -> c_int {
+pub unsafe extern "C" fn pg_line_eq(l1: *const PgLineFFI, l2: *const PgLineFFI) -> c_int {
     if l1.is_null() || l2.is_null() {
         return 0;
     }
@@ -215,7 +217,11 @@ pub unsafe extern "C" fn pg_line_eq(
     let line1 = &*(l1 as *const PgLine);
     let line2 = &*(l2 as *const PgLine);
 
-    if line1 == line2 { 1 } else { 0 }
+    if line1 == line2 {
+        1
+    } else {
+        0
+    }
 }
 
 /// Get the last error message

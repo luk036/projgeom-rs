@@ -70,7 +70,12 @@ pub fn cross_ratio_lines(l1: &PgPoint, l2: &PgPoint, l3: &PgPoint, l4: &PgPoint)
     let p2 = l2.aux();
     let p3 = l3.aux();
     let p4 = l4.aux();
-    cross_ratio(&PgPoint::new(p1.coord), &PgPoint::new(p2.coord), &PgPoint::new(p3.coord), &PgPoint::new(p4.coord))
+    cross_ratio(
+        &PgPoint::new(p1.coord),
+        &PgPoint::new(p2.coord),
+        &PgPoint::new(p3.coord),
+        &PgPoint::new(p4.coord),
+    )
 }
 
 /// Check if four points form a harmonic division
@@ -225,9 +230,21 @@ pub fn compute_projective_transform(
 
     // Return identity matrix as a placeholder
     [
-        [Fraction::<i64>::new(1, 1), Fraction::<i64>::new(0, 1), Fraction::<i64>::new(0, 1)],
-        [Fraction::<i64>::new(0, 1), Fraction::<i64>::new(1, 1), Fraction::<i64>::new(0, 1)],
-        [Fraction::<i64>::new(0, 1), Fraction::<i64>::new(0, 1), Fraction::<i64>::new(1, 1)],
+        [
+            Fraction::<i64>::new(1, 1),
+            Fraction::<i64>::new(0, 1),
+            Fraction::<i64>::new(0, 1),
+        ],
+        [
+            Fraction::<i64>::new(0, 1),
+            Fraction::<i64>::new(1, 1),
+            Fraction::<i64>::new(0, 1),
+        ],
+        [
+            Fraction::<i64>::new(0, 1),
+            Fraction::<i64>::new(0, 1),
+            Fraction::<i64>::new(1, 1),
+        ],
     ]
 }
 
@@ -250,9 +267,21 @@ mod tests {
     #[test]
     fn test_projective_transform_identity() {
         let identity = [
-            [Fraction::<i64>::new(1, 1), Fraction::<i64>::new(0, 1), Fraction::<i64>::new(0, 1)],
-            [Fraction::<i64>::new(0, 1), Fraction::<i64>::new(1, 1), Fraction::<i64>::new(0, 1)],
-            [Fraction::<i64>::new(0, 1), Fraction::<i64>::new(0, 1), Fraction::<i64>::new(1, 1)],
+            [
+                Fraction::<i64>::new(1, 1),
+                Fraction::<i64>::new(0, 1),
+                Fraction::<i64>::new(0, 1),
+            ],
+            [
+                Fraction::<i64>::new(0, 1),
+                Fraction::<i64>::new(1, 1),
+                Fraction::<i64>::new(0, 1),
+            ],
+            [
+                Fraction::<i64>::new(0, 1),
+                Fraction::<i64>::new(0, 1),
+                Fraction::<i64>::new(1, 1),
+            ],
         ];
 
         let point = PgPoint::new([1, 2, 1]);

@@ -3,26 +3,21 @@
 //! This module benchmarks the performance of various geometric operations
 //! using the criterion library.
 
-use criterion::{black_box, criterion_group, criterion_main, Criterion, BenchmarkId};
+use criterion::{black_box, criterion_group, criterion_main, Criterion};
 use projgeom_rs::*;
 
 fn bench_dot_product(c: &mut Criterion) {
     let mut group = c.benchmark_group("dot_product");
 
     group.bench_function("basic", |b| {
-        b.iter(|| {
-            projgeom_rs::pg_object::dot_product(
-                black_box(&[1, 2, 3]),
-                black_box(&[4, 5, 6])
-            )
-        })
+        b.iter(|| projgeom_rs::pg_object::dot_product(black_box(&[1, 2, 3]), black_box(&[4, 5, 6])))
     });
 
     group.bench_function("large_values", |b| {
         b.iter(|| {
             projgeom_rs::pg_object::dot_product(
                 black_box(&[1000, 2000, 3000]),
-                black_box(&[4000, 5000, 6000])
+                black_box(&[4000, 5000, 6000]),
             )
         })
     });
@@ -35,10 +30,7 @@ fn bench_cross_product(c: &mut Criterion) {
 
     group.bench_function("basic", |b| {
         b.iter(|| {
-            projgeom_rs::pg_object::cross_product(
-                black_box(&[1, 2, 3]),
-                black_box(&[4, 5, 6])
-            )
+            projgeom_rs::pg_object::cross_product(black_box(&[1, 2, 3]), black_box(&[4, 5, 6]))
         })
     });
 
@@ -46,7 +38,7 @@ fn bench_cross_product(c: &mut Criterion) {
         b.iter(|| {
             projgeom_rs::pg_object::cross_product(
                 black_box(&[1000, 2000, 3000]),
-                black_box(&[4000, 5000, 6000])
+                black_box(&[4000, 5000, 6000]),
             )
         })
     });
@@ -129,17 +121,11 @@ fn bench_perp(c: &mut Criterion) {
     let p_hyp = HyperbolicPoint::new([1, 2, 3]);
     let p_euc = EuclidPoint::new([1, 2, 1]);
 
-    group.bench_function("elliptic", |b| {
-        b.iter(|| black_box(p_ell).perp())
-    });
+    group.bench_function("elliptic", |b| b.iter(|| black_box(p_ell).perp()));
 
-    group.bench_function("hyperbolic", |b| {
-        b.iter(|| black_box(p_hyp).perp())
-    });
+    group.bench_function("hyperbolic", |b| b.iter(|| black_box(p_hyp).perp()));
 
-    group.bench_function("euclidean", |b| {
-        b.iter(|| black_box(p_euc).perp())
-    });
+    group.bench_function("euclidean", |b| b.iter(|| black_box(p_euc).perp()));
 
     group.finish();
 }
@@ -205,9 +191,7 @@ fn bench_triangle_operations(c: &mut Criterion) {
         b.iter(|| tri_altitude(black_box(&triangle)))
     });
 
-    group.bench_function("tri_dual", |b| {
-        b.iter(|| tri_dual(black_box(&triangle)))
-    });
+    group.bench_function("tri_dual", |b| b.iter(|| tri_dual(black_box(&triangle))));
 
     group.finish();
 }

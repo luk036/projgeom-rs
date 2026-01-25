@@ -3,7 +3,7 @@
 //! This module provides support for conic sections (circles, ellipses,
 //! parabolas, and hyperbolas) in projective geometry.
 
-use crate::pg_object::{PgPoint, PgLine};
+use crate::pg_object::{PgLine, PgPoint};
 use fractions::Fraction;
 
 /// Represents a conic section in homogeneous coordinates
@@ -60,8 +60,16 @@ impl Conic {
         // In homogeneous coordinates: y*z - a*x^2 = 0
         let matrix = [
             [-a, Fraction::<i64>::new(0, 1), Fraction::<i64>::new(0, 1)],
-            [Fraction::<i64>::new(0, 1), Fraction::<i64>::new(0, 1), Fraction::<i64>::new(1, 2)],
-            [Fraction::<i64>::new(0, 1), Fraction::<i64>::new(1, 2), Fraction::<i64>::new(0, 1)],
+            [
+                Fraction::<i64>::new(0, 1),
+                Fraction::<i64>::new(0, 1),
+                Fraction::<i64>::new(1, 2),
+            ],
+            [
+                Fraction::<i64>::new(0, 1),
+                Fraction::<i64>::new(1, 2),
+                Fraction::<i64>::new(0, 1),
+            ],
         ];
 
         Conic { matrix }
@@ -82,15 +90,9 @@ impl Conic {
         let z = Fraction::<i64>::new(point.coord[2], 1);
 
         // Compute x^T Q x
-        let result = x * (self.matrix[0][0] * x
-            + self.matrix[0][1] * y
-            + self.matrix[0][2] * z)
-            + y * (self.matrix[1][0] * x
-            + self.matrix[1][1] * y
-            + self.matrix[1][2] * z)
-            + z * (self.matrix[2][0] * x
-            + self.matrix[2][1] * y
-            + self.matrix[2][2] * z);
+        let result = x * (self.matrix[0][0] * x + self.matrix[0][1] * y + self.matrix[0][2] * z)
+            + y * (self.matrix[1][0] * x + self.matrix[1][1] * y + self.matrix[1][2] * z)
+            + z * (self.matrix[2][0] * x + self.matrix[2][1] * y + self.matrix[2][2] * z);
 
         result == Fraction::<i64>::new(0, 1)
     }
@@ -110,15 +112,9 @@ impl Conic {
         let z = Fraction::<i64>::new(point.coord[2], 1);
 
         // Polar line: Q * x
-        let a = self.matrix[0][0] * x
-            + self.matrix[0][1] * y
-            + self.matrix[0][2] * z;
-        let b = self.matrix[1][0] * x
-            + self.matrix[1][1] * y
-            + self.matrix[1][2] * z;
-        let c = self.matrix[2][0] * x
-            + self.matrix[2][1] * y
-            + self.matrix[2][2] * z;
+        let a = self.matrix[0][0] * x + self.matrix[0][1] * y + self.matrix[0][2] * z;
+        let b = self.matrix[1][0] * x + self.matrix[1][1] * y + self.matrix[1][2] * z;
+        let c = self.matrix[2][0] * x + self.matrix[2][1] * y + self.matrix[2][2] * z;
 
         PgLine::new([
             a.numer() / a.denom(),

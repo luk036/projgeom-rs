@@ -3,7 +3,7 @@
 //! This module provides utilities for visualizing geometric objects
 //! using SVG format.
 
-use crate::pg_object::{PgPoint, PgLine};
+use crate::pg_object::{PgLine, PgPoint};
 use std::fmt::Write;
 
 /// SVG renderer for geometric objects
@@ -108,8 +108,12 @@ impl SvgRenderer {
             let x1 = 0.0;
             let x2 = 1000.0;
 
-            if let Some((svg_x1, svg_y1)) = self.to_svg_coords(&PgPoint::new([x1 as i64, y1 as i64, 1])) {
-                if let Some((svg_x2, svg_y2)) = self.to_svg_coords(&PgPoint::new([x2 as i64, y2 as i64, 1])) {
+            if let Some((svg_x1, svg_y1)) =
+                self.to_svg_coords(&PgPoint::new([x1 as i64, y1 as i64, 1]))
+            {
+                if let Some((svg_x2, svg_y2)) =
+                    self.to_svg_coords(&PgPoint::new([x2 as i64, y2 as i64, 1]))
+                {
                     return format!(
                         r#"<line x1="{:.2}" y1="{:.2}" x2="{:.2}" y2="{:.2}" stroke="{}" stroke-width="{:.2}" />"#,
                         svg_x1, svg_y1, svg_x2, svg_y2, color, stroke_width
@@ -123,8 +127,12 @@ impl SvgRenderer {
             let y1 = 0.0;
             let y2 = 1000.0;
 
-            if let Some((svg_x1, svg_y1)) = self.to_svg_coords(&PgPoint::new([x1 as i64, y1 as i64, 1])) {
-                if let Some((svg_x2, svg_y2)) = self.to_svg_coords(&PgPoint::new([x2 as i64, y2 as i64, 1])) {
+            if let Some((svg_x1, svg_y1)) =
+                self.to_svg_coords(&PgPoint::new([x1 as i64, y1 as i64, 1]))
+            {
+                if let Some((svg_x2, svg_y2)) =
+                    self.to_svg_coords(&PgPoint::new([x2 as i64, y2 as i64, 1]))
+                {
                     return format!(
                         r#"<line x1="{:.2}" y1="{:.2}" x2="{:.2}" y2="{:.2}" stroke="{}" stroke-width="{:.2}" />"#,
                         svg_x1, svg_y1, svg_x2, svg_y2, color, stroke_width
@@ -144,7 +152,13 @@ impl SvgRenderer {
     /// * `p2` - Second point
     /// * `color` - Color of the segment
     /// * `stroke_width` - Width of the segment
-    pub fn draw_segment(&self, p1: &PgPoint, p2: &PgPoint, color: &str, stroke_width: f64) -> String {
+    pub fn draw_segment(
+        &self,
+        p1: &PgPoint,
+        p2: &PgPoint,
+        color: &str,
+        stroke_width: f64,
+    ) -> String {
         if let Some((x1, y1)) = self.to_svg_coords(p1) {
             if let Some((x2, y2)) = self.to_svg_coords(p2) {
                 return format!(
