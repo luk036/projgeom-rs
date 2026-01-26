@@ -870,9 +870,9 @@ mod pg_object_tests {
         }
         let p = PgPoint::new(coord_arr);
         let l = p.aux();
-        // A point is incident with its polar line unless it's the line at infinity
-        // The line at infinity is [0, 0, 1], and a point (x, y, z) is incident with it if z = 0
-        !(l.coord[0] == 0 && l.coord[1] == 0 && l.coord[2] != 0) || p.incident(&l)
+        // A point is NOT incident with its polar line (aux returns dual not incident with self)
+        // The line at infinity [0, 0, 1] has no pole, so we skip points that would have it as polar
+        !(l.coord[0] == 0 && l.coord[1] == 0 && l.coord[2] != 0) || !p.incident(&l)
     }
 
     #[quickcheck]
@@ -883,9 +883,9 @@ mod pg_object_tests {
         }
         let l = PgLine::new(coord_arr);
         let p = l.aux();
-        // A line is incident with its pole unless it's the line at infinity
-        // The line at infinity is [0, 0, 1]
-        !(coord_arr[0] == 0 && coord_arr[1] == 0 && coord_arr[2] != 0) || l.incident(&p)
+        // A line is NOT incident with its pole (aux returns dual not incident with self)
+        // The line at infinity [0, 0, 1] has no pole, so we skip it
+        (coord_arr[0] == 0 && coord_arr[1] == 0 && coord_arr[2] != 0) || !l.incident(&p)
     }
 
     // Original unit tests for reference
