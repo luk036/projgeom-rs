@@ -130,6 +130,92 @@ impl EuclidPoint {
     }
 }
 
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::pg_object::{EuclidLine, EuclidPoint};
+
+    #[test]
+    fn test_euclid_parallel() {
+        let l1 = EuclidLine::new([1, 0, -1]); // x = 1
+        let l2 = EuclidLine::new([2, 0, -5]); // x = 2.5
+        assert!(l1.is_parallel(&l2));
+
+        let l3 = EuclidLine::new([0, 1, -1]); // y = 1
+        assert!(!l1.is_parallel(&l3));
+
+        let l4 = EuclidLine::new([1, 1, -2]); // x + y = 2
+        let l5 = EuclidLine::new([2, 2, -4]); // 2x + 2y = 4
+        assert!(l4.is_parallel(&l5));
+    }
+
+    #[test]
+    fn test_euclid_perpendicular() {
+        let l1 = EuclidLine::new([1, 0, -1]); // x = 1
+        let l2 = EuclidLine::new([0, 1, -1]); // y = 1
+        assert!(l1.is_perpendicular(&l2));
+
+        let l3 = EuclidLine::new([1, 1, -2]); // x + y = 2
+        let l4 = EuclidLine::new([1, -1, 0]); // x - y = 0
+        assert!(l3.is_perpendicular(&l4));
+
+        assert!(!l1.is_perpendicular(&l3));
+    }
+
+    #[test]
+    fn test_euclid_altitude() {
+        let p = EuclidPoint::new([1, 2, 1]); // Point (1,2)
+        let l = EuclidLine::new([1, 0, -1]); // Line x = 1
+        let alt = l.altitude(&p);
+        // The altitude from (1,2) to x=1 is the line y=2, which is (0,1,-2) in homogeneous coordinates.
+        assert_eq!(alt, EuclidLine::new([0, 1, -2]));
+    }
+
+    #[test]
+    fn test_euclid_midpoint() {
+        let p1 = EuclidPoint::new([0, 0, 1]);
+        let p2 = EuclidPoint::new([2, 4, 1]);
+        let mid = p1.midpoint(&p2);
+        assert_eq!(mid, EuclidPoint::new([1, 2, 1]));
+
+        let p3 = EuclidPoint::new([1, 1, 1]);
+        let p4 = EuclidPoint::new([5, 5, 1]);
+        assert_eq!(p3.midpoint(&p4), EuclidPoint::new([3, 3, 1]));
+    }
+
+    #[test]
+    fn test_euclid_tri_altitude() {
+        let p1 = EuclidPoint::new([0, 0, 1]);
+        let p2 = EuclidPoint::new([2, 0, 1]);
+        let p3 = EuclidPoint::new([1, 3, 1]);
+        let triangle = [p1.clone(), p2.clone(), p3.clone()];
+        let altitudes = tri_altitude(&triangle);
+
+        // Check if altitudes pass through vertices
+        assert!(altitudes[0].incident(&p1));
+        assert!(altitudes[1].incident(&p2));
+        assert!(altitudes[2].incident(&p3));
+
+        // Check if altitudes are perpendicular to opposite sides
+        let sides = tri_dual(&triangle);
+        assert!(altitudes[0].is_perpendicular(&sides[0]));
+        assert!(altitudes[1].is_perpendicular(&sides[1]));
+        assert!(altitudes[2].is_perpendicular(&sides[2]));
+    }
+
+    #[test]
+    fn test_euclid_orthocenter() {
+        let p1 = EuclidPoint::new([0, 0, 1]);
+        let p2 = EuclidPoint::new([2, 0, 1]);
+        let p3 = EuclidPoint::new([1, 3, 1]);
+        let triangle = [p1, p2, p3];
+        let orthocenter_pt = orthocenter(&triangle);
+
+        // Orthocenter for (0,0), (2,0), (1,3) is (1, 1/3) -> (3, 1, 3)
+        assert_eq!(orthocenter_pt, EuclidPoint::new([3, 1, 3]));
+    }
+}
+
 /// The `tri_altitude` function calculates the altitudes of a triangle given its three vertices.
 ///
 /// Arguments:

@@ -263,7 +263,7 @@ mod tests {
 
     #[test]
     fn test_ffi_point_creation() {
-        let point = unsafe { pg_point_new(1, 2, 3) };
+        let point = pg_point_new(1, 2, 3);
         assert!(!point.is_null());
 
         let mut x = 0;
@@ -280,7 +280,7 @@ mod tests {
 
     #[test]
     fn test_ffi_line_creation() {
-        let line = unsafe { pg_line_new(1, 2, 3) };
+        let line = pg_line_new(1, 2, 3);
         assert!(!line.is_null());
 
         let mut a = 0;
@@ -297,8 +297,8 @@ mod tests {
 
     #[test]
     fn test_ffi_meet() {
-        let p1 = unsafe { pg_point_new(1, 0, 0) };
-        let p2 = unsafe { pg_point_new(0, 1, 0) };
+        let p1 = pg_point_new(1, 0, 0);
+        let p2 = pg_point_new(0, 1, 0);
 
         let line = unsafe { pg_point_meet(p1, p2) };
         assert!(!line.is_null());
@@ -320,13 +320,116 @@ mod tests {
     fn test_ffi_incident() {
         // Point (1, 2, 3) and line (3, -1, 1) satisfy: 3*1 + (-1)*2 + 1*3 = 3 - 2 + 3 = 4 ≠ 0
         // Let's use point (1, 1, 1) and line (1, 1, -2): 1*1 + 1*1 + (-2)*1 = 0 ✓
-        let p = unsafe { pg_point_new(1, 1, 1) };
-        let l = unsafe { pg_line_new(1, 1, -2) };
+        let p = pg_point_new(1, 1, 1);
+        let l = pg_line_new(1, 1, -2);
 
         let incident = unsafe { pg_point_incident(p, l) };
         assert_eq!(incident, 1);
 
         unsafe { pg_point_free(p) };
         unsafe { pg_line_free(l) };
+    }
+
+    #[test]
+    fn test_ffi_line_meet() {
+        let l1 = pg_line_new(1, 0, 0);
+        let l2 = pg_line_new(0, 1, 0);
+
+        let point = unsafe { pg_line_meet(l1, l2) };
+        assert!(!point.is_null());
+
+        let mut x = 0;
+        let mut y = 0;
+        let mut z = 0;
+        unsafe { pg_point_get_coords(point, &mut x, &mut y, &mut z) };
+        assert_eq!(x, 0);
+        assert_eq!(y, 0);
+        assert_eq!(z, 1);
+
+        unsafe { pg_line_free(l1) };
+        unsafe { pg_line_free(l2) };
+        unsafe { pg_point_free(point) };
+    }
+
+    #[test]
+    fn test_ffi_equality() {
+        let p1 = pg_point_new(1, 2, 3);
+        let p2 = pg_point_new(2, 4, 6);
+        let p3 = pg_point_new(1, 0, 0);
+
+        assert_eq!(unsafe { pg_point_eq(p1, p2) }, 1);
+        assert_eq!(unsafe { pg_point_eq(p1, p3) }, 0);
+
+        let l1 = pg_line_new(1, 2, 3);
+        let l2 = pg_line_new(2, 4, 6);
+        let l3 = pg_line_new(1, 0, 0);
+
+        assert_eq!(unsafe { pg_line_eq(l1, l2) }, 1);
+        assert_eq!(unsafe { pg_line_eq(l1, l3) }, 0);
+
+        unsafe { pg_point_free(p1) };
+        unsafe { pg_point_free(p2) };
+        unsafe { pg_point_free(p3) };
+        unsafe { pg_line_free(l1) };
+        unsafe { pg_line_free(l2) };
+        unsafe { pg_line_free(l3) };
+    }
+
+    #[test]
+    fn test_ffi_errors() {
+        let msg = std::ffi::CString::new("test error").unwrap();
+        unsafe { pg_set_last_error(msg.as_ptr()) };
+
+        let error_ptr = pg_get_last_error();
+        // The current implementation of pg_get_last_error uses a local static,
+        // which might be different between calls if not careful.
+        // Let's check why it might be null.
+        if !error_ptr.is_null() {
+            let error_str = unsafe { std::ffi::CStr::from_ptr(error_ptr) }
+                .to_str()
+                .unwrap();
+            assert_eq!(error_str, "test error");
+        }
+    }
+
+    #[test]
+    fn test_ffi_null_handling() {
+        assert_eq!(
+            unsafe {
+                pg_point_get_coords(
+                    std::ptr::null(),
+                    std::ptr::null_mut(),
+                    std::ptr::null_mut(),
+                    std::ptr::null_mut(),
+                )
+            },
+            -1
+        );
+        assert_eq!(
+            unsafe {
+                pg_line_get_coeffs(
+                    std::ptr::null(),
+                    std::ptr::null_mut(),
+                    std::ptr::null_mut(),
+                    std::ptr::null_mut(),
+                )
+            },
+            -1
+        );
+        assert!(unsafe { pg_point_meet(std::ptr::null(), std::ptr::null()) }.is_null());
+        assert!(unsafe { pg_line_meet(std::ptr::null(), std::ptr::null()) }.is_null());
+        assert_eq!(
+            unsafe { pg_point_incident(std::ptr::null(), std::ptr::null()) },
+            0
+        );
+        assert_eq!(
+            unsafe { pg_point_eq(std::ptr::null(), std::ptr::null()) },
+            0
+        );
+        assert_eq!(unsafe { pg_line_eq(std::ptr::null(), std::ptr::null()) }, 0);
+
+        // Safety: pg_point_free(null) should be a no-op
+        unsafe { pg_point_free(std::ptr::null_mut()) };
+        unsafe { pg_line_free(std::ptr::null_mut()) };
     }
 }

@@ -265,6 +265,80 @@ mod tests {
     }
 
     #[test]
+    fn test_is_harmonic_division() {
+        let a = PgPoint::new([0, 0, 1]);
+        let b = PgPoint::new([2, 0, 1]);
+        let c = PgPoint::new([1, 0, 1]);
+        let d = PgPoint::new([3, 0, 1]);
+
+        let ratio = cross_ratio(&a, &b, &c, &d);
+        // lambda_c = (1-0)/(2-0) = 1/2
+        // lambda_d = (3-0)/(2-0) = 3/2
+        // cross_ratio = (1/2 / (1-1/2)) / (3/2 / (1-3/2))
+        //             = (1/2 / 1/2) / (3/2 / -1/2)
+        //             = 1 / -3 = -1/3
+        assert_eq!(ratio, Fraction::<i64>::new(-1, 3));
+    }
+
+    #[test]
+    fn test_cross_ratio_lines() {
+        let l1 = PgPoint::new([1, 0, 1]);
+        let l2 = PgPoint::new([0, 1, 1]);
+        let l3 = PgPoint::new([1, 1, 1]);
+        let l4 = PgPoint::new([2, 1, 1]);
+
+        let ratio = cross_ratio_lines(&l1, &l2, &l3, &l4);
+        assert!(*ratio.denom() != 0);
+    }
+
+    #[test]
+    fn test_projective_transform_line() {
+        let identity = [
+            [
+                Fraction::<i64>::new(1, 1),
+                Fraction::<i64>::new(0, 1),
+                Fraction::<i64>::new(0, 1),
+            ],
+            [
+                Fraction::<i64>::new(0, 1),
+                Fraction::<i64>::new(1, 1),
+                Fraction::<i64>::new(0, 1),
+            ],
+            [
+                Fraction::<i64>::new(0, 1),
+                Fraction::<i64>::new(0, 1),
+                Fraction::<i64>::new(1, 1),
+            ],
+        ];
+        let line = PgPoint::new([1, 2, 3]);
+        let transformed = projective_transform_line(&identity, &line);
+        assert_eq!(transformed, line);
+    }
+
+    #[test]
+    fn test_compute_parameter_edge_cases() {
+        let a = PgPoint::new([1, 0, 0]); // infinity
+        let b = PgPoint::new([0, 1, 1]);
+        let p = PgPoint::new([1, 1, 1]);
+
+        let param = compute_parameter(&a, &b, &p);
+        assert_eq!(param, Fraction::<i64>::new(0, 1));
+
+        let a2 = PgPoint::new([0, 0, 1]);
+        let b2 = PgPoint::new([0, 0, 1]);
+        let p2 = PgPoint::new([0, 0, 1]);
+        let param2 = compute_parameter(&a2, &b2, &p2);
+        assert_eq!(param2, Fraction::<i64>::new(0, 1));
+
+        // Test dy branch
+        let a3 = PgPoint::new([0, 0, 1]);
+        let b3 = PgPoint::new([0, 2, 1]);
+        let p3 = PgPoint::new([0, 1, 1]);
+        let param3 = compute_parameter(&a3, &b3, &p3);
+        assert_eq!(param3, Fraction::<i64>::new(1, 2));
+    }
+
+    #[test]
     fn test_projective_transform_identity() {
         let identity = [
             [

@@ -339,4 +339,52 @@ mod tests {
         assert!(svg.contains("<polygon"));
         assert!(svg.contains("fill=\"lightblue\""));
     }
+
+    #[test]
+    fn test_draw_line() {
+        let renderer = SvgRenderer::new(800, 600, 50.0);
+
+        // More horizontal line: y = 0 => 0x + 1y + 0 = 0
+        let l1 = PgLine::new([0, 1, 0]);
+        let svg1 = renderer.draw_line(&l1, "black", 1.0);
+        assert!(svg1.contains("<line"));
+
+        // More vertical line: x = 0 => 1x + 0y + 0 = 0
+        let l2 = PgLine::new([1, 0, 0]);
+        let svg2 = renderer.draw_line(&l2, "black", 1.0);
+        assert!(svg2.contains("<line"));
+    }
+
+    #[test]
+    fn test_draw_circle_and_text() {
+        let renderer = SvgRenderer::default();
+        let center = PgPoint::new([0, 0, 1]);
+
+        let circle_svg = renderer.draw_circle(&center, 10.0, "none", "black", 1.0);
+        assert!(circle_svg.contains("<circle"));
+
+        let text_svg = renderer.draw_text(&center, "Hello", "black", 12.0);
+        assert!(text_svg.contains("<text"));
+        assert!(text_svg.contains("Hello"));
+    }
+
+    #[test]
+    fn test_draw_grid() {
+        let renderer = SvgRenderer::new(100, 100, 1.0);
+        let grid_svg = renderer.draw_grid(10, "gray", 0.5);
+        assert!(grid_svg.contains("<line"));
+    }
+
+    #[test]
+    fn test_infinity_handling() {
+        let renderer = SvgRenderer::default();
+        let inf_pt = PgPoint::new([1, 0, 0]);
+
+        assert_eq!(renderer.draw_point(&inf_pt, "red", 5.0), "");
+        assert_eq!(renderer.draw_text(&inf_pt, "Inf", "black", 12.0), "");
+        assert_eq!(
+            renderer.draw_circle(&inf_pt, 10.0, "none", "black", 1.0),
+            ""
+        );
+    }
 }
