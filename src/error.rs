@@ -122,4 +122,85 @@ mod tests {
         let result = validate_coords(&[0, 0, 0]);
         assert_eq!(result, Err(GeometryError::InvalidCoordinates));
     }
+
+    #[test]
+    fn test_checked_sub_success() {
+        let result = checked_sub(5, 3, "test");
+        assert_eq!(result, Ok(2));
+    }
+
+    #[test]
+    fn test_checked_sub_overflow() {
+        let result = checked_sub(i64::MIN, 1, "test");
+        assert!(matches!(result, Err(GeometryError::Overflow(_))));
+    }
+
+    #[test]
+    fn test_checked_mul_success() {
+        let result = checked_mul(5, 3, "test");
+        assert_eq!(result, Ok(15));
+    }
+
+    #[test]
+    fn test_checked_mul_overflow() {
+        let result = checked_mul(i64::MAX, 2, "test");
+        assert!(matches!(result, Err(GeometryError::Overflow(_))));
+    }
+
+    #[test]
+    fn test_error_display_overflow() {
+        let error = GeometryError::Overflow("test overflow".to_string());
+        let display = format!("{}", error);
+        assert!(display.contains("overflow"));
+        assert!(display.contains("test overflow"));
+    }
+
+    #[test]
+    fn test_error_display_division_by_zero() {
+        let error = GeometryError::DivisionByZero;
+        let display = format!("{}", error);
+        assert!(display.contains("Division by zero"));
+    }
+
+    #[test]
+    fn test_error_display_invalid_coordinates() {
+        let error = GeometryError::InvalidCoordinates;
+        let display = format!("{}", error);
+        assert!(display.contains("Invalid homogeneous coordinates"));
+    }
+
+    #[test]
+    fn test_error_display_point_at_infinity() {
+        let error = GeometryError::PointAtInfinity;
+        let display = format!("{}", error);
+        assert!(display.contains("Point is at infinity"));
+    }
+
+    #[test]
+    fn test_error_display_coincident_points() {
+        let error = GeometryError::CoincidentPoints;
+        let display = format!("{}", error);
+        assert!(display.contains("Points are coincident"));
+    }
+
+    #[test]
+    fn test_error_display_coincident_lines() {
+        let error = GeometryError::CoincidentLines;
+        let display = format!("{}", error);
+        assert!(display.contains("Lines are coincident"));
+    }
+
+    #[test]
+    fn test_error_display_not_collinear() {
+        let error = GeometryError::NotCollinear;
+        let display = format!("{}", error);
+        assert!(display.contains("Points are not collinear"));
+    }
+
+    #[test]
+    fn test_error_display_invalid_triangle() {
+        let error = GeometryError::InvalidTriangle;
+        let display = format!("{}", error);
+        assert!(display.contains("Invalid triangle"));
+    }
 }

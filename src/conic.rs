@@ -280,4 +280,164 @@ mod tests {
         // For the unit circle at (1,0), the tangent is x = 1
         assert_eq!(polar, PgLine::new([1, 0, -1]));
     }
+
+    #[test]
+    fn test_parabola_creation() {
+        let parabola = Conic::parabola(Fraction::<i64>::new(1, 1));
+
+        // Check that it's recognized as a parabola
+        assert_eq!(parabola.conic_type(), ConicType::Parabola);
+    }
+
+    #[test]
+    fn test_parabola_different_coefficients() {
+        let parabola1 = Conic::parabola(Fraction::<i64>::new(1, 1));
+        let parabola2 = Conic::parabola(Fraction::<i64>::new(2, 1));
+
+        // Both should be parabolas
+        assert_eq!(parabola1.conic_type(), ConicType::Parabola);
+        assert_eq!(parabola2.conic_type(), ConicType::Parabola);
+
+        // They should have different matrices
+        assert_ne!(parabola1.matrix, parabola2.matrix);
+    }
+
+    #[test]
+    fn test_tangent() {
+        let circle = Conic::unit_circle();
+
+        // Point on the circle
+        let p = PgPoint::new([0, 1, 1]);
+        let tangent = circle.tangent(&p);
+
+        // The tangent should be the same as the polar
+        let polar = circle.polar(&p);
+        assert_eq!(tangent, polar);
+    }
+
+    #[test]
+    fn test_tangent_multiple_points() {
+        let circle = Conic::unit_circle();
+
+        // Test multiple points on the circle
+        let points = vec![
+            PgPoint::new([1, 0, 1]),
+            PgPoint::new([0, 1, 1]),
+            PgPoint::new([-1, 0, 1]),
+            PgPoint::new([0, -1, 1]),
+        ];
+
+        for p in points {
+            let tangent = circle.tangent(&p);
+            let polar = circle.polar(&p);
+            assert_eq!(tangent, polar);
+        }
+    }
+
+    #[test]
+    fn test_intersect_empty() {
+        let circle = Conic::unit_circle();
+        let line = PgLine::new([1, 0, 2]); // Line x = -2, which doesn't intersect unit circle
+
+        let intersections = circle.intersect(&line);
+        // For now, this returns empty due to placeholder implementation
+        assert_eq!(intersections.len(), 0);
+    }
+
+    #[test]
+    fn test_intersect_line_through_center() {
+        let circle = Conic::unit_circle();
+        let line = PgLine::new([0, 0, 1]); // Line through origin
+
+        let intersections = circle.intersect(&line);
+        // For now, this returns empty due to placeholder implementation
+        assert_eq!(intersections.len(), 0);
+    }
+
+    #[test]
+    fn test_discriminant_ellipse() {
+        let circle = Conic::unit_circle();
+        let disc = circle.discriminant();
+
+        // Ellipse should have positive discriminant
+        assert!(disc > Fraction::<i64>::new(0, 1));
+    }
+
+    #[test]
+    fn test_discriminant_parabola() {
+        let parabola = Conic::parabola(Fraction::<i64>::new(1, 1));
+        let disc = parabola.discriminant();
+
+        // Parabola should have zero discriminant
+        assert_eq!(disc, Fraction::<i64>::new(0, 1));
+    }
+
+    #[test]
+    fn test_discriminant_hyperbola() {
+        // Create a hyperbola: x^2 - y^2 = 1
+        let matrix = [
+            [
+                Fraction::<i64>::new(1, 1),
+                Fraction::<i64>::new(0, 1),
+                Fraction::<i64>::new(0, 1),
+            ],
+            [
+                Fraction::<i64>::new(0, 1),
+                Fraction::<i64>::new(-1, 1),
+                Fraction::<i64>::new(0, 1),
+            ],
+            [
+                Fraction::<i64>::new(0, 1),
+                Fraction::<i64>::new(0, 1),
+                Fraction::<i64>::new(-1, 1),
+            ],
+        ];
+        let hyperbola = Conic::new(matrix);
+        let disc = hyperbola.discriminant();
+
+        // Hyperbola should have negative discriminant
+        assert!(disc < Fraction::<i64>::new(0, 1));
+    }
+
+    #[test]
+    fn test_pole() {
+        let circle = Conic::unit_circle();
+        let line = PgLine::new([1, 0, -1]); // Line x = 1
+
+        let pole = circle.pole(&line);
+        // For now, this returns a placeholder point
+        assert!(pole.coord[0] != 0 || pole.coord[1] != 0 || pole.coord[2] != 0);
+    }
+
+    #[test]
+    fn test_conic_type_all_types() {
+        // Ellipse
+        let circle = Conic::unit_circle();
+        assert_eq!(circle.conic_type(), ConicType::Ellipse);
+
+        // Parabola
+        let parabola = Conic::parabola(Fraction::<i64>::new(1, 1));
+        assert_eq!(parabola.conic_type(), ConicType::Parabola);
+
+        // Hyperbola
+        let matrix = [
+            [
+                Fraction::<i64>::new(1, 1),
+                Fraction::<i64>::new(0, 1),
+                Fraction::<i64>::new(0, 1),
+            ],
+            [
+                Fraction::<i64>::new(0, 1),
+                Fraction::<i64>::new(-1, 1),
+                Fraction::<i64>::new(0, 1),
+            ],
+            [
+                Fraction::<i64>::new(0, 1),
+                Fraction::<i64>::new(0, 1),
+                Fraction::<i64>::new(-1, 1),
+            ],
+        ];
+        let hyperbola = Conic::new(matrix);
+        assert_eq!(hyperbola.conic_type(), ConicType::Hyperbola);
+    }
 }

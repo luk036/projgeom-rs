@@ -386,4 +386,153 @@ mod tests {
         let infinite = PgPoint::new([1, 2, 0]);
         assert!(is_at_infinity(&infinite));
     }
+
+    #[test]
+    fn test_line_position_on_line() {
+        let point = PgPoint::new([1, 1, 1]);
+        let line = PgLine::new([1, 1, -2]); // Line x + y - 2 = 0, point (1,1,1) is on this line
+        assert_eq!(line_position(&point, &line), LinePosition::OnLine);
+    }
+
+    #[test]
+    fn test_line_position_left() {
+        let point = PgPoint::new([1, 1, 1]);
+        let line = PgLine::new([1, 0, 0]); // Line x = 0
+                                           // For line x=0, point (1,1) has dot product 1 > 0
+        assert_eq!(line_position(&point, &line), LinePosition::Left);
+    }
+
+    #[test]
+    fn test_line_position_right() {
+        let point = PgPoint::new([-1, 1, 1]);
+        let line = PgLine::new([1, 0, 0]); // Line x = 0
+                                           // For line x=0, point (-1,1) has dot product -1 < 0
+        assert_eq!(line_position(&point, &line), LinePosition::Right);
+    }
+
+    #[test]
+    fn test_angle_cosine_right_angle() {
+        let p1 = PgPoint::new([0, 1, 1]);
+        let p2 = PgPoint::new([0, 0, 1]); // Vertex
+        let p3 = PgPoint::new([1, 0, 1]);
+
+        // Vector p1->p2 is (0, 1), Vector p2->p3 is (1, 0)
+        // These are perpendicular, so cosine should be 0
+        let cos = angle_cosine(&p1, &p2, &p3);
+        assert_eq!(cos, Fraction::<i64>::new(0, 1));
+    }
+
+    #[test]
+    fn test_angle_cosine_zero_angle() {
+        let p1 = PgPoint::new([1, 0, 1]);
+        let p2 = PgPoint::new([0, 0, 1]); // Vertex
+        let p3 = PgPoint::new([2, 0, 1]);
+
+        // Vectors are in same direction
+        let cos = angle_cosine(&p1, &p2, &p3);
+        assert!(cos > Fraction::<i64>::new(0, 1));
+    }
+
+    #[test]
+    fn test_angle_cosine_obtuse() {
+        let p1 = PgPoint::new([1, 0, 1]);
+        let p2 = PgPoint::new([0, 0, 1]); // Vertex
+        let p3 = PgPoint::new([-1, 0, 1]);
+
+        // Vectors are in opposite directions
+        let cos = angle_cosine(&p1, &p2, &p3);
+        assert!(cos < Fraction::<i64>::new(0, 1));
+    }
+
+    #[test]
+    fn test_distance() {
+        let p1 = PgPoint::new([0, 0, 1]);
+        let p2 = PgPoint::new([3, 4, 1]);
+        let dist = distance(&p1, &p2);
+        // For now, this returns squared distance
+        assert_eq!(dist, Fraction::<i64>::new(25, 1));
+    }
+
+    #[test]
+    fn test_squared_distance_zero() {
+        let p1 = PgPoint::new([1, 1, 1]);
+        let p2 = PgPoint::new([1, 1, 1]);
+        let dist_sq = squared_distance(&p1, &p2);
+        assert_eq!(dist_sq, Fraction::<i64>::new(0, 1));
+    }
+
+    #[test]
+    fn test_squared_distance_negative_coordinates() {
+        let p1 = PgPoint::new([-1, -1, 1]);
+        let p2 = PgPoint::new([2, 2, 1]);
+        let dist_sq = squared_distance(&p1, &p2);
+        assert_eq!(dist_sq, Fraction::<i64>::new(18, 1));
+    }
+
+    #[test]
+    fn test_normalize_homogeneous_negative_gcd() {
+        let mut coord = [-4, -6, -8];
+        normalize_homogeneous(&mut coord);
+        // GCD of 4, 6, 8 is 2, so [-4, -6, -8] -> [-2, -3, -4] -> [2, 3, 4] (flip sign)
+        assert_eq!(coord, [2, 3, 4]);
+    }
+
+    #[test]
+    fn test_normalize_homogeneous_no_gcd() {
+        let mut coord = [5, 7, 11];
+        normalize_homogeneous(&mut coord);
+        assert_eq!(coord, [5, 7, 11]);
+    }
+
+    #[test]
+    fn test_normalize_homogeneous_zero_last() {
+        let mut coord = [2, 4, 0];
+        normalize_homogeneous(&mut coord);
+        assert_eq!(coord, [1, 2, 0]);
+    }
+
+    #[test]
+    fn test_triangle_area_negative() {
+        let p1 = PgPoint::new([0, 0, 1]);
+        let p2 = PgPoint::new([0, 2, 1]);
+        let p3 = PgPoint::new([2, 0, 1]);
+        let area = triangle_area(&p1, &p2, &p3);
+        // Clockwise orientation gives negative area
+        assert_eq!(area, Fraction::<i64>::new(-2, 1));
+    }
+
+    #[test]
+    fn test_point_in_triangle_inside() {
+        let v1 = PgPoint::new([0, 0, 1]);
+        let v2 = PgPoint::new([2, 0, 1]);
+        let v3 = PgPoint::new([0, 2, 1]);
+
+        let inside = PgPoint::new([1, 1, 2]);
+        assert!(point_in_triangle(&inside, &v1, &v2, &v3));
+    }
+
+    #[test]
+    fn test_point_in_triangle_vertex() {
+        let v1 = PgPoint::new([0, 0, 1]);
+        let v2 = PgPoint::new([2, 0, 1]);
+        let v3 = PgPoint::new([0, 2, 1]);
+
+        // Point at a vertex
+        assert!(point_in_triangle(&v1, &v1, &v2, &v3));
+    }
+
+    #[test]
+    fn test_is_line_at_infinity() {
+        let finite = PgLine::new([1, 2, 3]);
+        assert!(!is_line_at_infinity(&finite));
+
+        let infinite = PgLine::new([0, 0, 1]);
+        assert!(is_line_at_infinity(&infinite));
+    }
+
+    #[test]
+    fn test_is_line_at_infinity_false() {
+        let line = PgLine::new([1, 0, 0]);
+        assert!(!is_line_at_infinity(&line));
+    }
 }

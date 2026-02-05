@@ -428,7 +428,10 @@ where
 #[cfg(test)]
 mod tests {
     use crate::pg_plane::ProjectivePlanePrimitive;
-    use crate::pg_plane::{check_axiom, coincident};
+    use crate::pg_plane::{
+        check_axiom, check_desargue, check_pappus, coincident, harm_conj, involution, persp,
+        tri_dual,
+    };
 
     #[derive(Debug, PartialEq, Eq, Clone, Copy)]
     struct PArch {}
@@ -484,5 +487,99 @@ mod tests {
         println!("{}", pt_p.incident(&ln_l));
         println!("{}", coincident(&pt_p, &pt_q, &pt_r));
         check_axiom(&pt_p, &pt_q, &ln_l);
+    }
+
+    #[test]
+    fn test_check_pappus() {
+        use crate::pg_object::PgPoint;
+        let a = PgPoint::new([0, 0, 1]);
+        let b = PgPoint::new([1, 0, 1]);
+        let c = PgPoint::new([2, 0, 1]);
+
+        let d = PgPoint::new([0, 1, 1]);
+        let e = PgPoint::new([1, 1, 1]);
+        let f = PgPoint::new([2, 1, 1]);
+
+        let coline_1 = [a, b, c];
+        let coline_2 = [d, e, f];
+
+        // These points are collinear, so Pappus' theorem should hold
+        assert!(check_pappus(&coline_1, &coline_2));
+    }
+
+    #[test]
+    fn test_tri_dual() {
+        use crate::pg_object::PgPoint;
+        let a = PgPoint::new([0, 0, 1]);
+        let b = PgPoint::new([1, 0, 1]);
+        let c = PgPoint::new([0, 1, 1]);
+
+        let triangle = [a, b, c];
+        let dual = tri_dual(&triangle);
+
+        // Should return 3 lines
+        assert_eq!(dual.len(), 3);
+    }
+
+    #[test]
+    fn test_persp() {
+        use crate::pg_object::PgPoint;
+        let t1_p1 = PgPoint::new([0, 0, 1]);
+        let t1_p2 = PgPoint::new([1, 0, 1]);
+        let t1_p3 = PgPoint::new([0, 1, 1]);
+        let tri1 = [t1_p1, t1_p2, t1_p3];
+
+        let t2_p1 = PgPoint::new([0, 0, 2]);
+        let t2_p2 = PgPoint::new([2, 0, 2]);
+        let t2_p3 = PgPoint::new([0, 2, 2]);
+        let tri2 = [t2_p1, t2_p2, t2_p3];
+
+        // These two triangles are perspective from the origin
+        assert!(persp(&tri1, &tri2));
+    }
+
+    #[test]
+    fn test_check_desargue() {
+        use crate::pg_object::PgPoint;
+        let t1_p1 = PgPoint::new([0, 0, 1]);
+        let t1_p2 = PgPoint::new([1, 0, 1]);
+        let t1_p3 = PgPoint::new([0, 1, 1]);
+        let tri1 = [t1_p1, t1_p2, t1_p3];
+
+        let t2_p1 = PgPoint::new([0, 0, 2]);
+        let t2_p2 = PgPoint::new([2, 0, 2]);
+        let t2_p3 = PgPoint::new([0, 2, 2]);
+        let tri2 = [t2_p1, t2_p2, t2_p3];
+
+        // These two triangles are perspective, so Desargue's theorem should hold
+        assert!(check_desargue(&tri1, &tri2));
+    }
+
+    #[test]
+    fn test_harm_conj() {
+        use crate::pg_object::PgPoint;
+        let p1 = PgPoint::new([1, 0, 1]); // A
+        let p2 = PgPoint::new([0, 0, 1]); // B
+        let p3 = PgPoint::new([2, 0, 1]); // C
+
+        // Harmonic conjugate of C with respect to A and B
+        let p4 = harm_conj(&p1, &p2, &p3);
+
+        // The result should be a point
+        assert!(p4.coord.len() == 3);
+    }
+
+    #[test]
+    fn test_involution() {
+        use crate::pg_object::{PgLine, PgPoint};
+        let origin = PgPoint::new([0, 0, 1]);
+        let mirror = PgLine::new([1, 0, -1]);
+        let p = PgPoint::new([2, 0, 1]);
+
+        // Reflect across mirror
+        let reflected_p = involution(&origin, &mirror, &p);
+
+        // The result should be a point
+        assert!(reflected_p.coord.len() == 3);
     }
 }

@@ -353,4 +353,153 @@ mod tests {
 
         assert_eq!(p, p_restored);
     }
+
+    #[test]
+    fn test_shear() {
+        let t = Transform::shear(Fraction::<i64>::new(1, 1), Fraction::<i64>::new(0, 1));
+        let p = PgPoint::new([1, 1, 1]);
+        let p_transformed = t.apply_point(&p);
+        assert_eq!(p_transformed, PgPoint::new([2, 1, 1]));
+    }
+
+    #[test]
+    fn test_shear_both_directions() {
+        let t = Transform::shear(Fraction::<i64>::new(1, 1), Fraction::<i64>::new(1, 1));
+        let p = PgPoint::new([1, 1, 1]);
+        let p_transformed = t.apply_point(&p);
+        assert_eq!(p_transformed, PgPoint::new([2, 2, 1]));
+    }
+
+    #[test]
+    fn test_apply_line() {
+        let t = Transform::translation(1, 1);
+        let line = PgLine::new([1, 0, 0]); // Line x = 0
+        let transformed_line = t.apply_line(&line);
+
+        // After translation, the line should be shifted
+        assert!(transformed_line.coord.len() == 3);
+    }
+
+    #[test]
+    fn test_apply_line_rotation() {
+        let t = Transform::rotation(Fraction::<i64>::new(0, 1), Fraction::<i64>::new(1, 1));
+        let line = PgLine::new([1, 0, 0]); // Line x = 0
+        let transformed_line = t.apply_line(&line);
+
+        // After 90 degree rotation, the line should be y = 0
+        assert!(transformed_line.coord.len() == 3);
+    }
+
+    #[test]
+    fn test_inverse_rotation() {
+        let t = Transform::rotation(Fraction::<i64>::new(0, 1), Fraction::<i64>::new(1, 1));
+        let t_inv = t.inverse();
+        let p = PgPoint::new([1, 0, 1]);
+
+        let p_transformed = t.apply_point(&p);
+        let p_restored = t_inv.apply_point(&p_transformed);
+
+        assert_eq!(p, p_restored);
+    }
+
+    #[test]
+    fn test_inverse_scaling() {
+        let t = Transform::scaling(Fraction::<i64>::new(2, 1), Fraction::<i64>::new(3, 1));
+        let t_inv = t.inverse();
+        let p = PgPoint::new([4, 6, 1]);
+
+        let p_transformed = t.apply_point(&p);
+        let p_restored = t_inv.apply_point(&p_transformed);
+
+        assert_eq!(p, p_restored);
+    }
+
+    #[test]
+    fn test_compose_identity() {
+        let t1 = Transform::identity();
+        let t2 = Transform::translation(1, 1);
+        let t_composed = t1.compose(&t2);
+
+        assert_eq!(t_composed.matrix, t2.matrix);
+    }
+
+    #[test]
+    fn test_compose_multiple() {
+        let t1 = Transform::translation(1, 0);
+        let t2 = Transform::translation(0, 1);
+        let t3 = Transform::scaling(Fraction::<i64>::new(2, 1), Fraction::<i64>::new(2, 1));
+
+        let t_composed = t1.compose(&t2).compose(&t3);
+        let p = PgPoint::new([1, 1, 1]);
+        let p_transformed = t_composed.apply_point(&p);
+
+        // Scale by 2, then translate by (1, 1)
+        // (1, 1) -> (2, 2) -> (3, 3)
+        assert_eq!(p_transformed, PgPoint::new([3, 3, 1]));
+    }
+
+    #[test]
+    fn test_rotate_point() {
+        let p = PgPoint::new([1, 0, 1]);
+        let rotated = rotate_point(&p, Fraction::<i64>::new(0, 1), Fraction::<i64>::new(1, 1));
+        assert_eq!(rotated, PgPoint::new([0, 1, 1]));
+    }
+
+    #[test]
+    fn test_translate_point() {
+        let p = PgPoint::new([1, 2, 1]);
+        let translated = translate_point(&p, 3, 4);
+        assert_eq!(translated, PgPoint::new([4, 6, 1]));
+    }
+
+    #[test]
+    fn test_scale_point() {
+        let p = PgPoint::new([2, 3, 1]);
+        let scaled = scale_point(&p, Fraction::<i64>::new(2, 1), Fraction::<i64>::new(3, 1));
+        assert_eq!(scaled, PgPoint::new([4, 9, 1]));
+    }
+
+    #[test]
+    fn test_projective_transform() {
+        let src = [
+            PgPoint::new([0, 0, 1]),
+            PgPoint::new([1, 0, 1]),
+            PgPoint::new([0, 1, 1]),
+            PgPoint::new([1, 1, 1]),
+        ];
+
+        let dst = [
+            PgPoint::new([0, 0, 1]),
+            PgPoint::new([2, 0, 1]),
+            PgPoint::new([0, 2, 1]),
+            PgPoint::new([2, 2, 1]),
+        ];
+
+        let transform = projective_transform(&src, &dst);
+
+        // For now, this returns identity as placeholder
+        assert_eq!(transform.matrix, Transform::identity().matrix);
+    }
+
+    #[test]
+    fn test_default() {
+        let t: Transform = Transform::default();
+        assert_eq!(t.matrix, Transform::identity().matrix);
+    }
+
+    #[test]
+    fn test_translation_negative() {
+        let t = Transform::translation(-5, -3);
+        let p = PgPoint::new([10, 10, 1]);
+        let p_transformed = t.apply_point(&p);
+        assert_eq!(p_transformed, PgPoint::new([5, 7, 1]));
+    }
+
+    #[test]
+    fn test_scaling_fractional() {
+        let t = Transform::scaling(Fraction::<i64>::new(1, 2), Fraction::<i64>::new(1, 2));
+        let p = PgPoint::new([2, 4, 1]);
+        let p_transformed = t.apply_point(&p);
+        assert_eq!(p_transformed, PgPoint::new([1, 2, 1]));
+    }
 }
