@@ -30,6 +30,3 @@ sign-commit = false
 
 # Sign tags
 sign-tag = false
-
-# Push to remote
-push = true

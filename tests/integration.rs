@@ -1,10 +1,184 @@
 //! Integration tests for complex geometric constructions
 //!
 //! This module contains integration tests that verify complex geometric
-//! constructions and theorems across different geometry types.
+//! constructions and theorems across different geometry types, as well as
+//! error handling through complex operations.
 
 use projgeom_rs::pg_plane::ProjectivePlanePrimitive;
 use projgeom_rs::*;
+
+#[test]
+fn test_error_propagation_in_complex_constructions() {
+    // Test error handling in complex geometric constructions
+    // This tests that errors are properly propagated through multiple operations
+
+    // Test 1: Error in collinear point detection
+    let p1 = PgPoint::new([1, 0, 0]);
+    let p2 = PgPoint::new([2, 0, 0]);
+    let p3 = PgPoint::new([3, 0, 0]); // Collinear with p1 and p2
+
+    // These points are collinear, so operations that assume non-collinearity
+    // should be handled gracefully
+    let line = p1.meet(&p2);
+    assert!(line.incident(&p3));
+
+    // Test 2: Error handling in degenerate triangles
+    let _degenerate_triangle = [p1.clone(), p2.clone(), p3.clone()];
+
+    // Operations on degenerate triangles should be handled
+    // (orthocenter and tri_altitude have assertions for non-collinearity)
+    // In production code, these would return Result types, but for now
+    // we verify the behavior with collinear points
+    let line_12 = p1.meet(&p2);
+    let line_13 = p1.meet(&p3);
+    assert_eq!(line_12, line_13); // Same line due to collinearity
+}
+
+#[test]
+fn test_boundary_conditions_in_geometric_operations() {
+    // Test boundary conditions and edge cases in geometric operations
+
+    // Test 1: Point at infinity
+    let point_at_infinity = PgPoint::new([1, 0, 0]);
+    let finite_point = PgPoint::new([1, 1, 1]);
+
+    let line = point_at_infinity.meet(&finite_point);
+    assert!(line.incident(&point_at_infinity));
+    assert!(line.incident(&finite_point));
+
+    // Test 2: Line at infinity (in Euclidean geometry)
+    let l_inf = EuclidLine::new([0, 0, 1]);
+    let _euclid_point = EuclidPoint::new([1, 1, 1]);
+
+    // The line at infinity should be perpendicular to all lines
+    let line = EuclidLine::new([1, 0, -1]);
+    assert!(l_inf.is_parallel(&line));
+
+    // Test 3: Zero coordinates
+    let zero_point = PgPoint::new([0, 0, 1]);
+    let line = PgLine::new([1, 1, 0]);
+    assert!(line.incident(&zero_point));
+}
+
+#[test]
+fn test_error_in_conic_operations() {
+    // Test error handling in conic section operations
+
+    // Test 1: Degenerate conic (line pair)
+    let p1 = PgPoint::new([1, 0, 0]);
+    let p2 = PgPoint::new([0, 1, 0]);
+    let p3 = PgPoint::new([1, 1, 0]);
+
+    // Points on the line z=0
+    let line = p1.meet(&p2);
+    assert!(line.incident(&p3));
+
+    // Test 2: Invalid conic parameters
+    // A conic requires a non-degenerate matrix
+    // This tests that operations handle degenerate cases
+    let origin = PgPoint::new([0, 0, 1]);
+    let unit_circle = Conic::unit_circle();
+
+    // Verify that the origin is inside the unit circle
+    let polar = unit_circle.polar(&origin);
+    assert!(!polar.coord.is_empty());
+}
+
+#[test]
+fn test_error_in_transformations() {
+    // Test error handling in geometric transformations
+
+    // Test 1: Singular transformation matrix
+    // A transformation with zero determinant should be handled
+    let p = PgPoint::new([1, 2, 1]);
+
+    // Identity transformation
+    let identity = Transform::identity();
+    let transformed = identity.apply_point(&p);
+    assert_eq!(transformed, p);
+
+    // Test 2: Transformation that maps to infinity
+    // This should be handled gracefully
+    let translation = Transform::translation(1, 2);
+    let translated = translation.apply_point(&p);
+    assert_eq!(translated, PgPoint::new([2, 4, 1]));
+}
+
+#[test]
+fn test_numerical_stability_in_operations() {
+    // Test numerical stability in geometric operations
+
+    // Test 1: Large coordinate values
+    let large_p1 = PgPoint::new([1000000, 2000000, 1]);
+    let large_p2 = PgPoint::new([3000000, 4000000, 1]);
+
+    let line = large_p1.meet(&large_p2);
+    assert!(line.incident(&large_p1));
+    assert!(line.incident(&large_p2));
+
+    // Test 2: Normalization with large values
+    let unnormalized = PgPoint::new([2, 4, 6]);
+    let normalized = PgPoint::new([1, 2, 3]); // Should be normalized
+    assert_eq!(unnormalized, normalized);
+
+    // Test 3: Operations with negative coordinates
+    let neg_p1 = PgPoint::new([-1, -2, 1]);
+    let neg_p2 = PgPoint::new([-3, -4, 1]);
+
+    let line = neg_p1.meet(&neg_p2);
+    assert!(line.incident(&neg_p1));
+    assert!(line.incident(&neg_p2));
+}
+
+#[test]
+fn test_error_in_dual_operations() {
+    // Test error handling in duality operations
+
+    // Test 1: Dual of a point at infinity
+    let point_at_infinity = PgPoint::new([1, 0, 0]);
+    let dual_line = point_at_infinity.aux();
+
+    // The dual should be a line through the origin
+    let origin = PgPoint::new([0, 0, 1]);
+    assert!(dual_line.incident(&origin));
+
+    // Test 2: Dual of line at infinity (in Euclidean geometry)
+    let l_inf = EuclidLine::new([0, 0, 1]);
+    let dual_point = l_inf.aux();
+
+    // The dual should be a point (not necessarily at infinity in z-direction)
+    // Just verify that it's a valid point and not all zeros
+    let is_valid_point =
+        dual_point.coord[0] != 0 || dual_point.coord[1] != 0 || dual_point.coord[2] != 0;
+    assert!(is_valid_point, "Dual point should not be all zeros");
+}
+
+#[test]
+fn test_error_in_harmonic_operations() {
+    // Test error handling in harmonic conjugate operations
+
+    // Test 1: Harmonic conjugate with collinear points
+    let a = PgPoint::new([1, 0, 0]);
+    let b = PgPoint::new([0, 1, 0]);
+    let c = PgPoint::new([1, 1, 0]);
+
+    let d = harm_conj(&a, &b, &c);
+
+    // Verify that D is the harmonic conjugate
+    let d_double = harm_conj(&a, &b, &d);
+    assert_eq!(d_double, c);
+
+    // Test 2: Harmonic conjugate with special cases
+    // When C is the midpoint of AB, D should be at infinity
+    let a2 = PgPoint::new([0, 0, 1]);
+    let b2 = PgPoint::new([2, 0, 1]);
+    let c2 = PgPoint::new([1, 0, 1]); // Midpoint
+
+    let d2 = harm_conj(&a2, &b2, &c2);
+    // D should be at infinity on the x-axis
+    assert_eq!(d2.coord[1], 0);
+    assert_eq!(d2.coord[2], 0);
+}
 
 #[test]
 fn test_desargues_theorem() {

@@ -234,9 +234,9 @@ pub extern "C" fn pg_get_last_error() -> *const c_char {
     static mut LAST_ERROR: Option<CString> = None;
 
     unsafe {
-        match &LAST_ERROR {
-            Some(s) => s.as_ptr(),
-            None => std::ptr::null(),
+        match &raw const LAST_ERROR {
+            ptr if (*ptr).is_some() => (*ptr).as_ref().unwrap().as_ptr(),
+            _ => std::ptr::null(),
         }
     }
 }

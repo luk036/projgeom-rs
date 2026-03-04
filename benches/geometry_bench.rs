@@ -75,14 +75,14 @@ fn bench_meet(c: &mut Criterion) {
     let p2 = PgPoint::new([4, 5, 6]);
 
     group.bench_function("pg_points", |b| {
-        b.iter(|| black_box(p1).meet(black_box(&p2)))
+        b.iter(|| black_box(&p1).meet(black_box(&p2)))
     });
 
     let l1 = PgLine::new([1, 0, 0]);
     let l2 = PgLine::new([0, 1, 0]);
 
     group.bench_function("pg_lines", |b| {
-        b.iter(|| black_box(l1).meet(black_box(&l2)))
+        b.iter(|| black_box(&l1).meet(black_box(&l2)))
     });
 
     group.finish();
@@ -95,7 +95,7 @@ fn bench_incident(c: &mut Criterion) {
     let l = PgLine::new([4, 5, 6]);
 
     group.bench_function("point_line", |b| {
-        b.iter(|| black_box(p).incident(black_box(&l)))
+        b.iter(|| black_box(&p).incident(black_box(&l)))
     });
 
     group.finish();
@@ -108,7 +108,7 @@ fn bench_parametrize(c: &mut Criterion) {
     let p2 = PgPoint::new([4, 5, 6]);
 
     group.bench_function("basic", |b| {
-        b.iter(|| black_box(p1).parametrize(black_box(2), black_box(&p2), black_box(3)))
+        b.iter(|| black_box(&p1).parametrize(black_box(2), black_box(&p2), black_box(3)))
     });
 
     group.finish();
@@ -121,11 +121,11 @@ fn bench_perp(c: &mut Criterion) {
     let p_hyp = HyperbolicPoint::new([1, 2, 3]);
     let p_euc = EuclidPoint::new([1, 2, 1]);
 
-    group.bench_function("elliptic", |b| b.iter(|| black_box(p_ell).perp()));
+    group.bench_function("elliptic", |b| b.iter(|| black_box(&p_ell).perp()));
 
-    group.bench_function("hyperbolic", |b| b.iter(|| black_box(p_hyp).perp()));
+    group.bench_function("hyperbolic", |b| b.iter(|| black_box(&p_hyp).perp()));
 
-    group.bench_function("euclidean", |b| b.iter(|| black_box(p_euc).perp()));
+    group.bench_function("euclidean", |b| b.iter(|| black_box(&p_euc).perp()));
 
     group.finish();
 }
@@ -137,8 +137,8 @@ fn bench_harmonic_conjugate(c: &mut Criterion) {
     let b = PgPoint::new([0, 1, 0]);
     let c = PgPoint::new([1, 1, 0]);
 
-    group.bench_function("basic", |b| {
-        b.iter(|| harm_conj(black_box(&a), black_box(&b), black_box(&c)))
+    group.bench_function("basic", |bencher| {
+        bencher.iter(|| harm_conj(black_box(&a), black_box(&b), black_box(&c)))
     });
 
     group.finish();

@@ -872,7 +872,7 @@ mod pg_object_tests {
         let l = p.aux();
         // A point is NOT incident with its polar line (aux returns dual not incident with self)
         // The line at infinity [0, 0, 1] has no pole, so we skip points that would have it as polar
-        !(l.coord[0] == 0 && l.coord[1] == 0 && l.coord[2] != 0) || !p.incident(&l)
+        !(l.coord[0] == 0 && l.coord[1] == 0 && l.coord[2] != 0 && p.incident(&l))
     }
 
     #[quickcheck]
