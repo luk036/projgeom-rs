@@ -6,8 +6,7 @@ use crate::{CayleyKleinPlane, CayleyKleinPlanePrimitive};
 // use crate::pg_object::{plucker_operation, dot_product};
 use crate::pg_object::dot1;
 
-// static I_RE: EuclidPoint = EuclidPoint { coord: [0, 1, 1] };
-// static I_IM: EuclidPoint = EuclidPoint { coord: [1, 0, 0] };
+/// Line at infinity in Euclidean geometry.
 static L_INF: EuclidLine = EuclidLine { coord: [0, 0, 1] };
 
 impl_cayley_klein_plane!(

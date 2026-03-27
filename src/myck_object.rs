@@ -1,7 +1,15 @@
+//! Custom Cayley-Klein Geometry
+//!
+//! This module provides support for a custom Cayley-Klein geometry with user-defined
+//! perpendicular coefficients. This allows for experimentation with different
+//! metric geometries by specifying custom polarity coefficients.
+
 use crate::pg_object::{MyCKLine, MyCKPoint};
 use crate::{CayleyKleinPlane, CayleyKleinPlanePrimitive};
 
+/// Coefficients for point perpendicular transformation in custom CK geometry.
 const MYCK_POINT_PERP_COEFFS: [i64; 3] = [-2, 1, -2];
+/// Coefficients for line perpendicular transformation in custom CK geometry.
 const MYCK_LINE_PERP_COEFFS: [i64; 3] = [-1, 2, -1];
 
 impl_cayley_klein_plane!(

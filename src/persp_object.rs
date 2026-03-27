@@ -5,8 +5,11 @@ use crate::pg_plane::{ProjectivePlane, ProjectivePlanePrimitive};
 use crate::{CayleyKleinPlane, CayleyKleinPlanePrimitive};
 // use crate::pg_object::{plucker_operation, dot};
 
+/// Real point at infinity in perspective geometry.
 static I_RE: PerspPoint = PerspPoint { coord: [0, 1, 1] };
+/// Imaginary point at infinity in perspective geometry.
 static I_IM: PerspPoint = PerspPoint { coord: [1, 0, 0] };
+/// Line at infinity in perspective geometry.
 static L_INF: PerspLine = PerspLine { coord: [0, -1, 1] };
 
 impl_cayley_klein_plane!(
