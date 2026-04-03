@@ -153,3 +153,13 @@ for inclusion in the work by you, as defined in the Apache-2.0 license, shall be
 dual licensed as above, without any additional terms or conditions.
 
 See [CONTRIBUTING.md](CONTRIBUTING.md).
+
+## 🔗 Related Projects
+
+### Polyglot Implementations
+
+- [**projgeom-cpp**](https://github.com/luk036/projgeom-cpp) - C++ version
+
+### Algorithm Polyglot
+
+- [**algorithm-polyglot**](https://github.com/luk036/algorithm-polyglot) - Meta-repo documenting the polyglot strategy
