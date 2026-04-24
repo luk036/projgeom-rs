@@ -8,6 +8,7 @@ pub mod ell_object;
 pub mod error;
 pub mod euclid_object;
 pub mod ffi;
+pub mod geometry;
 pub mod hyp_object;
 pub mod myck_object;
 pub mod persp_object;
@@ -23,13 +24,11 @@ pub use crate::cross_ratio::{
     cross_ratio, cross_ratio_lines, is_harmonic_division, projective_transform_line,
     projective_transform_point,
 };
-pub use crate::error::{GeometryError, Result};
-pub use crate::pg_object::{EllipticLine, EllipticPoint};
-pub use crate::pg_object::{EuclidLine, EuclidPoint};
-pub use crate::pg_object::{HyperbolicLine, HyperbolicPoint};
-pub use crate::pg_object::{MyCKLine, MyCKPoint};
-pub use crate::pg_object::{PerspLine, PerspPoint};
-pub use crate::pg_object::{PgLine, PgPoint};
+pub use crate::geometry::Geometry;
+pub use crate::pg_object::{
+    EllipticLine, EllipticPoint, EuclidLine, EuclidPoint, HyperbolicLine, HyperbolicPoint,
+    MyCKLine, MyCKPoint, PerspLine, PerspPoint, PgLine, PgPoint,
+};
 pub use crate::pg_plane::*;
 pub use crate::predicates::*;
 pub use crate::transform::*;

@@ -2,6 +2,22 @@
 /// It requires two associated types: `Dual`, which represents the dual object (line or point) in the
 /// projective plane, and `Self`, which represents the object implementing the trait.
 ///
+/// # Mathematical Background
+///
+/// Projective geometry is based on the concept of points at infinity. In the **Cayley-Klein model**,
+/// different geometries (projective, elliptic, hyperbolic, Euclidean) are distinguished by the
+/// **fundamental quadric** Q that defines the "line at infinity":
+///
+/// | Geometry | Quadric Equation | Perpendicular? |
+/// |----------|----------------|--------------|
+/// | Projective | none | No |
+/// | Elliptic | x² + y² + z² = 0 | Yes (self-dual) |
+/// | Hyperbolic | x² + y² - z² = 0 | Yes |
+/// | Euclidean | z = 0 (line at infinity) | Yes (via polar)
+///
+/// The `perp()` method returns the pole/polar with respect to this quadric.
+/// Only Elliptic, Hyperbolic, and Euclidean geometries support perpendicular operations.
+///
 /// # Examples
 ///
 /// ```
