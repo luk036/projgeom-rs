@@ -231,4 +231,136 @@ mod tests {
         let p = PgPoint::new([1, 2, 3]);
         assert_eq!(p.coord(), &[1, 2, 3]);
     }
+
+    #[test]
+    fn test_try_from_pgpoint_to_elliptic_point() {
+        let pg = PgPoint::new([1, 2, 3]);
+        let elliptic: EllipticPoint = pg.try_into().unwrap();
+        assert_eq!(elliptic.coord, [1, 2, 3]);
+    }
+
+    #[test]
+    fn test_try_from_pgpoint_to_hyperbolic_point() {
+        let pg = PgPoint::new([1, 2, 3]);
+        let hyperbolic: HyperbolicPoint = pg.try_into().unwrap();
+        assert_eq!(hyperbolic.coord, [1, 2, 3]);
+    }
+
+    #[test]
+    fn test_try_from_pgpoint_to_euclid_point() {
+        let pg = PgPoint::new([1, 2, 3]);
+        let euclid: EuclidPoint = pg.try_into().unwrap();
+        assert_eq!(euclid.coord, [1, 2, 3]);
+    }
+
+    #[test]
+    fn test_try_from_elliptic_point_to_pgpoint() {
+        let elliptic = EllipticPoint::new([1, 2, 3]);
+        let pg: PgPoint = elliptic.try_into().unwrap();
+        assert_eq!(pg.coord, [1, 2, 3]);
+    }
+
+    #[test]
+    fn test_try_from_hyperbolic_point_to_pgpoint() {
+        let hyperbolic = HyperbolicPoint::new([1, 2, 3]);
+        let pg: PgPoint = hyperbolic.try_into().unwrap();
+        assert_eq!(pg.coord, [1, 2, 3]);
+    }
+
+    #[test]
+    fn test_try_from_euclid_point_to_pgpoint() {
+        let euclid = EuclidPoint::new([1, 2, 3]);
+        let pg: PgPoint = euclid.try_into().unwrap();
+        assert_eq!(pg.coord, [1, 2, 3]);
+    }
+
+    #[test]
+    fn test_try_from_pgline_to_elliptic_line() {
+        let pg = PgLine::new([1, 2, 3]);
+        let elliptic: EllipticLine = pg.try_into().unwrap();
+        assert_eq!(elliptic.coord, [1, 2, 3]);
+    }
+
+    #[test]
+    fn test_try_from_pgline_to_hyperbolic_line() {
+        let pg = PgLine::new([1, 2, 3]);
+        let hyperbolic: HyperbolicLine = pg.try_into().unwrap();
+        assert_eq!(hyperbolic.coord, [1, 2, 3]);
+    }
+
+    #[test]
+    fn test_try_from_pgline_to_euclid_line() {
+        let pg = PgLine::new([1, 2, 3]);
+        let euclid: EuclidLine = pg.try_into().unwrap();
+        assert_eq!(euclid.coord, [1, 2, 3]);
+    }
+
+    #[test]
+    fn test_try_from_elliptic_line_to_pgline() {
+        let elliptic = EllipticLine::new([1, 2, 3]);
+        let pg: PgLine = elliptic.try_into().unwrap();
+        assert_eq!(pg.coord, [1, 2, 3]);
+    }
+
+    #[test]
+    fn test_try_from_hyperbolic_line_to_pgline() {
+        let hyperbolic = HyperbolicLine::new([1, 2, 3]);
+        let pg: PgLine = hyperbolic.try_into().unwrap();
+        assert_eq!(pg.coord, [1, 2, 3]);
+    }
+
+    #[test]
+    fn test_try_from_euclid_line_to_pgline() {
+        let euclid = EuclidLine::new([1, 2, 3]);
+        let pg: PgLine = euclid.try_into().unwrap();
+        assert_eq!(pg.coord, [1, 2, 3]);
+    }
+
+    #[test]
+    fn test_pgline_geometry_name() {
+        let l = PgLine::new([1, 0, 0]);
+        assert_eq!(l.geometry_name(), "Projective");
+    }
+
+    #[test]
+    fn test_ellipticline_geometry_name() {
+        let l = EllipticLine::new([1, 0, 0]);
+        assert_eq!(l.geometry_name(), "Elliptic");
+    }
+
+    #[test]
+    fn test_hyperbolicline_geometry_name() {
+        let l = HyperbolicLine::new([1, 0, 0]);
+        assert_eq!(l.geometry_name(), "Hyperbolic");
+    }
+
+    #[test]
+    fn test_euclidline_geometry_name() {
+        let l = EuclidLine::new([1, 2, 1]);
+        assert_eq!(l.geometry_name(), "Euclidean");
+    }
+
+    #[test]
+    fn test_pgline_coord() {
+        let l = PgLine::new([1, 2, 3]);
+        assert_eq!(l.coord(), &[1, 2, 3]);
+    }
+
+    #[test]
+    fn test_ellipticline_coord() {
+        let l = EllipticLine::new([1, 2, 3]);
+        assert_eq!(l.coord(), &[1, 2, 3]);
+    }
+
+    #[test]
+    fn test_hyperbolicline_coord() {
+        let l = HyperbolicLine::new([1, 2, 3]);
+        assert_eq!(l.coord(), &[1, 2, 3]);
+    }
+
+    #[test]
+    fn test_euclidline_coord() {
+        let l = EuclidLine::new([1, 2, 3]);
+        assert_eq!(l.coord(), &[1, 2, 3]);
+    }
 }

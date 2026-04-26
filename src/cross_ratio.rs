@@ -317,7 +317,7 @@ mod tests {
 
     #[test]
     fn test_compute_parameter_edge_cases() {
-        let a = PgPoint::new([1, 0, 0]); // infinity
+        let a = PgPoint::new([1, 0, 0]);
         let b = PgPoint::new([0, 1, 1]);
         let p = PgPoint::new([1, 1, 1]);
 
@@ -330,12 +330,31 @@ mod tests {
         let param2 = compute_parameter(&a2, &b2, &p2);
         assert_eq!(param2, Fraction::<i64>::new(0, 1));
 
-        // Test dy branch
         let a3 = PgPoint::new([0, 0, 1]);
         let b3 = PgPoint::new([0, 2, 1]);
         let p3 = PgPoint::new([0, 1, 1]);
         let param3 = compute_parameter(&a3, &b3, &p3);
         assert_eq!(param3, Fraction::<i64>::new(1, 2));
+    }
+
+    #[test]
+    fn test_compute_parameter_b_at_infinity() {
+        let a = PgPoint::new([1, 1, 1]);
+        let b = PgPoint::new([0, 1, 0]);
+        let p = PgPoint::new([2, 2, 1]);
+
+        let param = compute_parameter(&a, &b, &p);
+        assert_eq!(param, Fraction::<i64>::new(0, 1));
+    }
+
+    #[test]
+    fn test_compute_parameter_vertical_line() {
+        let a = PgPoint::new([1, 0, 1]);
+        let b = PgPoint::new([1, 2, 1]);
+        let p = PgPoint::new([1, 1, 1]);
+
+        let param = compute_parameter(&a, &b, &p);
+        assert_eq!(param, Fraction::<i64>::new(1, 2));
     }
 
     #[test]

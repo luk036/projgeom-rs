@@ -219,3 +219,94 @@ define_point_and_line!(impl MyCKPoint, MyCKLine);
 define_point_and_line!(impl PerspPoint, PerspLine);
 define_point_and_line!(impl EuclidPoint, EuclidLine);
 // You may add your own geometry here
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_from_array_for_pgpoint() {
+        let coord = [1, 2, 3];
+        let p: PgPoint = coord.into();
+        assert_eq!(p.coord, [1, 2, 3]);
+    }
+
+    #[test]
+    fn test_from_tuple_for_pgpoint() {
+        let p: PgPoint = (1, 2, 3).into();
+        assert_eq!(p.coord, [1, 2, 3]);
+    }
+
+    #[test]
+    fn test_from_slice_for_pgpoint() {
+        let coord = [1, 2, 3];
+        let p: PgPoint = (&coord).into();
+        assert_eq!(p.coord, [1, 2, 3]);
+    }
+
+    #[test]
+    fn test_from_coords_method() {
+        let p = PgPoint::from_coords(1, 2, 3);
+        assert_eq!(p.coord, [1, 2, 3]);
+    }
+
+    #[test]
+    fn test_partial_eq_reflexive() {
+        let p = PgPoint::new([2, 4, 6]);
+        assert_eq!(p, p);
+    }
+
+    #[test]
+    fn test_partial_eq_proportional() {
+        let p1 = PgPoint::new([1, 2, 3]);
+        let p2 = PgPoint::new([2, 4, 6]);
+        assert_eq!(p1, p2);
+    }
+
+    #[test]
+    fn test_partial_eq_not_equal() {
+        let p1 = PgPoint::new([1, 2, 3]);
+        let p2 = PgPoint::new([1, 0, 0]);
+        assert_ne!(p1, p2);
+    }
+
+    #[test]
+    fn test_from_array_for_all_point_types() {
+        let coord = [1, 2, 3];
+        let _pg: PgPoint = coord.into();
+        let coord = [1, 2, 3];
+        let _ell: EllipticPoint = coord.into();
+        let coord = [1, 2, 3];
+        let _hyp: HyperbolicPoint = coord.into();
+        let coord = [1, 2, 3];
+        let _euclid: EuclidPoint = coord.into();
+        let coord = [1, 2, 3];
+        let _myck: MyCKPoint = coord.into();
+        let coord = [1, 2, 3];
+        let _persp: PerspPoint = coord.into();
+    }
+
+    #[test]
+    fn test_from_coords_all_point_types() {
+        let _pg = PgPoint::from_coords(1, 2, 3);
+        let _ell = EllipticPoint::from_coords(1, 2, 3);
+        let _hyp = HyperbolicPoint::from_coords(1, 2, 3);
+        let _euclid = EuclidPoint::from_coords(1, 2, 3);
+        let _myck = MyCKPoint::from_coords(1, 2, 3);
+        let _persp = PerspPoint::from_coords(1, 2, 3);
+    }
+
+    #[test]
+    fn test_pgline_equality() {
+        let l1 = PgLine::new([1, 2, 3]);
+        let l2 = PgLine::new([2, 4, 6]);
+        assert_eq!(l1, l2);
+    }
+
+    #[test]
+    fn test_pgline_inequality() {
+        let l1 = PgLine::new([1, 2, 3]);
+        let l2 = PgLine::new([1, 0, 0]);
+        assert_ne!(l1, l2);
+    }
+}

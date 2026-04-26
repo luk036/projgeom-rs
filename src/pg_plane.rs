@@ -598,4 +598,16 @@ mod tests {
         // The result should be a point
         assert!(reflected_p.coord.len() == 3);
     }
+
+    #[test]
+    fn test_check_axiom2() {
+        use crate::pg_object::{PgLine, PgPoint};
+        use crate::pg_plane::check_axiom2;
+
+        let p1 = PgPoint::new([1, 2, 3]);
+        let p2 = PgPoint::new([4, 5, 6]);
+        let l1 = PgLine::new([1, 1, -1]);
+
+        check_axiom2(&p1, &p2, &l1, 1, 1);
+    }
 }
