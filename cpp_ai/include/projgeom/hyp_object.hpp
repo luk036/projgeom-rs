@@ -11,9 +11,9 @@ template<SignedIntegral Scalar = int64_t>
 struct HyperbolicPoint : PgPoint<Scalar> {
     using Base = PgPoint<Scalar>;
     using Base::Base;
-    
+
     constexpr HyperbolicPoint(const PgPoint<Scalar>& p) : Base(p) {}
-    
+
     constexpr bool is_perpendicular(const PgLine<Scalar>& l) const noexcept {
         const auto weighted_coord = std::array{
             HYP_PERP_COEFFS<Scalar>[0] * this->coord[0],
@@ -22,7 +22,7 @@ struct HyperbolicPoint : PgPoint<Scalar> {
         };
         return dot_product(weighted_coord, l.coord) == 0;
     }
-    
+
     static constexpr PgLine<Scalar> line_through(
         const HyperbolicPoint& p, const PgLine<Scalar>& l) noexcept {
         const auto weighted_coord = std::array{
@@ -38,9 +38,9 @@ template<SignedIntegral Scalar = int64_t>
 struct HyperbolicLine : PgLine<Scalar> {
     using Base = PgLine<Scalar>;
     using Base::Base;
-    
+
     constexpr HyperbolicLine(const PgLine<Scalar>& l) : Base(l) {}
-    
+
     constexpr bool is_perpendicular(const PgPoint<Scalar>& p) const noexcept {
         const auto weighted_coord = std::array{
             HYP_PERP_COEFFS<Scalar>[0] * this->coord[0],
@@ -49,7 +49,7 @@ struct HyperbolicLine : PgLine<Scalar> {
         };
         return dot_product(weighted_coord, p.coord) == 0;
     }
-    
+
     static constexpr PgPoint<Scalar> point_on(
         const HyperbolicLine& l, const PgPoint<Scalar>& p) noexcept {
         const auto weighted_coord = std::array{

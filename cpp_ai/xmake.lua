@@ -13,7 +13,7 @@ target("projgeom-cpp")
     add_files("src/**.cpp")
     add_includedirs("include", {public = true})
     set_pcxxheader("include/projgeom/pch.hpp")
-    
+
     if is_plat("windows") then
         add_cxxflags("/execution-charset:utf-8", "/source-charset:utf-8")
     end
@@ -24,7 +24,7 @@ target("tests")
     add_files("tests/**.cpp")
     add_packages("doctest")
     add_includedirs("include")
-    
+
     after_build(function (target)
         os.exec(target:targetfile())
     end)

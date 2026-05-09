@@ -15,7 +15,7 @@ constexpr void check_axiom(const Point& pt_p, const Point& pt_q, const Line& ln_
     assert(ln_m == pt_q.meet(pt_p));
     assert(ln_m.incident(pt_p));
     assert(ln_m.incident(pt_q));
-    
+
     auto pt_r = ln_l.meet(ln_m);
     assert(pt_r.incident(ln_l));
     assert(pt_r.incident(ln_m));
@@ -29,7 +29,7 @@ constexpr bool coincident(
     const auto& coord_a = pt_p.coord;
     const auto& coord_b = pt_q.coord;
     const auto& coord_c = pt_r.coord;
-    
+
     const auto cross_ab = cross_product(coord_a, coord_b);
     return dot_product(cross_ab, coord_c) == 0;
 }
@@ -42,7 +42,7 @@ constexpr bool coincident(
     const auto& coord_a = ln_l.coord;
     const auto& coord_b = ln_m.coord;
     const auto& coord_c = ln_n.coord;
-    
+
     const auto cross_ab = cross_product(coord_a, coord_b);
     return dot_product(cross_ab, coord_c) == 0;
 }
@@ -55,14 +55,14 @@ constexpr PgPoint<Scalar> harm_conj(
     const auto& coord_a = pt_p.coord;
     const auto& coord_b = pt_q.coord;
     const auto& coord_c = pt_r.coord;
-    
+
     const auto dot_ab = dot_product(coord_a, coord_b);
     const auto dot_ac = dot_product(coord_a, coord_c);
     const auto dot_bc = dot_product(coord_b, coord_c);
-    
+
     const Scalar lambda = 2 * dot_bc * dot_ab - dot_ac * dot_ab;
     const Scalar mu = 2 * dot_ac * dot_ab - dot_bc * dot_ab;
-    
+
     return PgPoint<Scalar>(plucker_operation(lambda, coord_a, mu, coord_b));
 }
 
@@ -74,14 +74,14 @@ constexpr PgLine<Scalar> harm_conj(
     const auto& coord_a = ln_l.coord;
     const auto& coord_b = ln_m.coord;
     const auto& coord_c = ln_n.coord;
-    
+
     const auto dot_ab = dot_product(coord_a, coord_b);
     const auto dot_ac = dot_product(coord_a, coord_c);
     const auto dot_bc = dot_product(coord_b, coord_c);
-    
+
     const Scalar lambda = 2 * dot_bc * dot_ab - dot_ac * dot_ab;
     const Scalar mu = 2 * dot_ac * dot_ab - dot_bc * dot_ab;
-    
+
     return PgLine<Scalar>(plucker_operation(lambda, coord_a, mu, coord_b));
 }
 

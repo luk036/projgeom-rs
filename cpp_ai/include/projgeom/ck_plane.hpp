@@ -13,7 +13,7 @@ constexpr std::array<PgLine<Scalar>, 3> tri_dual(
     const auto& point_a = triangle[0];
     const auto& point_b = triangle[1];
     const auto& point_c = triangle[2];
-    
+
     return {point_b.meet(point_c), point_c.meet(point_a), point_a.meet(point_b)};
 }
 
@@ -23,7 +23,7 @@ constexpr std::array<PgPoint<Scalar>, 3> tri_dual(
     const auto& line_a = trilateral[0];
     const auto& line_b = trilateral[1];
     const auto& line_c = trilateral[2];
-    
+
     return {line_b.meet(line_c), line_c.meet(line_a), line_a.meet(line_b)};
 }
 
@@ -41,12 +41,12 @@ constexpr std::array<Line, 3> tri_altitude(const std::array<Point, 3>& triangle)
     const auto& point_a = triangle[0];
     const auto& point_b = triangle[1];
     const auto& point_c = triangle[2];
-    
+
     const auto trilateral = tri_dual(triangle);
     const auto& line_l = trilateral[0];
     const auto& line_m = trilateral[1];
     const auto& line_n = trilateral[2];
-    
+
     // Altitudes are lines through vertices perpendicular to opposite sides
     return {
         Point::line_through(point_a, line_l),  // altitude from A perpendicular to BC

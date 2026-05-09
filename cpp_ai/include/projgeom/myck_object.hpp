@@ -13,9 +13,9 @@ template<SignedIntegral Scalar = int64_t>
 struct MyCKPoint : PgPoint<Scalar> {
     using Base = PgPoint<Scalar>;
     using Base::Base;
-    
+
     constexpr MyCKPoint(const PgPoint<Scalar>& p) : Base(p) {}
-    
+
     constexpr bool is_perpendicular(const PgLine<Scalar>& l) const noexcept {
         const auto weighted_coord = std::array{
             MYCK_POINT_PERP_COEFFS<Scalar>[0] * this->coord[0],
@@ -24,7 +24,7 @@ struct MyCKPoint : PgPoint<Scalar> {
         };
         return dot_product(weighted_coord, l.coord) == 0;
     }
-    
+
     static constexpr PgLine<Scalar> line_through(
         const MyCKPoint& p, const PgLine<Scalar>& l) noexcept {
         const auto weighted_coord = std::array{
@@ -40,9 +40,9 @@ template<SignedIntegral Scalar = int64_t>
 struct MyCKLine : PgLine<Scalar> {
     using Base = PgLine<Scalar>;
     using Base::Base;
-    
+
     constexpr MyCKLine(const PgLine<Scalar>& l) : Base(l) {}
-    
+
     constexpr bool is_perpendicular(const PgPoint<Scalar>& p) const noexcept {
         const auto weighted_coord = std::array{
             MYCK_LINE_PERP_COEFFS<Scalar>[0] * this->coord[0],
@@ -51,7 +51,7 @@ struct MyCKLine : PgLine<Scalar> {
         };
         return dot_product(weighted_coord, p.coord) == 0;
     }
-    
+
     static constexpr PgPoint<Scalar> point_on(
         const MyCKLine& l, const PgPoint<Scalar>& p) noexcept {
         const auto weighted_coord = std::array{

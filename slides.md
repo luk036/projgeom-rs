@@ -27,11 +27,11 @@ graph TD
     A[Dynamic Types<br/>Python 1.0] --> B[Type Hints<br/>Python 3.5+]
     C[Template Metaprogramming<br/>C++98] --> D[Concepts<br/>C++20]
     E[Traits System<br/>Rust 1.0] --> F[Advanced Traits<br/>Rust 1.50+]
-    
+
     B --> G[Modern Type Systems]
     D --> G
     F --> G
-    
+
     style A fill:#ffeb3b
     style B fill:#4caf50
     style C fill:#ff9800
@@ -62,7 +62,7 @@ Traits define shared behavior that types can implement.
 pub trait ProjectivePlane {
     type Point;
     type Line;
-    
+
     fn meet(&self, p1: &Self::Point, p2: &Self::Point) -> Self::Line;
     fn incident(&self, point: &Self::Point, line: &Self::Line) -> bool;
 }
@@ -70,11 +70,11 @@ pub trait ProjectivePlane {
 impl<T: SignedIntegral> ProjectivePlane for PgPlane<T> {
     type Point = PgPoint<T>;
     type Line = PgLine<T>;
-    
+
     fn meet(&self, p1: &Self::Point, p2: &Self::Point) -> Self::Line {
         PgLine::new(cross_product(p1.coord(), p2.coord()))
     }
-    
+
     fn incident(&self, point: &Self::Point, line: &Self::Line) -> bool {
         dot_product(point.coord(), line.coord()) == T::zero()
     }
@@ -87,10 +87,10 @@ impl<T: SignedIntegral> ProjectivePlane for PgPlane<T> {
 graph LR
     A[Trait Objects<br/>dyn Trait] --> B[Runtime Polymorphism<br/>vtable dispatch]
     C[Generics<br/>T: Trait] --> D[Compile-time Monomorphization<br/>zero-cost abstraction]
-    
+
     B --> E[Dynamic dispatch<br/>flexible]
     D --> F[Static dispatch<br/>fast]
-    
+
     style A fill:#ff9800
     style C fill:#4caf50
     style E fill:#2196f3
@@ -107,8 +107,8 @@ trait Iterator {
 }
 
 // Higher-ranked trait bounds
-fn apply_to_all<F>(items: &mut [i32], f: F) 
-where 
+fn apply_to_all<F>(items: &mut [i32], f: F)
+where
     F: Fn(i32) -> i32,
 {
     for item in items.iter_mut() {
@@ -140,7 +140,7 @@ T = TypeVar('T', bound=int, covariant=True)
 @runtime_checkable
 class ProjectivePlane(Protocol[T]):
     """Protocol defining projective plane operations"""
-    
+
     def meet(self, p1: 'PgPoint[T]', p2: 'PgPoint[T]') -> 'PgLine[T]': ...
     def incident(self, point: 'PgPoint[T]', line: 'PgLine[T]') -> bool: ...
 
@@ -148,19 +148,19 @@ class ProjectivePlane(Protocol[T]):
 class PgPoint(Generic[T]):
     """Projective point with homogeneous coordinates"""
     coord: tuple[T, T, T]
-    
+
     def __eq__(self, other: 'PgPoint[T]') -> bool:
         return cross_product(self.coord, other.coord) == (0, 0, 0)
-    
+
     def meet(self, other: 'PgPoint[T]') -> 'PgLine[T]':
         return PgLine(cross_product(self.coord, other.coord))
 
 class PgPlane:
     """Implementation of projective plane"""
-    
+
     def meet(self, p1: PgPoint[T], p2: PgPoint[T]) -> PgLine[T]:
         return p1.meet(p2)
-    
+
     def incident(self, point: PgPoint[T], line: PgLine[T]) -> bool:
         return dot_product(point.coord, line.coord) == 0
 ```
@@ -172,11 +172,11 @@ graph TD
     A[Source Code] --> B[mypy<br/>Static Type Checker]
     A --> C[pyright<br/>Language Server]
     A --> D[PyCharm<br/>IDE Analysis]
-    
+
     B --> E[Compile-time Errors]
     C --> F[Real-time Feedback]
     D --> G[Refactoring Support]
-    
+
     style B fill:#2196f3
     style C fill:#4caf50
     style D fill:#ff9800
@@ -205,7 +205,7 @@ def create_point(dim: Dimension, coords: tuple[int, ...]) -> PgPoint[int]:
 @runtime_checkable
 class Drawable(Protocol):
     def draw(self) -> None: ...
-    
+
 def render(obj: object) -> None:
     if isinstance(obj, Drawable):
         obj.draw()  # Type checker knows this is safe
@@ -245,7 +245,7 @@ template<SignedIntegral Scalar = int64_t>
 struct PgPoint {
     using ScalarType = Scalar;
     std::array<Scalar, 3> coord;
-    
+
     constexpr bool incident(const PgLine<Scalar>& line) const noexcept;
     constexpr PgLine<Scalar> meet(const PgPoint& other) const noexcept;
     constexpr PgPoint parametrize(Scalar lambda, const PgPoint& other, Scalar mu) const noexcept;
@@ -281,11 +281,11 @@ graph TD
     A[SFINAE<br/>C++11/14] --> B[Complex Syntax<br/>std::enable_if]
     A --> C[Hard to Read<br/>error messages]
     A --> D[Limited Expressiveness]
-    
+
     E[Concepts<br/>C++20] --> F[Clear Syntax<br/>requires clause]
     E --> G[Better Error Messages<br/>concept constraints]
     E --> H[Rich Expressiveness<br/>requires expressions]
-    
+
     style A fill:#ff9800
     style E fill:#4caf50
     style F fill:#2196f3
@@ -304,15 +304,15 @@ graph TD
     A[Rust Traits] --> B[Zero-cost abstractions]
     A --> C[Monomorphization]
     A --> D[Compile-time optimization]
-    
+
     E[Python Type Hints] --> F[Runtime flexibility]
     E --> G[Gradual adoption]
     E --> H[No runtime overhead]
-    
+
     I[C++ Concepts] --> J[Template specialization]
     I --> K[Compile-time evaluation]
     I --> L[Optimization opportunities]
-    
+
     style A fill:#f44336
     style E fill:#4caf50
     style I fill:#2196f3
@@ -365,7 +365,7 @@ Our projgeom project demonstrates all three approaches:
 pub trait Geometry {
     type Point;
     type Line;
-    
+
     fn distance(&self, p1: &Self::Point, p2: &Self::Point) -> f64;
     fn angle(&self, p1: &Self::Point, vertex: &Self::Point, p2: &Self::Point) -> f64;
 }
@@ -373,7 +373,7 @@ pub trait Geometry {
 impl<T: SignedIntegral + Float> Geometry for EuclideanPlane<T> {
     type Point = EuclideanPoint<T>;
     type Line = EuclideanLine<T>;
-    
+
     fn distance(&self, p1: &Self::Point, p2: &Self::Point) -> f64 {
         ((p2.x - p1.x).powi(2) + (p2.y - p1.y).powi(2)).sqrt()
     }
@@ -389,13 +389,13 @@ T = TypeVar('T', int, float)
 
 class Geometry(Protocol[T]):
     """Protocol for geometric operations"""
-    
+
     def distance(self, p1: 'Point[T]', p2: 'Point[T]') -> float: ...
     def angle(self, p1: 'Point[T]', vertex: 'Point[T]', p2: 'Point[T]') -> float: ...
 
 class EuclideanPlane:
     """Euclidean geometry implementation"""
-    
+
     def distance(self, p1: Point[T], p2: Point[T]) -> float:
         return ((p2.x - p1.x)**2 + (p2.y - p1.y)**2)**0.5
 ```
@@ -411,11 +411,11 @@ class EuclideanPlane {
 public:
     using Point = EuclideanPoint<T>;
     using Line = EuclideanLine<T>;
-    
+
     constexpr auto distance(const Point& p1, const Point& p2) const noexcept {
         return std::sqrt(std::pow(p2.x - p1.x, 2) + std::pow(p2.y - p1.y, 2));
     }
-    
+
     constexpr auto angle(const Point& p1, const Point& vertex, const Point& p2) const noexcept {
         // Implementation using arccosine
     }
@@ -429,12 +429,12 @@ graph TD
     A[Rust Core Library] --> B[FFI bindings]
     B --> C[Python wrapper]
     B --> D[C++ header]
-    
+
     E[Type Safety] --> A
     F[Performance] --> A
     G[Ecosystem] --> C
     H[Legacy Code] --> D
-    
+
     style A fill:#f44336
     style C fill:#4caf50
     style D fill:#2196f3
@@ -457,11 +457,11 @@ graph TD
     A[Current State] --> B[Cross-language type systems]
     A --> C[AI-assisted type inference]
     A --> D[Formal verification integration]
-    
+
     B --> E[Unified type descriptions]
     C --> F[Automated type annotations]
     D --> G[Mathematical proofs of correctness]
-    
+
     style A fill:#00bcd4
     style E fill:#4caf50
     style F fill:#ff9800
@@ -479,7 +479,7 @@ graph TD
 
 Choose the right type system for your needs:
 - 🚀 **Performance & Safety** → Rust Traits
-- 🛠️ **Productivity & Flexibility** → Python Type Hints  
+- 🛠️ **Productivity & Flexibility** → Python Type Hints
 - ⚡ **Control & Compatibility** → C++ Concepts
 
 ---
@@ -506,7 +506,7 @@ use std::ops::{Add, Mul};
 pub trait VectorSpace {
     type Scalar;
     type Vector;
-    
+
     fn zero() -> Self::Vector;
     fn add(v1: &Self::Vector, v2: &Self::Vector) -> Self::Vector;
     fn scale(s: Self::Scalar, v: &Self::Vector) -> Self::Vector;
@@ -515,7 +515,7 @@ pub trait VectorSpace {
 impl<T: Add<Output = T> + Mul<Output = T> + Copy + Default> VectorSpace for T {
     type Scalar = T;
     type Vector = T;
-    
+
     fn zero() -> Self::Vector { T::default() }
     fn add(v1: &Self::Vector, v2: &Self::Vector) -> Self::Vector { *v1 + *v2 }
     fn scale(s: Self::Scalar, v: &Self::Vector) -> Self::Vector { s * *v }
@@ -537,10 +537,10 @@ class SupportsArithmetic(Protocol[T]):
 class VectorSpace(Generic[T]):
     def __init__(self, zero_factory: callable):
         self.zero = zero_factory()
-    
+
     def add(self, v1: T, v2: T) -> T:
         return v1 + v2
-    
+
     def scale(self, scalar: T, vector: T) -> T:
         return scalar * vector
 ```

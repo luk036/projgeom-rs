@@ -49,9 +49,9 @@ if(BUILD_TESTING)
         tests/test_ck_plane.cpp
         tests/test_geometries.cpp
     )
-    
+
     target_link_libraries(tests PRIVATE projgeom-cpp doctest::doctest)
-    
+
     add_test(NAME projgeom-tests COMMAND tests)
 endif()
 

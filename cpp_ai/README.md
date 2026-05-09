@@ -68,7 +68,7 @@ if (p.incident(l)) {
 
 - `PgPoint`, `PgLine`: Basic projective geometry
 - `EllipticPoint`, `EllipticLine`: Elliptic geometry
-- `HyperbolicPoint`, `HyperbolicLine`: Hyperbolic geometry  
+- `HyperbolicPoint`, `HyperbolicLine`: Hyperbolic geometry
 - `EuclidPoint`, `EuclidLine`: Euclidean geometry
 - `MyCKPoint`, `MyCKLine`: MyCK geometry
 - `PerspPoint`, `PerspLine`: Perspective geometry
