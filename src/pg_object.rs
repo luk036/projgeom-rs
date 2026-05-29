@@ -45,6 +45,34 @@ pub const fn dot1(vec_a: &[i64], vec_b: &[i64]) -> i64 {
     vec_a[0] * vec_b[0] + vec_a[1] * vec_b[1]
 }
 
+/// Cross product 0th component (y1*z2 - y2*z1)
+///
+/// # Examples
+///
+/// ```
+/// use projgeom_rs::pg_object::cross0;
+/// let result = cross0(&[1, 2, 3], &[4, 5, 6]);
+/// assert_eq!(result, 2*6 - 5*3); // -3
+/// ```
+#[inline]
+pub const fn cross0(vec_a: &[i64; 3], vec_b: &[i64; 3]) -> i64 {
+    vec_a[1] * vec_b[2] - vec_b[1] * vec_a[2]
+}
+
+/// Cross product 1st component (x1*z2 - x2*z1)
+///
+/// # Examples
+///
+/// ```
+/// use projgeom_rs::pg_object::cross1;
+/// let result = cross1(&[1, 2, 3], &[4, 5, 6]);
+/// assert_eq!(result, 1*6 - 4*3); // -6
+/// ```
+#[inline]
+pub const fn cross1(vec_a: &[i64; 3], vec_b: &[i64; 3]) -> i64 {
+    vec_a[0] * vec_b[2] - vec_b[0] * vec_a[2]
+}
+
 /// Cross product (2d)
 ///
 /// # Examples
@@ -57,6 +85,48 @@ pub const fn dot1(vec_a: &[i64], vec_b: &[i64]) -> i64 {
 #[inline]
 pub const fn cross2(vec_a: &[i64], vec_b: &[i64]) -> i64 {
     vec_a[0] * vec_b[1] - vec_a[1] * vec_b[0]
+}
+
+/// Cross product (2d) from 3-element arrays (3rd component).
+///
+/// # Examples
+///
+/// ```
+/// use projgeom_rs::pg_object::cross2_3;
+/// let result = cross2_3(&[1, 2, 3], &[3, 4, 5]);
+/// assert_eq!(result, -2);
+/// ```
+#[inline]
+pub const fn cross2_3(vec_a: &[i64; 3], vec_b: &[i64; 3]) -> i64 {
+    vec_a[0] * vec_b[1] - vec_a[1] * vec_b[0]
+}
+
+/// Dot product (0,2)-components (x1*x2 + z1*z2)
+///
+/// # Examples
+///
+/// ```
+/// use projgeom_rs::pg_object::dot2;
+/// let result = dot2(&[1, 2, 3], &[4, 5, 6]);
+/// assert_eq!(result, 1*4 + 3*6); // 22
+/// ```
+#[inline]
+pub const fn dot2(vec_a: &[i64; 3], vec_b: &[i64; 3]) -> i64 {
+    vec_a[0] * vec_b[0] + vec_a[2] * vec_b[2]
+}
+
+/// Square function
+///
+/// # Examples
+///
+/// ```
+/// use projgeom_rs::pg_object::sq;
+/// assert_eq!(sq(5), 25);
+/// assert_eq!(sq(-3), 9);
+/// ```
+#[inline]
+pub const fn sq(val: i64) -> i64 {
+    val * val
 }
 
 /// Cross product

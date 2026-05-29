@@ -1,7 +1,9 @@
 // Euclidean Geometry
 
-use crate::pg_object::{EuclidLine, EuclidPoint};
-use crate::pg_plane::{coincident, tri_dual, ProjectivePlane, ProjectivePlanePrimitive};
+use crate::pg_object::{sq, EuclidLine, EuclidPoint};
+use crate::pg_plane::{
+    coincident, tri_dual, Involution, ProjectivePlane, ProjectivePlanePrimitive,
+};
 use crate::{CayleyKleinPlane, CayleyKleinPlanePrimitive};
 // use crate::pg_object::{plucker_operation, dot_product};
 use crate::pg_object::dot1;
@@ -166,6 +168,189 @@ pub fn tri_altitude(triangle: &[EuclidPoint; 3]) -> [EuclidLine; 3] {
     let t_2 = l_2.altitude(a_2);
     let t_3 = l_3.altitude(a_3);
     [t_1, t_2, t_3]
+}
+
+/// Convert a line to its direction vector in the affine plane.
+///
+/// Extracts the direction components (first two coordinates) of a line,
+/// setting z=0 to represent a direction vector.
+///
+/// # Examples
+///
+/// ```
+/// use projgeom_rs::{EuclidLine, EuclidPoint, euclid_object::fB};
+///
+/// let l = EuclidLine::new([1, 2, -3]);
+/// let dir = fB(&l);
+/// assert_eq!(dir, EuclidPoint::new([1, 2, 0]));
+/// ```
+#[allow(non_snake_case)]
+#[inline]
+pub fn fB(line_l: &EuclidLine) -> EuclidPoint {
+    EuclidPoint::new([line_l.coord[0], line_l.coord[1], 0])
+}
+
+/// Check if two Euclidean lines are perpendicular (free function).
+///
+/// # Examples
+///
+/// ```
+/// use projgeom_rs::{EuclidLine, is_perpendicular};
+///
+/// let l1 = EuclidLine::new([1, 0, -1]); // x = 1
+/// let l2 = EuclidLine::new([0, 1, -1]); // y = 1
+/// assert!(is_perpendicular(&l1, &l2));
+/// ```
+#[inline]
+pub fn is_perpendicular(line_l: &EuclidLine, line_m: &EuclidLine) -> bool {
+    line_l.is_perpendicular(line_m)
+}
+
+/// Check if two Euclidean lines are parallel (free function).
+///
+/// # Examples
+///
+/// ```
+/// use projgeom_rs::{EuclidLine, euclid_object::is_parallel};
+///
+/// let l1 = EuclidLine::new([1, 0, -1]); // x = 1
+/// let l2 = EuclidLine::new([2, 0, -5]); // x = 2.5
+/// assert!(is_parallel(&l1, &l2));
+/// ```
+#[inline]
+pub fn is_parallel(line_l: &EuclidLine, line_m: &EuclidLine) -> bool {
+    line_l.is_parallel(line_m)
+}
+
+/// Compute the midpoint of two Euclidean points (free function).
+///
+/// # Examples
+///
+/// ```
+/// use projgeom_rs::{EuclidPoint, midpoint};
+///
+/// let a = EuclidPoint::new([0, 0, 1]);
+/// let b = EuclidPoint::new([2, 4, 1]);
+/// let mid = midpoint(&a, &b);
+/// assert_eq!(mid, EuclidPoint::new([1, 2, 1]));
+/// ```
+#[inline]
+pub fn midpoint(a: &EuclidPoint, b: &EuclidPoint) -> EuclidPoint {
+    a.midpoint(b)
+}
+
+/// Compute the midpoints of all three sides of a triangle.
+///
+/// Returns [midpoint(a1,a2), midpoint(a2,a3), midpoint(a1,a3)].
+///
+/// # Examples
+///
+/// ```
+/// use projgeom_rs::{EuclidPoint, tri_midpoint};
+///
+/// let a = EuclidPoint::new([0, 0, 1]);
+/// let b = EuclidPoint::new([2, 0, 1]);
+/// let c = EuclidPoint::new([0, 2, 1]);
+/// let mids = tri_midpoint(&[a, b, c]);
+/// // Midpoint of (0,0)-(2,0) is (1,0)
+/// assert_eq!(mids[0], EuclidPoint::new([1, 0, 1]));
+/// // Midpoint of (2,0)-(0,2) is (1,1)
+/// assert_eq!(mids[1], EuclidPoint::new([1, 1, 1]));
+/// // Midpoint of (0,0)-(0,2) is (0,1)
+/// assert_eq!(mids[2], EuclidPoint::new([0, 1, 1]));
+/// ```
+#[inline]
+pub fn tri_midpoint(triangle: &[EuclidPoint; 3]) -> [EuclidPoint; 3] {
+    let [a1, a2, a3] = triangle;
+    [midpoint(a1, a2), midpoint(a2, a3), midpoint(a1, a3)]
+}
+
+/// Compute a point on the unit circle from trigonometric parameters.
+///
+/// Creates a point on the unit circle using the parameterization
+/// (lambda^2 - mu^2, 2*lambda*mu, lambda^2 + mu^2).
+///
+/// # Examples
+///
+/// ```
+/// use projgeom_rs::{EuclidPoint, uc_point};
+///
+/// let p = uc_point(1, 0);
+/// assert_eq!(p, EuclidPoint::new([1, 0, 1])); // (1,0) on unit circle
+///
+/// let p2 = uc_point(0, 1);
+/// assert_eq!(p2, EuclidPoint::new([-1, 0, 1])); // (-1,0) on unit circle
+/// ```
+#[inline]
+pub fn uc_point(lambda: i64, mu: i64) -> EuclidPoint {
+    let lambda_sq = sq(lambda);
+    let mu_sq = sq(mu);
+    EuclidPoint::new([lambda_sq - mu_sq, 2 * lambda * mu, lambda_sq + mu_sq])
+}
+
+/// Archimedes's function: 4*a*b - sq(a + b - c)
+#[inline]
+pub fn archimedes(a: i64, b: i64, c: i64) -> i64 {
+    4 * a * b - sq(a + b - c)
+}
+
+/// Cyclic quadrilateral quadrea theorem.
+///
+/// Returns [line_m, point_p] - the two terms of the cyclic quadrilateral equation.
+#[inline]
+pub fn cqq(a: i64, b: i64, c: i64, d: i64) -> [i64; 2] {
+    let t1 = 4 * a * b;
+    let t2 = 4 * c * d;
+    let line_m = (t1 + t2) - sq(a + b - c - d);
+    let point_p = sq(line_m) - 4 * t1 * t2;
+    [line_m, point_p]
+}
+
+/// Check Ptolemy's theorem for a cyclic quadrilateral.
+///
+/// Ptolemy's theorem states that for a cyclic quadrilateral,
+/// the product of the diagonals equals the sum of the products
+/// of opposite sides.
+///
+/// Input: [Q12, Q23, Q34, Q14, Q13, Q24] - six side/diagonal quadrances.
+///
+/// # Examples
+///
+/// ```
+/// use projgeom_rs::Ptolemy;
+///
+/// // A rectangle with sides 3,4 has diagonals 5
+/// // Q12=9, Q23=16, Q34=9, Q14=16, Q13=25, Q24=25
+/// assert!(Ptolemy(&[9, 16, 9, 16, 25, 25]));
+/// ```
+#[allow(non_snake_case)]
+#[inline]
+pub fn Ptolemy(quad: &[i64; 6]) -> bool {
+    let [q12, q23, q34, q14, q13, q24] = *quad;
+    archimedes(q12 * q34, q23 * q14, q13 * q24) == 0
+}
+
+/// Reflect a point across a line using an involution.
+///
+/// Creates an `Involution` from the mirror line's direction vector and
+/// applies it to the point.
+///
+/// # Examples
+///
+/// ```
+/// use projgeom_rs::{EuclidPoint, EuclidLine, reflect_involution};
+///
+/// let mirror = EuclidLine::new([1, 0, 0]); // y-axis
+/// let p = EuclidPoint::new([2, 0, 1]); // Point (2,0)
+/// let reflected = reflect_involution(&mirror, &p);
+/// // Reflecting (2,0) across y-axis gives (-2,0)
+/// assert_eq!(reflected, EuclidPoint::new([-2, 0, 1]));
+/// ```
+#[inline]
+pub fn reflect_involution(mirror: &EuclidLine, pt_p: &EuclidPoint) -> EuclidPoint {
+    let dir = fB(mirror);
+    let inv = Involution::new(mirror.clone(), dir);
+    inv.apply_point(pt_p)
 }
 
 /// The `orthocenter` function calculates the orthocenter of a triangle given its three vertices.

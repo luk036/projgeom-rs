@@ -441,6 +441,112 @@ where
     harm_conj(origin, &pt_b, pt_p)
 }
 
+/// Apply a binary function to all pairs of triangle vertices.
+///
+/// Returns an array with the function applied to each pair of distinct
+/// vertices of the triangle: [func(v2,v3), func(v1,v3), func(v1,v2)].
+///
+/// # Examples
+///
+/// ```
+/// use projgeom_rs::{PgPoint, pg_plane::tri_func, ProjectivePlanePrimitive};
+///
+/// let a = PgPoint::new([0, 0, 1]);
+/// let b = PgPoint::new([1, 0, 1]);
+/// let c = PgPoint::new([0, 1, 1]);
+/// let triangle = [a, b, c];
+/// let result = tri_func(|p, q| p.meet(q), &triangle);
+/// assert_eq!(result.len(), 3);
+/// ```
+#[inline]
+pub fn tri_func<Point, Line, F>(func: F, triangle: &[Point; 3]) -> [Line; 3]
+where
+    Point: ProjectivePlanePrimitive<Line>,
+    Line: ProjectivePlanePrimitive<Point>,
+    F: Fn(&Point, &Point) -> Line,
+{
+    let [a_1, a_2, a_3] = triangle;
+    [func(a_2, a_3), func(a_1, a_3), func(a_1, a_2)]
+}
+
+/// Check if four points form a harmonic range.
+///
+/// Four points A, B, C, D form a harmonic range if D is the harmonic
+/// conjugate of C with respect to A and B.
+///
+/// # Examples
+///
+/// ```
+/// use projgeom_rs::{PgPoint, is_harmonic, harm_conj};
+///
+/// // Collinear points on the x-axis
+/// let a = PgPoint::new([1, 0, 1]);  // A = (1,0)
+/// let b = PgPoint::new([0, 0, 1]);  // B = (0,0)
+/// let c = PgPoint::new([2, 0, 1]);  // C = (2,0)
+/// let d = harm_conj(&a, &b, &c);
+/// assert!(is_harmonic(&a, &b, &c, &d));
+/// ```
+#[allow(dead_code)]
+#[inline]
+pub fn is_harmonic<Point, Line, Value>(
+    pt_a: &Point,
+    pt_b: &Point,
+    pt_c: &Point,
+    pt_d: &Point,
+) -> bool
+where
+    Value: Default + Eq,
+    Point: ProjectivePlane<Line, Value> + PartialEq,
+    Line: ProjectivePlane<Point, Value>,
+{
+    harm_conj(pt_a, pt_b, pt_c) == *pt_d
+}
+
+/// An involution transformation in a projective plane.
+///
+/// An involution is a transformation that is its own inverse.
+/// It is defined by a center point and a mirror line.
+/// This uses `i64` value type matching all current geometry implementations.
+pub struct Involution<Point, Line> {
+    mirror: Line,
+    center: Point,
+    constant: i64,
+}
+
+impl<Point, Line> Involution<Point, Line>
+where
+    Point: ProjectivePlane<Line, i64>,
+    Line: ProjectivePlane<Point, i64>,
+{
+    /// Create a new involution from a mirror line and center point.
+    #[inline]
+    pub fn new(mirror: Line, center: Point) -> Self {
+        let constant = mirror.dot(&center);
+        Involution {
+            mirror,
+            center,
+            constant,
+        }
+    }
+
+    /// Apply the involution to a point.
+    ///
+    /// Returns the image of `pt_p` under the involution.
+    #[inline]
+    pub fn apply_point(&self, pt_p: &Point) -> Point {
+        pt_p.parametrize(self.constant, &self.center, -2 * pt_p.dot(&self.mirror))
+    }
+
+    /// Apply the involution to a line.
+    ///
+    /// Returns the image of `ln_l` under the involution.
+    #[allow(dead_code)]
+    #[inline]
+    pub fn apply_line(&self, ln_l: &Line) -> Line {
+        ln_l.parametrize(self.constant, &self.mirror, -2 * ln_l.dot(&self.center))
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use crate::pg_plane::ProjectivePlanePrimitive;
