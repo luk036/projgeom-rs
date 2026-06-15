@@ -483,7 +483,11 @@ mod projective_plane_tests {
     ) -> bool {
         let c1 = [coord1.0 as i64, coord1.1 as i64, coord1.2 as i64];
         let c2 = [coord2.0 as i64, coord2.1 as i64, coord2.2 as i64];
-        let cl = [line_coord.0 as i64, line_coord.1 as i64, line_coord.2 as i64];
+        let cl = [
+            line_coord.0 as i64,
+            line_coord.1 as i64,
+            line_coord.2 as i64,
+        ];
         if c1 == [0, 0, 0] || c2 == [0, 0, 0] || cl == [0, 0, 0] {
             return true;
         }
@@ -504,7 +508,11 @@ mod projective_plane_tests {
     ) -> bool {
         let c1 = [coord1.0 as i64, coord1.1 as i64, coord1.2 as i64];
         let c2 = [coord2.0 as i64, coord2.1 as i64, coord2.2 as i64];
-        let cl = [line_coord.0 as i64, line_coord.1 as i64, line_coord.2 as i64];
+        let cl = [
+            line_coord.0 as i64,
+            line_coord.1 as i64,
+            line_coord.2 as i64,
+        ];
         if c1 == [0, 0, 0] || c2 == [0, 0, 0] || cl == [0, 0, 0] {
             return true;
         }
@@ -851,7 +859,11 @@ mod ck_plane_tests {
             point_coord.1 as i64,
             point_coord.2 as i64,
         ];
-        let lc = [line_coord.0 as i64, line_coord.1 as i64, line_coord.2 as i64];
+        let lc = [
+            line_coord.0 as i64,
+            line_coord.1 as i64,
+            line_coord.2 as i64,
+        ];
         if pc == [0, 0, 0] || lc == [0, 0, 0] {
             return true;
         }
@@ -914,7 +926,11 @@ mod ck_plane_tests {
             point_coord.1 as i64,
             point_coord.2 as i64,
         ];
-        let lc = [line_coord.0 as i64, line_coord.1 as i64, line_coord.2 as i64];
+        let lc = [
+            line_coord.0 as i64,
+            line_coord.1 as i64,
+            line_coord.2 as i64,
+        ];
         if pc == [0, 0, 0] || lc == [0, 0, 0] {
             return true;
         }
@@ -975,7 +991,10 @@ mod ck_plane_tests {
     }
 
     #[quickcheck]
-    fn prop_persp_point_midpoint_symmetry(coord1: (i16, i16, i16), coord2: (i16, i16, i16)) -> bool {
+    fn prop_persp_point_midpoint_symmetry(
+        coord1: (i16, i16, i16),
+        coord2: (i16, i16, i16),
+    ) -> bool {
         let c1 = [coord1.0 as i64, coord1.1 as i64, coord1.2 as i64];
         let c2 = [coord2.0 as i64, coord2.1 as i64, coord2.2 as i64];
         if c1 == [0, 0, 0] || c2 == [0, 0, 0] {
@@ -1068,7 +1087,11 @@ mod ck_plane_tests {
             point_coord.1 as i64,
             point_coord.2 as i64,
         ];
-        let lc = [line_coord.0 as i64, line_coord.1 as i64, line_coord.2 as i64];
+        let lc = [
+            line_coord.0 as i64,
+            line_coord.1 as i64,
+            line_coord.2 as i64,
+        ];
         if pc == [0, 0, 0] || lc == [0, 0, 0] {
             return true;
         }
@@ -1320,7 +1343,11 @@ mod pg_object_tests {
             point_coord.1 as i64,
             point_coord.2 as i64,
         ];
-        let lc = [line_coord.0 as i64, line_coord.1 as i64, line_coord.2 as i64];
+        let lc = [
+            line_coord.0 as i64,
+            line_coord.1 as i64,
+            line_coord.2 as i64,
+        ];
         if pc == [0, 0, 0] || lc == [0, 0, 0] {
             return true;
         }
