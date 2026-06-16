@@ -21,9 +21,9 @@ svgbobdoc = { version = "0.3", features = ["enable"] }
 
 
 [dev-dependencies]
-quickcheck = "1"
-quickcheck_macros = "1.1.0"
-criterion = "0.5"
+quickcheck = "1.1.0"
+quickcheck_macros = "1.2.0"
+criterion = "0.8.2"
 
 [[bench]]
 name = "geometry_bench"
