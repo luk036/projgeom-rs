@@ -3,7 +3,9 @@
 //! This module benchmarks the performance of various geometric operations
 //! using the criterion library.
 
-use criterion::{black_box, criterion_group, criterion_main, Criterion};
+use std::hint::black_box;
+
+use criterion::{criterion_group, criterion_main, Criterion};
 use projgeom_rs::*;
 
 fn bench_dot_product(c: &mut Criterion) {
