@@ -8,8 +8,10 @@ use fractions::Fraction;
 
 /// Represents a conic section in homogeneous coordinates
 ///
-/// A conic is represented by a symmetric 3x3 matrix Q such that
-/// a point x lies on the conic if x^T Q x = 0.
+/// A conic is represented by a symmetric 3x3 matrix $$ Q $$ such that
+/// a point $$ x $$ lies on the conic if:
+///
+/// $$ x^T Q x = 0 $$
 #[derive(Debug, Clone, PartialEq)]
 pub struct Conic {
     /// The 3x3 symmetric matrix representing the conic

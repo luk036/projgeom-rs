@@ -70,6 +70,10 @@ pub fn normalize_homogeneous(coord: &mut [i64; 3]) {
 
 /// Compute the orientation of three points
 ///
+/// Uses the signed area (cross product) to determine orientation:
+///
+/// $$ \text{orientation} = \text{sgn}\bigl((x_2 - x_1)(y_3 - y_1) - (y_2 - y_1)(x_3 - x_1)\bigr) $$
+///
 /// This function determines whether three points are arranged in clockwise,
 /// counter-clockwise, or collinear order.
 ///

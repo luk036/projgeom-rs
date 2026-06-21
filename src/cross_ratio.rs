@@ -9,10 +9,11 @@ use fractions::Fraction;
 
 /// Compute the cross-ratio of four collinear points
 ///
-/// The cross-ratio (A, B; C, D) is defined as:
-/// (AC/BC) / (AD/BD)
+/// The cross-ratio $$ (A, B; C, D) $$ is defined as:
 ///
-/// where AC, BC, AD, BD are directed distances
+/// $$ (A,B;C,D) = \frac{AC \cdot BD}{BC \cdot AD} $$
+///
+/// where $$ AC, BC, AD, BD $$ are directed distances
 ///
 /// # Arguments
 ///
@@ -80,7 +81,9 @@ pub fn cross_ratio_lines(l1: &PgPoint, l2: &PgPoint, l3: &PgPoint, l4: &PgPoint)
 
 /// Check if four points form a harmonic division
 ///
-/// Four points form a harmonic division if their cross-ratio is -1
+/// Four points form a harmonic division if their cross-ratio is $$ -1 $$:
+///
+/// $$ (A, B; C, D) = -1 $$
 ///
 /// # Arguments
 ///

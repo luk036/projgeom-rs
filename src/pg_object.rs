@@ -3,6 +3,8 @@ use crate::pg_plane::{ProjectivePlane, ProjectivePlanePrimitive};
 
 /// The `dot_product` function calculates the dot product of two 3-dimensional vectors.
 ///
+/// $$ \mathbf{v}_a \cdot \mathbf{v}_b = x_a x_b + y_a y_b + z_a z_b $$
+///
 /// Arguments:
 ///
 /// * `v_a`: An array of three i64 values representing the first vector.
@@ -33,6 +35,8 @@ pub fn dot_product(vec_a: &[i64; 3], vec_b: &[i64; 3]) -> i64 {
 
 /// Dot product (2d)
 ///
+/// $$ \mathbf{v}_a \cdot \mathbf{v}_b = x_a x_b + y_a y_b $$
+///
 /// # Examples
 ///
 /// ```
@@ -46,6 +50,8 @@ pub const fn dot1(vec_a: &[i64], vec_b: &[i64]) -> i64 {
 }
 
 /// Cross product 0th component (y1*z2 - y2*z1)
+///
+/// $$ (\mathbf{v}_a \times \mathbf{v}_b)_0 = y_1 z_2 - y_2 z_1 $$
 ///
 /// # Examples
 ///
@@ -61,6 +67,8 @@ pub const fn cross0(vec_a: &[i64; 3], vec_b: &[i64; 3]) -> i64 {
 
 /// Cross product 1st component (x1*z2 - x2*z1)
 ///
+/// $$ (\mathbf{v}_a \times \mathbf{v}_b)_1 = x_1 z_2 - x_2 z_1 $$
+///
 /// # Examples
 ///
 /// ```
@@ -74,6 +82,8 @@ pub const fn cross1(vec_a: &[i64; 3], vec_b: &[i64; 3]) -> i64 {
 }
 
 /// Cross product (2d)
+///
+/// $$ \mathbf{v}_a \times \mathbf{v}_b = x_1 y_2 - x_2 y_1 $$
 ///
 /// # Examples
 ///
@@ -89,6 +99,8 @@ pub const fn cross2(vec_a: &[i64], vec_b: &[i64]) -> i64 {
 
 /// Cross product (2d) from 3-element arrays (3rd component).
 ///
+/// $$ (\mathbf{v}_a \times \mathbf{v}_b)_2 = x_1 y_2 - x_2 y_1 $$
+///
 /// # Examples
 ///
 /// ```
@@ -103,6 +115,8 @@ pub const fn cross2_3(vec_a: &[i64; 3], vec_b: &[i64; 3]) -> i64 {
 
 /// Dot product (0,2)-components (x1*x2 + z1*z2)
 ///
+/// $$ \mathbf{v}_a \cdot_{(0,2)} \mathbf{v}_b = x_1 x_2 + z_1 z_2 $$
+///
 /// # Examples
 ///
 /// ```
@@ -116,6 +130,8 @@ pub const fn dot2(vec_a: &[i64; 3], vec_b: &[i64; 3]) -> i64 {
 }
 
 /// Square function
+///
+/// $$ \text{sq}(x) = x^2 $$
 ///
 /// # Examples
 ///
