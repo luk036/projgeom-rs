@@ -18,7 +18,7 @@ pub fn ratio_ratio(a: i64, b: i64, c: i64, d: i64) -> Fraction<i64> {
 
 /// Compute the cross ratio of four collinear points using dot products.
 ///
-/// Returns the cross ratio R(A, B; line_l, line_m) = (A·line_l / A·line_m) / (B·line_l / B·line_m)
+/// $$ R(A, B; l, m) = \frac{A \cdot l / A \cdot m}{B \cdot l / B \cdot m} $$
 /// where line_l and line_m are two lines through the points.
 ///
 /// # Examples
@@ -54,8 +54,7 @@ where
 
 /// Compute cross ratio using yz-plane projection (cross0-based).
 ///
-/// Returns the cross ratio R(A, B; C, D) using the yz-plane projection:
-/// (cross0(A,C)/cross0(A,D)) / (cross0(B,C)/cross0(B,D))
+/// $$ R(A, B; C, D) = \frac{\text{cross0}(A,C) / \text{cross0}(A,D)}{\text{cross0}(B,C) / \text{cross0}(B,D)} $$
 ///
 /// # Examples
 ///

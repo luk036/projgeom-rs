@@ -783,7 +783,6 @@ dependencies = [
  "criterion",
  "fractions-rs",
  "num-integer",
- "num-traits",
  "quickcheck",
  "quickcheck_macros",
  "svgbobdoc",

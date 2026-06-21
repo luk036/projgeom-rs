@@ -21,6 +21,8 @@ impl_cayley_klein_plane!(
 impl EuclidLine {
     /// The function checks if two EuclidLine objects are parallel.
     ///
+    /// $$ a_1 b_2 - a_2 b_1 = 0 $$
+    ///
     /// Arguments:
     ///
     /// * `other`: `other` is a reference to an `EuclidLine` object.
@@ -48,6 +50,8 @@ impl EuclidLine {
     }
 
     /// The function checks if two Euclidean lines are perpendicular.
+    ///
+    /// $$ a_1 a_2 + b_1 b_2 = 0 $$
     ///
     /// Arguments:
     ///
