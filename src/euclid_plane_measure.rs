@@ -1,6 +1,6 @@
 //! Euclidean plane measurement functions
 //!
-//! This module provides quadrance, spread, distance, and angle computations
+//! This module provides quadrance, spread, and cross spread computations
 //! for Euclidean geometry, ported from the C++ euclid_plane_measure.hpp.
 
 use crate::pg_object::{dot1, sq, EuclidPoint};
@@ -129,46 +129,6 @@ pub fn tri_spread(trilateral: &[EuclidPoint; 3]) -> [Fraction<i64>; 3] {
     [spread(l2, l3), spread(l1, l3), spread(l1, l2)]
 }
 
-/// Compute the Euclidean distance between two points.
-///
-/// # Examples
-///
-/// ```
-/// use projgeom_rs::{EuclidPoint, euclid_plane_measure::distance};
-///
-/// let a = EuclidPoint::new([0, 0, 1]);
-/// let b = EuclidPoint::new([3, 4, 1]);
-/// let d = distance(&a, &b);
-/// assert!((d - 5.0).abs() < 1e-10);
-/// ```
-#[inline]
-pub fn distance(a: &EuclidPoint, b: &EuclidPoint) -> f64 {
-    let q = quadrance(a, b);
-    f64::sqrt(*q.numer() as f64 / *q.denom() as f64)
-}
-
-/// Compute the angle between two Euclidean lines.
-///
-/// Returns the angle in radians.
-///
-/// # Examples
-///
-/// ```
-/// use projgeom_rs::{EuclidPoint, euclid_plane_measure::angle};
-///
-/// // Lines x=0 and y=0 are perpendicular -> angle = pi/2
-/// let l1 = EuclidPoint::new([1, 0, 0]);
-/// let l2 = EuclidPoint::new([0, 1, 0]);
-/// let a = angle(&l1, &l2);
-/// assert!((a - std::f64::consts::FRAC_PI_2).abs() < 1e-10);
-/// ```
-#[inline]
-pub fn angle(l1: &EuclidPoint, l2: &EuclidPoint) -> f64 {
-    let s = spread(l1, l2);
-    let spread_val = *s.numer() as f64 / *s.denom() as f64;
-    f64::asin(f64::sqrt(spread_val))
-}
-
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -218,22 +178,6 @@ mod tests {
         let l2 = EuclidPoint::new([2, 0, 0]);
         let cs = cross_s(&l1, &l2);
         assert_eq!(cs, Fraction::new(1, 1));
-    }
-
-    #[test]
-    fn test_distance_basic() {
-        let a = EuclidPoint::new([0, 0, 1]);
-        let b = EuclidPoint::new([3, 4, 1]);
-        let d = distance(&a, &b);
-        assert!((d - 5.0).abs() < 1e-10);
-    }
-
-    #[test]
-    fn test_angle_perpendicular() {
-        let l1 = EuclidPoint::new([1, 0, 0]);
-        let l2 = EuclidPoint::new([0, 1, 0]);
-        let a = angle(&l1, &l2);
-        assert!((a - std::f64::consts::FRAC_PI_2).abs() < 1e-10);
     }
 
     #[test]

@@ -20,7 +20,6 @@ pub mod predicates;
 pub mod proj_plane_measure;
 pub mod transform;
 pub mod visualization;
-
 pub use crate::ck_plane::*;
 pub use crate::conic::{Conic, ConicType};
 pub use crate::cross_ratio::{
