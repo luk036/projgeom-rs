@@ -102,6 +102,9 @@ pub fn is_harmonic_division(a: &PgPoint, b: &PgPoint, c: &PgPoint, d: &PgPoint) 
 
 /// Compute the parameter for a point on a line
 ///
+/// Given a line parameterized as $$ P(\lambda) = A + \lambda (B - A) $$,
+/// solves for $$ \lambda $$ such that $$ P(\lambda) = P $$.
+///
 /// # Arguments
 ///
 /// * `a` - First point defining the line
@@ -144,6 +147,8 @@ fn compute_parameter(a: &PgPoint, b: &PgPoint, p: &PgPoint) -> Fraction<i64> {
 
 /// Apply a projective transformation to a point
 ///
+/// $$ x' = M x = \begin{bmatrix} m_{00} & m_{01} & m_{02} \\\\ m_{10} & m_{11} & m_{12} \\\\ m_{20} & m_{21} & m_{22} \end{bmatrix} \begin{bmatrix} x \\\\ y \\\\ z \end{bmatrix} $$
+///
 /// # Arguments
 ///
 /// * `matrix` - The 3x3 transformation matrix
@@ -174,6 +179,8 @@ pub fn projective_transform_point(matrix: &[[Fraction<i64>; 3]; 3], point: &PgPo
 }
 
 /// Apply a projective transformation to a line
+///
+/// Lines transform by the inverse transpose: $$ l' = M^{-T} l $$
 ///
 /// # Arguments
 ///

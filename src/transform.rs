@@ -126,6 +126,8 @@ impl Transform {
     }
 
     /// Compose this transformation with another
+    ///
+    /// $$ (M_{\text{result}})_{ij} = \sum_{k=0}^{2} (M_{\text{self}})_{ik} (M_{\text{other}})_{kj} $$
     pub fn compose(&self, other: &Transform) -> Transform {
         let mut result = Transform::identity();
 
@@ -143,6 +145,8 @@ impl Transform {
     }
 
     /// Apply the transformation to a point
+    ///
+    /// $$ p' = M p = \begin{bmatrix} m_{00} & m_{01} & m_{02} \\\\ m_{10} & m_{11} & m_{12} \\\\ m_{20} & m_{21} & m_{22} \end{bmatrix} \begin{bmatrix} x \\\\ y \\\\ z \end{bmatrix} $$
     pub fn apply_point(&self, point: &PgPoint) -> PgPoint {
         let x = Fraction::<i64>::new(point.coord[0], 1);
         let y = Fraction::<i64>::new(point.coord[1], 1);
@@ -161,6 +165,8 @@ impl Transform {
     }
 
     /// Apply the transformation to a line
+    ///
+    /// Lines transform by the inverse transpose: $$ l' = M^{-T} l $$
     pub fn apply_line(&self, line: &PgLine) -> PgLine {
         // For lines, we need to use the inverse transpose
         let inverse = self.inverse();
@@ -180,6 +186,8 @@ impl Transform {
     }
 
     /// Compute the inverse of this transformation
+    ///
+    /// $$ M^{-1} = \frac{\text{adj}(M)}{\det(M)} $$
     pub fn inverse(&self) -> Transform {
         // Compute the inverse of a 3x3 matrix
         let a = self.matrix[0][0];
@@ -232,6 +240,8 @@ impl Default for Transform {
 
 /// Rotate a point around the origin
 ///
+/// $$ p' = R(\theta) p $$
+///
 /// # Arguments
 ///
 /// * `point` - The point to rotate
@@ -248,6 +258,8 @@ pub fn rotate_point(
 
 /// Translate a point
 ///
+/// $$ p' = T(t_x, t_y) p $$
+///
 /// # Arguments
 ///
 /// * `point` - The point to translate
@@ -259,6 +271,8 @@ pub fn translate_point(point: &PgPoint, tx: i64, ty: i64) -> PgPoint {
 }
 
 /// Scale a point
+///
+/// $$ p' = S(s_x, s_y) p $$
 ///
 /// # Arguments
 ///
