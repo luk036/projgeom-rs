@@ -60,6 +60,10 @@ where
 
 /// The `altitude` function calculates the altitude of a point `pt_p` with respect to a line `ln_m`.
 ///
+/// The altitude through $$ P $$ perpendicular to $$ m $$ is:
+///
+/// $$ \text{altitude}(P, m) = m^\perp \wedge P $$
+///
 /// Arguments:
 ///
 /// * `pt_p`: A point on a plane.
@@ -183,6 +187,11 @@ pub trait CayleyKleinPlane<Dual, Value: Default + Eq>:
 }
 
 /// The `reflect` function in Rust reflects a point `pt_p` across a mirror plane `mirror`.
+///
+/// Reflection of point $$ P $$ across line $$ m $$ is computed using the
+/// involution defined by the pole-polar relationship:
+///
+/// $$ P' = \text{involution}(m^\perp, m, P) $$
 ///
 /// Arguments:
 ///

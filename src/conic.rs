@@ -176,6 +176,8 @@ impl Conic {
 
     /// Compute the discriminant of the conic
     ///
+    /// $$ \Delta = \begin{vmatrix} a & b \\\\ d & e \end{vmatrix} = a e - b d $$
+    ///
     /// # Returns
     ///
     /// The discriminant, which determines the type of conic:
