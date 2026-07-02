@@ -80,8 +80,7 @@ pub fn R0(pt_a: &PgPoint, pt_b: &PgPoint, pt_c: &PgPoint, pt_d: &PgPoint) -> Fra
 
 /// Compute cross ratio using xz-plane projection (cross1-based).
 ///
-/// Returns the cross ratio R(A, B; C, D) using the xz-plane projection:
-/// (cross1(A,C)/cross1(A,D)) / (cross1(B,C)/cross1(B,D))
+/// $$ R(A, B; C, D) = \frac{\text{cross1}(A,C) / \text{cross1}(A,D)}{\text{cross1}(B,C) / \text{cross1}(B,D)} $$
 ///
 /// # Examples
 ///
@@ -106,6 +105,8 @@ pub fn R1(pt_a: &PgPoint, pt_b: &PgPoint, pt_c: &PgPoint, pt_d: &PgPoint) -> Fra
 }
 
 /// Compute the cross ratio of four collinear points (generic version).
+///
+/// $$ R(A, B; C, D) = \begin{cases} R_0(A, B; C, D) & \text{if } \text{cross0}(A,B) \neq 0 \\\\ R_1(A, B; C, D) & \text{otherwise} \end{cases} $$
 ///
 /// Automatically chooses the best coordinate projection based on the points.
 /// Uses yz-plane projection if cross0(A,B) != 0, otherwise uses xz-plane.

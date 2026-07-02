@@ -358,6 +358,9 @@ pub fn check_axiom2<Point, Line, Value>(
 
 /// The `harm_conj` function calculates the harmonic conjugate of three points in a projective plane.
 ///
+/// $$ H(A, B; C) = A \cdot (L_x \cdot B) + B \cdot (L_x \cdot A) $$
+/// where $$ L_x $$ is the aux line through the free point.
+///
 /// Arguments:
 ///
 /// * `pt_a`: The parameter `pt_a` represents a point on a projective plane.
@@ -397,6 +400,8 @@ where
 
 /// The function `involution` performs an involution transformation on a point `pt_p` with respect to an
 /// origin point `origin` and a mirror line `mirror`.
+///
+/// $$ P' = \text{harm\_conj}(\text{origin}, \text{mirror} \cap \overline{OP},\; P) $$
 ///
 /// Arguments:
 ///
@@ -531,6 +536,9 @@ where
 
     /// Apply the involution to a point.
     ///
+    /// $$ P' = P \cdot c + O \cdot (-2 P \cdot m) $$
+    /// where $$ c = m \cdot O $$ is the constant and $$ m $$ is the mirror line.
+    ///
     /// Returns the image of `pt_p` under the involution.
     #[inline]
     pub fn apply_point(&self, pt_p: &Point) -> Point {
@@ -538,6 +546,9 @@ where
     }
 
     /// Apply the involution to a line.
+    ///
+    /// $$ L' = L \cdot c + m \cdot (-2 L \cdot O) $$
+    /// where $$ c = m \cdot O $$ is the constant and $$ O $$ is the center point.
     ///
     /// Returns the image of `ln_l` under the involution.
     #[allow(dead_code)]

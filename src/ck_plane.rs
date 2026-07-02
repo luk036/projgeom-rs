@@ -26,6 +26,8 @@ pub trait CayleyKleinPlanePrimitive<Dual>: ProjectivePlanePrimitive<Dual> {
 
 /// The function `is_perpendicular` checks if two lines are perpendicular to each other.
 ///
+/// $$ l_1 \perp l_2 \iff l_1^{\perp} \cdot l_2 = 0 $$
+///
 /// Arguments:
 ///
 /// * `m_1`: A reference to an object of type Line, which represents a line or a plane in a geometric space.
@@ -98,6 +100,8 @@ where
 
 /// The `orthocenter` function calculates the orthocenter of a triangle given its three vertices.
 ///
+/// $$ H = \text{altitude}(A_1, A_2A_3) \cap \text{altitude}(A_2, A_3A_1) $$
+///
 /// Arguments:
 ///
 /// * `triangle`: The `triangle` parameter is an array of three elements of type `Point`. Each element represents a
@@ -138,6 +142,9 @@ where
 
 /// The function `tri_altitude` calculates the altitudes of a triangle given its three vertices and
 /// three lines.
+///
+/// $$ [\text{altitude}(A_1, l_1),\; \text{altitude}(A_2, l_2),\; \text{altitude}(A_3, l_3)] $$
+/// where $$ l_i $$ is the opposite side of vertex $$ A_i $$.
 ///
 /// Arguments:
 ///

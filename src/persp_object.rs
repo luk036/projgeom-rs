@@ -26,6 +26,8 @@ impl_cayley_klein_plane!(
 impl PerspLine {
     /// The function checks if two perspective lines are parallel.
     ///
+    /// $$ L_{\infty} \cdot (l_1 \wedge l_2) = 0 $$
+    ///
     /// Arguments:
     ///
     /// * `other`: `other` is a reference to an object of type `PerspLine`.
@@ -55,6 +57,8 @@ impl PerspLine {
 impl PerspPoint {
     /// The `midpoint` function calculates the midpoint between two `PerspPoint` objects using the dot
     /// product and Plücker coordinates.
+    ///
+    /// $$ M(a, b) = a \cdot (b \cdot L_{\infty}) + b \cdot (a \cdot L_{\infty}) $$
     ///
     /// Arguments:
     ///

@@ -80,6 +80,8 @@ impl EuclidLine {
 
     /// The `altitude` function calculates the perpendicular line from a given point to a line.
     ///
+    /// $$ \text{altitude}(P, l) = l^{\perp} \wedge P $$
+    ///
     /// Arguments:
     ///
     /// * `pt_a`: The parameter `pt_a` is of type `EuclidPoint`.
@@ -109,6 +111,8 @@ impl EuclidLine {
 
 impl EuclidPoint {
     /// The `midpoint` function calculates the midpoint between two EuclidPoint objects.
+    ///
+    /// $$ M = \left(\frac{x_1 + x_2}{2},\; \frac{y_1 + y_2}{2}\right) $$
     ///
     /// Arguments:
     ///
@@ -271,8 +275,7 @@ pub fn tri_midpoint(triangle: &[EuclidPoint; 3]) -> [EuclidPoint; 3] {
 
 /// Compute a point on the unit circle from trigonometric parameters.
 ///
-/// Creates a point on the unit circle using the parameterization
-/// (lambda^2 - mu^2, 2*lambda*mu, lambda^2 + mu^2).
+/// $$ \left(\frac{\lambda^2 - \mu^2}{\lambda^2 + \mu^2},\; \frac{2\lambda\mu}{\lambda^2 + \mu^2}\right) $$
 ///
 /// # Examples
 ///
@@ -292,13 +295,18 @@ pub fn uc_point(lambda: i64, mu: i64) -> EuclidPoint {
     EuclidPoint::new([lambda_sq - mu_sq, 2 * lambda * mu, lambda_sq + mu_sq])
 }
 
-/// Archimedes's function: 4*a*b - sq(a + b - c)
+/// Archimedes's function
+///
+/// $$ 4ab - (a + b - c)^2 $$
 #[inline]
 pub fn archimedes(a: i64, b: i64, c: i64) -> i64 {
     4 * a * b - sq(a + b - c)
 }
 
 /// Cyclic quadrilateral quadrea theorem.
+///
+/// $$ m = 4ab + 4cd - (a + b - c - d)^2 $$
+/// $$ p = m^2 - 4(4ab)(4cd) $$
 ///
 /// Returns [line_m, point_p] - the two terms of the cyclic quadrilateral equation.
 #[inline]
@@ -311,6 +319,8 @@ pub fn cqq(a: i64, b: i64, c: i64, d: i64) -> [i64; 2] {
 }
 
 /// Check Ptolemy's theorem for a cyclic quadrilateral.
+///
+/// $$ Q_{13} Q_{24} = Q_{12} Q_{34} + Q_{23} Q_{14} $$
 ///
 /// Ptolemy's theorem states that for a cyclic quadrilateral,
 /// the product of the diagonals equals the sum of the products
@@ -336,6 +346,8 @@ pub fn Ptolemy(quad: &[i64; 6]) -> bool {
 
 /// Reflect a point across a line using an involution.
 ///
+/// $$ P' = \text{involution}(m^{\perp}, m, P) $$
+///
 /// Creates an `Involution` from the mirror line's direction vector and
 /// applies it to the point.
 ///
@@ -358,6 +370,9 @@ pub fn reflect_involution(mirror: &EuclidLine, pt_p: &EuclidPoint) -> EuclidPoin
 }
 
 /// The `orthocenter` function calculates the orthocenter of a triangle given its three vertices.
+///
+/// The orthocenter is the intersection of two altitudes:
+/// $$ H = \text{altitude}(A_1, A_2A_3) \cap \text{altitude}(A_2, A_3A_1) $$
 ///
 /// Arguments:
 ///

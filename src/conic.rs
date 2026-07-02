@@ -26,6 +26,8 @@ impl Conic {
 
     /// Create a circle with given center and radius squared
     ///
+    /// $$ (x - c_x)^2 + (y - c_y)^2 = r^2 $$
+    ///
     /// # Arguments
     ///
     /// * `center_x` - X coordinate of center
@@ -48,11 +50,15 @@ impl Conic {
     }
 
     /// Create a unit circle centered at the origin
+    ///
+    /// $$ x^2 + y^2 = 1 $$
     pub fn unit_circle() -> Self {
         Conic::circle(0, 0, 1)
     }
 
     /// Create a parabola
+    ///
+    /// $$ y = a x^2 $$
     ///
     /// # Arguments
     ///
@@ -79,6 +85,8 @@ impl Conic {
 
     /// Check if a point lies on the conic
     ///
+    /// $$ x^T Q x = 0 $$
+    ///
     /// # Arguments
     ///
     /// * `point` - The point to test
@@ -100,6 +108,8 @@ impl Conic {
     }
 
     /// Find the polar line of a point with respect to the conic
+    ///
+    /// $$ l = Q p $$
     ///
     /// # Arguments
     ///
@@ -127,6 +137,8 @@ impl Conic {
 
     /// Find the pole of a line with respect to the conic
     ///
+    /// $$ p = Q^{-1} l $$
+    ///
     /// # Arguments
     ///
     /// * `line` - The line
@@ -145,6 +157,8 @@ impl Conic {
 
     /// Compute the tangent line at a point on the conic
     ///
+    /// At a point $$ p $$ on the conic, the tangent is the polar: $$ t = Q p $$
+    ///
     /// # Arguments
     ///
     /// * `point` - A point on the conic
@@ -158,6 +172,8 @@ impl Conic {
     }
 
     /// Find the intersection points of a line with the conic
+    ///
+    /// Solve for $$ x $$ satisfying $$ x^T Q x = 0 $$ and $$ l^T x = 0 $$.
     ///
     /// # Arguments
     ///

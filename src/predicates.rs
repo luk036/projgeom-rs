@@ -115,6 +115,8 @@ pub fn orientation(p1: &PgPoint, p2: &PgPoint, p3: &PgPoint) -> Orientation {
 
 /// Determine the position of a point relative to a line
 ///
+/// $$ \text{side} = \text{sgn}(P \cdot L) $$
+///
 /// # Arguments
 ///
 /// * `point` - The point to test
@@ -135,6 +137,8 @@ pub fn line_position(point: &PgPoint, line: &PgLine) -> LinePosition {
 }
 
 /// Compute the squared distance between two points in Euclidean geometry
+///
+/// $$ d^2 = (x_1 - x_2)^2 + (y_1 - y_2)^2 $$
 ///
 /// This function returns the squared Euclidean distance, which is useful for
 /// comparisons without the computational cost of a square root.
@@ -168,6 +172,8 @@ pub fn squared_distance(p1: &PgPoint, p2: &PgPoint) -> Fraction<i64> {
 
 /// Compute the Euclidean distance between two points
 ///
+/// $$ d = \sqrt{(x_1 - x_2)^2 + (y_1 - y_2)^2} $$
+///
 /// # Arguments
 ///
 /// * `p1` - First point
@@ -181,6 +187,10 @@ pub fn distance(p1: &PgPoint, p2: &PgPoint) -> Fraction<i64> {
 }
 
 /// Compute the angle between three points
+///
+/// $$ \cos\theta = \frac{\mathbf{v}_1 \cdot \mathbf{v}_2}{\|\mathbf{v}_1\| \|\mathbf{v}_2\|} $$
+///
+/// where $$ \mathbf{v}_1 = P_1 - P_2 $$ and $$ \mathbf{v}_2 = P_3 - P_2 $$.
 ///
 /// This computes the angle at point p2 formed by the segments p1-p2 and p3-p2.
 ///
@@ -216,6 +226,8 @@ pub fn angle_cosine(p1: &PgPoint, p2: &PgPoint, p3: &PgPoint) -> Fraction<i64> {
 
 /// Compute the area of a triangle formed by three points
 ///
+/// $$ A = \frac{1}{2} \bigl((x_2 - x_1)(y_3 - y_1) - (x_3 - x_1)(y_2 - y_1)\bigr) $$
+///
 /// # Arguments
 ///
 /// * `p1` - First vertex
@@ -241,6 +253,10 @@ pub fn triangle_area(p1: &PgPoint, p2: &PgPoint, p3: &PgPoint) -> Fraction<i64> 
 }
 
 /// Check if a point is inside a triangle
+///
+/// Uses the orientation test: a point is inside if it lies on the same side
+/// of all three edges, i.e. all three orientations $$ (v_1, v_2, P) $$,
+/// $$ (v_2, v_3, P) $$, $$ (v_3, v_1, P) $$ have the same sign.
 ///
 /// # Arguments
 ///

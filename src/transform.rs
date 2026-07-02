@@ -7,6 +7,19 @@ use crate::pg_object::{PgLine, PgPoint};
 use fractions::Fraction;
 
 /// A 3x3 transformation matrix for projective geometry
+#[doc = svgbobdoc::transform!(
+/// ```svgbob
+///  .───────────.     .───────────.
+///  │ (x, y, 1) │────►│ (x',y',1) │
+///  '───────────'     '───────────'
+///        │                │
+///        ▼                ▼
+///  .───────────.     .───────────.
+///  │ 3×3 matrix │    │ 3×3 matrix│
+///  │    M       │    │    M⁻¹   │
+///  '───────────'     '───────────'
+/// ```
+)]
 #[derive(Debug, Clone, PartialEq)]
 pub struct Transform {
     /// The 3x3 matrix elements in row-major order
@@ -15,6 +28,8 @@ pub struct Transform {
 
 impl Transform {
     /// Create a new identity transformation
+    ///
+    /// $$ I = \begin{bmatrix} 1 & 0 & 0 \\\\ 0 & 1 & 0 \\\\ 0 & 0 & 1 \end{bmatrix} $$
     pub fn identity() -> Self {
         Transform {
             matrix: [
@@ -38,6 +53,8 @@ impl Transform {
     }
 
     /// Create a translation transformation
+    ///
+    /// $$ T(t_x, t_y) = \begin{bmatrix} 1 & 0 & t_x \\\\ 0 & 1 & t_y \\\\ 0 & 0 & 1 \end{bmatrix} $$
     ///
     /// # Arguments
     ///
@@ -67,6 +84,8 @@ impl Transform {
 
     /// Create a rotation transformation
     ///
+    /// $$ R(\theta) = \begin{bmatrix} \cos\theta & -\sin\theta & 0 \\\\ \sin\theta & \cos\theta & 0 \\\\ 0 & 0 & 1 \end{bmatrix} $$
+    ///
     /// # Arguments
     ///
     /// * `angle_cos` - Cosine of the rotation angle
@@ -87,6 +106,8 @@ impl Transform {
 
     /// Create a scaling transformation
     ///
+    /// $$ S(s_x, s_y) = \begin{bmatrix} s_x & 0 & 0 \\\\ 0 & s_y & 0 \\\\ 0 & 0 & 1 \end{bmatrix} $$
+    ///
     /// # Arguments
     ///
     /// * `sx` - Scale factor in x direction
@@ -106,6 +127,8 @@ impl Transform {
     }
 
     /// Create a shear transformation
+    ///
+    /// $$ H(sh_x, sh_y) = \begin{bmatrix} 1 & sh_x & 0 \\\\ sh_y & 1 & 0 \\\\ 0 & 0 & 1 \end{bmatrix} $$
     ///
     /// # Arguments
     ///
@@ -285,6 +308,8 @@ pub fn scale_point(point: &PgPoint, sx: Fraction<i64>, sy: Fraction<i64>) -> PgP
 }
 
 /// Apply a projective transformation defined by four point pairs
+///
+/// $$ M = \arg\min_{M \in PGL(3)} \sum_i \|M p_i - q_i\|^2 $$
 ///
 /// This computes the unique projective transformation that maps
 /// four points to four other points.

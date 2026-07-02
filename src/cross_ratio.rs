@@ -36,6 +36,15 @@ use fractions::Fraction;
 /// let d = PgPoint::new([2, 1, 1]);
 /// let ratio = cross_ratio(&a, &b, &c, &d);
 /// ```
+#[doc = svgbobdoc::transform!(
+/// ```svgbob
+///      A    C   D    B
+///   ───┴────┴───┴────┴───
+///     (A,B;C,D) = AC·BD
+///                ───────
+///                 BC·AD
+/// ```
+)]
 pub fn cross_ratio(a: &PgPoint, b: &PgPoint, c: &PgPoint, d: &PgPoint) -> Fraction<i64> {
     // Parametrize the points on the line
     let _line = a.meet(b);
@@ -53,6 +62,9 @@ pub fn cross_ratio(a: &PgPoint, b: &PgPoint, c: &PgPoint, d: &PgPoint) -> Fracti
 }
 
 /// Compute the cross-ratio of four concurrent lines
+///
+/// $$ (l_1, l_2; l_3, l_4) = (p_1, p_2; p_3, p_4) $$
+/// where $$ p_i $$ is the pole of $$ l_i $$.
 ///
 /// # Arguments
 ///

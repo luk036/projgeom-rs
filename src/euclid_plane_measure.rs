@@ -8,7 +8,7 @@ use fractions::Fraction;
 
 /// Compute the squared difference of ratios (integral version).
 ///
-/// Computes ((x1/z1) - (x2/z2))^2 using Fraction arithmetic.
+/// $$ Q_1 = \left(\frac{x_1}{z_1} - \frac{x_2}{z_2}\right)^2 $$
 ///
 /// # Examples
 ///
@@ -27,7 +27,7 @@ pub fn quad1(x1: i64, z1: i64, x2: i64, z2: i64) -> Fraction<i64> {
 
 /// Compute the quadrance (squared distance) between two Euclidean points.
 ///
-/// The quadrance is Q = ((x1/z1) - (x2/z2))^2 + ((y1/z1) - (y2/z2))^2
+/// $$ Q = \left(\frac{x_1}{z_1} - \frac{x_2}{z_2}\right)^2 + \left(\frac{y_1}{z_1} - \frac{y_2}{z_2}\right)^2 $$
 ///
 /// # Examples
 ///
@@ -58,6 +58,8 @@ pub fn sbase(l1: &EuclidPoint, l2: &EuclidPoint, d: i64) -> Fraction<i64> {
 
 /// Compute the spread (squared sine of angle) between two Euclidean lines.
 ///
+/// $$ s(\theta) = \sin^2\theta = \frac{(l_1 \times l_2)^2}{(l_1 \cdot l_1)(l_2 \cdot l_2)} $$
+///
 /// # Examples
 ///
 /// ```
@@ -79,6 +81,8 @@ pub fn spread(l1: &EuclidPoint, l2: &EuclidPoint) -> Fraction<i64> {
 }
 
 /// Compute the cross spread (squared cosine of angle) between two Euclidean lines.
+///
+/// $$ cs(\theta) = \cos^2\theta = \frac{(l_1 \cdot l_2)^2}{(l_1 \cdot l_1)(l_2 \cdot l_2)} $$
 ///
 /// # Examples
 ///

@@ -47,6 +47,9 @@ impl PerspEuclidPlane {
 
     /// Compute the pole of a line (perp for lines).
     ///
+    /// $$ v^{\perp} = \alpha I_{re} + \beta I_{im} $$
+    /// where $$ \alpha = v \cdot I_{re} $$ and $$ \beta = v \cdot I_{im} $$.
+    ///
     /// Returns the pole of line `v` with respect to the fundamental conic.
     ///
     /// # Examples
@@ -67,6 +70,8 @@ impl PerspEuclidPlane {
 
     /// Check if two lines are parallel.
     ///
+    /// $$ L_{\infty} \cdot (l_1 \wedge l_2) = 0 $$
+    ///
     /// # Examples
     ///
     /// ```
@@ -83,6 +88,8 @@ impl PerspEuclidPlane {
     }
 
     /// Compute the midpoint of two points.
+    ///
+    /// $$ M(a, b) = a \cdot (b \cdot L_{\infty}) + b \cdot (a \cdot L_{\infty}) $$
     ///
     /// # Examples
     ///
@@ -134,8 +141,9 @@ impl PerspEuclidPlane {
 
     /// Compute the omega value for a point.
     ///
-    /// Measures how far a point is from the line at infinity:
-    /// omega(x) = (x·l_inf)^2
+    /// $$ \omega(x) = (x \cdot L_{\infty})^2 $$
+    ///
+    /// Measures how far a point is from the line at infinity.
     #[inline]
     pub fn omega_point(&self, x: &PerspPoint) -> i64 {
         let d = x.dot(&self.l_inf);
@@ -144,8 +152,9 @@ impl PerspEuclidPlane {
 
     /// Compute the omega value for a line.
     ///
-    /// Measures how far a line is from the ideal points:
-    /// omega(x) = (x·I_re)^2 + (x·I_im)^2
+    /// $$ \omega(x) = (x \cdot I_{re})^2 + (x \cdot I_{im})^2 $$
+    ///
+    /// Measures how far a line is from the ideal points.
     #[inline]
     pub fn omega_line(&self, x: &PerspLine) -> i64 {
         let d_re = x.dot(&self.i_re);
@@ -155,8 +164,9 @@ impl PerspEuclidPlane {
 
     /// Compute the cross-ratio measure between two elements.
     ///
-    /// Returns the ratio of omega values for measuring projective relationships:
-    /// measure(a1, a2) = omega(a1 × a2) / (omega(a1) * omega(a2))
+    /// $$ \text{measure}(a_1, a_2) = \frac{\omega(a_1 \times a_2)}{\omega(a_1) \cdot \omega(a_2)} $$
+    ///
+    /// Returns the ratio of omega values for measuring projective relationships.
     #[inline]
     pub fn measure_point(&self, a1: &PerspPoint, a2: &PerspPoint) -> Fraction<i64> {
         let cross = a1.meet(a2);
@@ -170,6 +180,8 @@ impl PerspEuclidPlane {
     }
 
     /// Compute the cross-ratio measure between two lines.
+    ///
+    /// $$ \text{measure}(l_1, l_2) = \frac{\omega(l_1 \times l_2)}{\omega(l_1) \cdot \omega(l_2)} $$
     #[inline]
     pub fn measure_line(&self, a1: &PerspLine, a2: &PerspLine) -> Fraction<i64> {
         let cross = a1.meet(a2);
