@@ -10,14 +10,8 @@ use projgeom_rs::pg_plane::ProjectivePlane;
 // Simplified property-based tests for fractions
 mod fraction_tests {
     use fractions::Fraction;
-    
 
-        fn prop_fraction_addition_commutative_small(
-        a_num: i8,
-        a_den: i8,
-        b_num: i8,
-        b_den: i8,
-    ) {
+    fn prop_fraction_addition_commutative_small(a_num: i8, a_den: i8, b_num: i8, b_den: i8) {
         if a_den == 0 || b_den == 0 {
             return; // Skip invalid fractions
         }
@@ -28,12 +22,7 @@ mod fraction_tests {
         a + b == b + a;
     }
 
-        fn prop_fraction_multiplication_commutative_small(
-        a_num: i8,
-        a_den: i8,
-        b_num: i8,
-        b_den: i8,
-    ) {
+    fn prop_fraction_multiplication_commutative_small(a_num: i8, a_den: i8, b_num: i8, b_den: i8) {
         if a_den == 0 || b_den == 0 {
             return; // Skip invalid fractions
         }
@@ -44,7 +33,7 @@ mod fraction_tests {
         a * b == b * a;
     }
 
-        fn prop_fraction_identity_elements_small(num: i8, den: i8) {
+    fn prop_fraction_identity_elements_small(num: i8, den: i8) {
         if den == 0 {
             return; // Skip invalid fractions
         }
@@ -53,15 +42,12 @@ mod fraction_tests {
         let zero = Fraction::new(0, 1);
         let one = Fraction::new(1, 1);
 
-        if f + zero == f { f * one == f; }
+        if f + zero == f {
+            f * one == f;
+        }
     }
 
-        fn prop_fraction_cross_product_property_small(
-        a_num: i8,
-        a_den: i8,
-        b_num: i8,
-        b_den: i8,
-    ) {
+    fn prop_fraction_cross_product_property_small(a_num: i8, a_den: i8, b_num: i8, b_den: i8) {
         if a_den == 0 || b_den == 0 {
             return; // Skip invalid fractions
         }
@@ -322,9 +308,8 @@ fn test_pg_point_q2(pz: i16, qz: i16) {
 // Property-based tests for projective plane operations
 mod projective_plane_tests {
     use projgeom_rs::*;
-    
 
-        fn prop_meet_commutative(coord1: (i16, i16, i16), coord2: (i16, i16, i16)) {
+    fn prop_meet_commutative(coord1: (i16, i16, i16), coord2: (i16, i16, i16)) {
         let coord1_arr = [coord1.0 as i64, coord1.1 as i64, coord1.2 as i64];
         let coord2_arr = [coord2.0 as i64, coord2.1 as i64, coord2.2 as i64];
         if coord1_arr == [0, 0, 0] || coord2_arr == [0, 0, 0] {
@@ -344,7 +329,7 @@ mod projective_plane_tests {
         line1 == line2;
     }
 
-        fn parametrize_identities(
+    fn parametrize_identities(
         _lambda: i16,
         _mu: i16,
         coord1: (i16, i16, i16),
@@ -363,10 +348,12 @@ mod projective_plane_tests {
         let identity1 = p1.parametrize(1, &p2, 0);
         let identity2 = p1.parametrize(0, &p2, 1);
 
-        if identity1 == p1 { identity2 == p2; }
+        if identity1 == p1 {
+            identity2 == p2;
+        }
     }
 
-        fn prop_linearity_parametrize(
+    fn prop_linearity_parametrize(
         lambda1: i16,
         lambda2: i16,
         mu: i16,
@@ -388,10 +375,12 @@ mod projective_plane_tests {
 
         // Simplified linearity test: both points should be on the same line
         let line = p1.meet(&p2);
-        if p_combined.incident(&line) && p_separate1.incident(&line) { p_separate2.incident(&line); }
+        if p_combined.incident(&line) && p_separate1.incident(&line) {
+            p_separate2.incident(&line);
+        }
     }
 
-        fn prop_duality_properties(coord: (i16, i16, i16)) {
+    fn prop_duality_properties(coord: (i16, i16, i16)) {
         let coord_arr = [coord.0 as i64, coord.1 as i64, coord.2 as i64];
         if coord_arr == [0, 0, 0] {
             return;
@@ -405,7 +394,7 @@ mod projective_plane_tests {
         p == p_dual;
     }
 
-        fn prop_incidence_symmetry(coord1: (i16, i16, i16), coord2: (i16, i16, i16)) {
+    fn prop_incidence_symmetry(coord1: (i16, i16, i16), coord2: (i16, i16, i16)) {
         let coord1_arr = [coord1.0 as i64, coord1.1 as i64, coord1.2 as i64];
         let coord2_arr = [coord2.0 as i64, coord2.1 as i64, coord2.2 as i64];
         if coord1_arr == [0, 0, 0] || coord2_arr == [0, 0, 0] {
@@ -416,10 +405,11 @@ mod projective_plane_tests {
         let l = PgLine::new(coord2_arr);
 
         // Incidence should be symmetric in the dual sense
-        p.incident(&l); l.incident(&p);
+        p.incident(&l);
+        l.incident(&p);
     }
 
-        fn prop_coincident_transitive(
+    fn prop_coincident_transitive(
         coord1: (i16, i16, i16),
         coord2: (i16, i16, i16),
         coord3: (i16, i16, i16),
@@ -444,7 +434,7 @@ mod projective_plane_tests {
         }
     }
 
-        fn involution_properties(coord: (i16, i16, i16)) {
+    fn involution_properties(coord: (i16, i16, i16)) {
         let coord_arr = [coord.0 as i64, coord.1 as i64, coord.2 as i64];
         if coord_arr == [0, 0, 0] {
             return;
@@ -461,7 +451,7 @@ mod projective_plane_tests {
         p == p_double_transformed;
     }
 
-        fn prop_check_axiom(
+    fn prop_check_axiom(
         coord1: (i16, i16, i16),
         coord2: (i16, i16, i16),
         line_coord: (i16, i16, i16),
@@ -482,7 +472,7 @@ mod projective_plane_tests {
         check_axiom(&p1, &p2, &l);
     }
 
-        fn prop_check_axiom2(
+    fn prop_check_axiom2(
         coord1: (i16, i16, i16),
         coord2: (i16, i16, i16),
         line_coord: (i16, i16, i16),
@@ -505,7 +495,7 @@ mod projective_plane_tests {
         check_axiom2(&p1, &p2, &l, alpha as i64, beta as i64);
     }
 
-        fn prop_coincident_symmetry(
+    fn prop_coincident_symmetry(
         coord1: (i16, i16, i16),
         coord2: (i16, i16, i16),
         coord3: (i16, i16, i16),
@@ -522,10 +512,12 @@ mod projective_plane_tests {
         let r1 = coincident(&p1, &p2, &p3);
         let r2 = coincident(&p3, &p2, &p1);
         let r3 = coincident(&p2, &p1, &p3);
-        if r1 == r2 { r2 == r3; }
+        if r1 == r2 {
+            r2 == r3;
+        }
     }
 
-        fn prop_harm_conj_fixed_points(coord1: (i16, i16, i16), coord2: (i16, i16, i16)) {
+    fn prop_harm_conj_fixed_points(coord1: (i16, i16, i16), coord2: (i16, i16, i16)) {
         let c1 = [coord1.0 as i64, coord1.1 as i64, coord1.2 as i64];
         let c2 = [coord2.0 as i64, coord2.1 as i64, coord2.2 as i64];
         if c1 == [0, 0, 0] || c2 == [0, 0, 0] {
@@ -533,7 +525,9 @@ mod projective_plane_tests {
         }
         let a = PgPoint::new(c1);
         let b = PgPoint::new(c2);
-        if harm_conj(&a, &b, &a) == a { harm_conj(&a, &b, &b) == b; }
+        if harm_conj(&a, &b, &a) == a {
+            harm_conj(&a, &b, &b) == b;
+        }
     }
 }
 
@@ -547,9 +541,8 @@ fn test_pg_point_q3(pz: i16, qz: i16) {
 // Property-based tests for Cayley-Klein planes
 mod ck_plane_tests {
     use projgeom_rs::*;
-    
 
-        fn prop_elliptic_perp_involution(coord: (i16, i16, i16)) {
+    fn prop_elliptic_perp_involution(coord: (i16, i16, i16)) {
         let coord_arr = [coord.0 as i64, coord.1 as i64, coord.2 as i64];
         if coord_arr == [0, 0, 0] {
             return;
@@ -561,7 +554,7 @@ mod ck_plane_tests {
         p == p_perp;
     }
 
-        fn prop_hyperbolic_perp_involution(coord: (i16, i16, i16)) {
+    fn prop_hyperbolic_perp_involution(coord: (i16, i16, i16)) {
         let coord_arr = [coord.0 as i64, coord.1 as i64, coord.2 as i64];
         if coord_arr == [0, 0, 0] {
             return;
@@ -573,7 +566,7 @@ mod ck_plane_tests {
         p == p_perp;
     }
 
-        fn prop_euclidean_perp_properties(coord: (i16, i16, i16)) {
+    fn prop_euclidean_perp_properties(coord: (i16, i16, i16)) {
         let coord_arr = [coord.0 as i64, coord.1 as i64, coord.2 as i64];
         if coord_arr == [0, 0, 0] {
             return;
@@ -583,10 +576,12 @@ mod ck_plane_tests {
         // In Euclidean geometry, a finite point is not incident with the line at infinity
         // The line at infinity is [0, 0, 1], and a point (x, y, z) is incident with it if z = 0
         // So we check if either the point is at infinity (z = 0) or it's not incident with the line at infinity
-        if coord_arr[2] != 0 { l.incident(&p); }
+        if coord_arr[2] != 0 {
+            l.incident(&p);
+        }
     }
 
-        fn prop_myck_perp_involution(coord: (i16, i16, i16)) {
+    fn prop_myck_perp_involution(coord: (i16, i16, i16)) {
         let coord_arr = [coord.0 as i64, coord.1 as i64, coord.2 as i64];
         if coord_arr == [0, 0, 0] {
             return;
@@ -598,7 +593,7 @@ mod ck_plane_tests {
         p == p_perp;
     }
 
-        fn prop_orthocenter_property(
+    fn prop_orthocenter_property(
         coord1: (i16, i16, i16),
         coord2: (i16, i16, i16),
         coord3: (i16, i16, i16),
@@ -627,10 +622,12 @@ mod ck_plane_tests {
         let intersection1 = altitudes[0].meet(&altitudes[1]);
         let intersection2 = altitudes[1].meet(&altitudes[2]);
 
-        if orthocenter_pt == intersection1 { orthocenter_pt == intersection2; }
+        if orthocenter_pt == intersection1 {
+            orthocenter_pt == intersection2;
+        }
     }
 
-        fn prop_altitude_perpendicular(
+    fn prop_altitude_perpendicular(
         coord1: (i16, i16, i16),
         coord2: (i16, i16, i16),
         coord3: (i16, i16, i16),
@@ -661,7 +658,7 @@ mod ck_plane_tests {
             && is_perpendicular(&altitudes[2], &trilateral[2]);
     }
 
-        fn prop_reflection_involution(coord: (i16, i16, i16)) {
+    fn prop_reflection_involution(coord: (i16, i16, i16)) {
         let coord_arr = [coord.0 as i64, coord.1 as i64, coord.2 as i64];
         if coord_arr == [0, 0, 0] {
             return;
@@ -676,7 +673,7 @@ mod ck_plane_tests {
         p == reflected_twice;
     }
 
-        fn prop_triangular_duality(
+    fn prop_triangular_duality(
         _coord1: (i16, i16, i16),
         _coord2: (i16, i16, i16),
         _coord3: (i16, i16, i16),
@@ -685,7 +682,7 @@ mod ck_plane_tests {
         // The dual of a triangle in hyperbolic geometry has some edge cases that are not handled properly
     }
 
-        fn prop_harmonic_conjugate_involution(
+    fn prop_harmonic_conjugate_involution(
         coord1: (i16, i16, i16),
         coord2: (i16, i16, i16),
         coord3: (i16, i16, i16),
@@ -713,7 +710,7 @@ mod ck_plane_tests {
         c == d_double;
     }
 
-        fn prop_perspectivity_properties(
+    fn prop_perspectivity_properties(
         coord1: (i16, i16, i16),
         coord2: (i16, i16, i16),
         coord3: (i16, i16, i16),
@@ -738,12 +735,14 @@ mod ck_plane_tests {
         let center = a1.meet(&a2);
 
         // Basic incidence properties should hold
-        if center.incident(&a1) { center.incident(&a2); }
+        if center.incident(&a1) {
+            center.incident(&a2);
+        }
     }
 
     // === Elliptic geometry tests ===
 
-        fn prop_elliptic_perp_preserves_coords(coord: (i16, i16, i16)) {
+    fn prop_elliptic_perp_preserves_coords(coord: (i16, i16, i16)) {
         let c = [coord.0 as i64, coord.1 as i64, coord.2 as i64];
         if c == [0, 0, 0] {
             return;
@@ -754,7 +753,7 @@ mod ck_plane_tests {
         l.coord == p.coord;
     }
 
-        fn prop_elliptic_line_perp_duality(coord: (i16, i16, i16)) {
+    fn prop_elliptic_line_perp_duality(coord: (i16, i16, i16)) {
         let c = [coord.0 as i64, coord.1 as i64, coord.2 as i64];
         if c == [0, 0, 0] {
             return;
@@ -765,7 +764,7 @@ mod ck_plane_tests {
         l == l_back;
     }
 
-        fn prop_elliptic_point_aux_vs_perp(coord: (i16, i16, i16)) {
+    fn prop_elliptic_point_aux_vs_perp(coord: (i16, i16, i16)) {
         let c = [coord.0 as i64, coord.1 as i64, coord.2 as i64];
         if c == [0, 0, 0] {
             return;
@@ -774,12 +773,14 @@ mod ck_plane_tests {
         let aux_l = p.aux();
         let perp_l = p.perp();
         // aux returns a line not incident with the point; perp returns a line incident with the point
-        if !p.incident(&aux_l) { perp_l.coord == p.coord; }
+        if !p.incident(&aux_l) {
+            perp_l.coord == p.coord;
+        }
     }
 
     // === Hyperbolic geometry tests ===
 
-        fn prop_hyperbolic_perp_coords(coord: (i16, i16, i16)) {
+    fn prop_hyperbolic_perp_coords(coord: (i16, i16, i16)) {
         let c = [coord.0 as i64, coord.1 as i64, coord.2 as i64];
         if c == [0, 0, 0] {
             return;
@@ -790,7 +791,7 @@ mod ck_plane_tests {
         l.coord == [c[0], c[1], -c[2]];
     }
 
-        fn prop_hyperbolic_line_perp_coords(coord: (i16, i16, i16)) {
+    fn prop_hyperbolic_line_perp_coords(coord: (i16, i16, i16)) {
         let c = [coord.0 as i64, coord.1 as i64, coord.2 as i64];
         if c == [0, 0, 0] {
             return;
@@ -800,7 +801,7 @@ mod ck_plane_tests {
         p.coord == [c[0], c[1], -c[2]];
     }
 
-        fn prop_hyperbolic_line_perp_duality(coord: (i16, i16, i16)) {
+    fn prop_hyperbolic_line_perp_duality(coord: (i16, i16, i16)) {
         let c = [coord.0 as i64, coord.1 as i64, coord.2 as i64];
         if c == [0, 0, 0] {
             return;
@@ -811,7 +812,7 @@ mod ck_plane_tests {
         l == l_back;
     }
 
-        fn prop_hyperbolic_perp_incidence_symmetry(
+    fn prop_hyperbolic_perp_incidence_symmetry(
         point_coord: (i16, i16, i16),
         line_coord: (i16, i16, i16),
     ) {
@@ -833,13 +834,15 @@ mod ck_plane_tests {
         let perp_p = l.perp();
         let perp_l = p.perp();
         if p.incident(&l) {
-            let _ = perp_p.incident(&perp_l);        } else {
-            let _ = true;        }
+            let _ = perp_p.incident(&perp_l);
+        } else {
+            let _ = true;
+        }
     }
 
     // === MyCK geometry tests ===
 
-        fn prop_myck_point_perp_coords(coord: (i16, i16, i16)) {
+    fn prop_myck_point_perp_coords(coord: (i16, i16, i16)) {
         let c = [coord.0 as i64, coord.1 as i64, coord.2 as i64];
         if c == [0, 0, 0] {
             return;
@@ -850,7 +853,7 @@ mod ck_plane_tests {
         l.coord == [-2 * c[0], c[1], -2 * c[2]];
     }
 
-        fn prop_myck_line_perp_coords(coord: (i16, i16, i16)) {
+    fn prop_myck_line_perp_coords(coord: (i16, i16, i16)) {
         let c = [coord.0 as i64, coord.1 as i64, coord.2 as i64];
         if c == [0, 0, 0] {
             return;
@@ -861,7 +864,7 @@ mod ck_plane_tests {
         p.coord == [-c[0], 2 * c[1], -c[2]];
     }
 
-        fn prop_myck_line_perp_duality(coord: (i16, i16, i16)) {
+    fn prop_myck_line_perp_duality(coord: (i16, i16, i16)) {
         let c = [coord.0 as i64, coord.1 as i64, coord.2 as i64];
         if c == [0, 0, 0] {
             return;
@@ -872,7 +875,7 @@ mod ck_plane_tests {
         l == l_back;
     }
 
-        fn prop_myck_perp_incidence_symmetry(
+    fn prop_myck_perp_incidence_symmetry(
         point_coord: (i16, i16, i16),
         line_coord: (i16, i16, i16),
     ) {
@@ -894,11 +897,13 @@ mod ck_plane_tests {
         let perp_p = l.perp();
         let perp_l = p.perp();
         if p.incident(&l) {
-            let _ = perp_p.incident(&perp_l);        } else {
-            let _ = true;        }
+            let _ = perp_p.incident(&perp_l);
+        } else {
+            let _ = true;
+        }
     }
 
-        fn prop_myck_point_perp_coordinate_scaling(coord: (i16, i16, i16)) {
+    fn prop_myck_point_perp_coordinate_scaling(coord: (i16, i16, i16)) {
         let c = [coord.0 as i64, coord.1 as i64, coord.2 as i64];
         if c == [0, 0, 0] {
             return;
@@ -908,7 +913,7 @@ mod ck_plane_tests {
         p.perp() == scaled.perp();
     }
 
-        fn prop_myck_line_perp_coordinate_scaling(coord: (i16, i16, i16)) {
+    fn prop_myck_line_perp_coordinate_scaling(coord: (i16, i16, i16)) {
         let c = [coord.0 as i64, coord.1 as i64, coord.2 as i64];
         if c == [0, 0, 0] {
             return;
@@ -920,7 +925,7 @@ mod ck_plane_tests {
 
     // === Perspective geometry tests ===
 
-        fn prop_persp_point_perp_returns_l_inf(coord: (i16, i16, i16)) {
+    fn prop_persp_point_perp_returns_l_inf(coord: (i16, i16, i16)) {
         let c = [coord.0 as i64, coord.1 as i64, coord.2 as i64];
         if c == [0, 0, 0] {
             return;
@@ -929,7 +934,7 @@ mod ck_plane_tests {
         let _ = p.perp() == PerspLine::new([0, -1, 1]); // L_INF
     }
 
-        fn prop_persp_line_perp_returns_point(coord: (i16, i16, i16)) {
+    fn prop_persp_line_perp_returns_point(coord: (i16, i16, i16)) {
         let c = [coord.0 as i64, coord.1 as i64, coord.2 as i64];
         if c == [0, 0, 0] {
             return;
@@ -939,10 +944,7 @@ mod ck_plane_tests {
         p.coord != [0, 0, 0];
     }
 
-        fn prop_persp_point_midpoint_symmetry(
-        coord1: (i16, i16, i16),
-        coord2: (i16, i16, i16),
-    ) {
+    fn prop_persp_point_midpoint_symmetry(coord1: (i16, i16, i16), coord2: (i16, i16, i16)) {
         let c1 = [coord1.0 as i64, coord1.1 as i64, coord1.2 as i64];
         let c2 = [coord2.0 as i64, coord2.1 as i64, coord2.2 as i64];
         if c1 == [0, 0, 0] || c2 == [0, 0, 0] {
@@ -953,10 +955,7 @@ mod ck_plane_tests {
         p1.midpoint(&p2) == p2.midpoint(&p1);
     }
 
-        fn prop_persp_point_midpoint_incidence(
-        coord1: (i16, i16, i16),
-        coord2: (i16, i16, i16),
-    ) {
+    fn prop_persp_point_midpoint_incidence(coord1: (i16, i16, i16), coord2: (i16, i16, i16)) {
         let c1 = [coord1.0 as i64, coord1.1 as i64, coord1.2 as i64];
         let c2 = [coord2.0 as i64, coord2.1 as i64, coord2.2 as i64];
         if c1 == [0, 0, 0] || c2 == [0, 0, 0] {
@@ -972,10 +971,7 @@ mod ck_plane_tests {
         line.incident(&mid);
     }
 
-        fn prop_persp_line_is_parallel_symmetric(
-        coord1: (i16, i16, i16),
-        coord2: (i16, i16, i16),
-    ) {
+    fn prop_persp_line_is_parallel_symmetric(coord1: (i16, i16, i16), coord2: (i16, i16, i16)) {
         let c1 = [coord1.0 as i64, coord1.1 as i64, coord1.2 as i64];
         let c2 = [coord2.0 as i64, coord2.1 as i64, coord2.2 as i64];
         if c1 == [0, 0, 0] || c2 == [0, 0, 0] {
@@ -983,20 +979,23 @@ mod ck_plane_tests {
         }
         let l1 = PerspLine::new(c1);
         let l2 = PerspLine::new(c2);
-        l1.is_parallel(&l2); l2.is_parallel(&l1);
+        l1.is_parallel(&l2);
+        l2.is_parallel(&l1);
     }
 
-        fn prop_persp_parallel_to_l_inf(coord: (i16, i16, i16)) {
+    fn prop_persp_parallel_to_l_inf(coord: (i16, i16, i16)) {
         let c = [coord.0 as i64, coord.1 as i64, coord.2 as i64];
         if c == [0, 0, 0] {
             return;
         }
         let l = PerspLine::new(c);
         let l_inf = PerspLine::new([0, -1, 1]);
-        if l.is_parallel(&l_inf) { l_inf.is_parallel(&l); }
+        if l.is_parallel(&l_inf) {
+            l_inf.is_parallel(&l);
+        }
     }
 
-        fn prop_persp_point_aux_vs_perp(coord: (i16, i16, i16)) {
+    fn prop_persp_point_aux_vs_perp(coord: (i16, i16, i16)) {
         let c = [coord.0 as i64, coord.1 as i64, coord.2 as i64];
         if c == [0, 0, 0] {
             return;
@@ -1005,10 +1004,12 @@ mod ck_plane_tests {
         let aux_l = p.aux();
         let perp_l = p.perp();
         // aux returns a line not incident with the point; perp returns L_INF
-        if !p.incident(&aux_l) { perp_l == PerspLine::new([0, -1, 1]); }
+        if !p.incident(&aux_l) {
+            perp_l == PerspLine::new([0, -1, 1]);
+        }
     }
 
-        fn prop_persp_line_aux_vs_perp(coord: (i16, i16, i16)) {
+    fn prop_persp_line_aux_vs_perp(coord: (i16, i16, i16)) {
         let c = [coord.0 as i64, coord.1 as i64, coord.2 as i64];
         if c == [0, 0, 0] {
             return;
@@ -1017,10 +1018,12 @@ mod ck_plane_tests {
         let aux_p = l.aux();
         let perp_p = l.perp();
         // aux returns a point not incident with the line; perp returns a point
-        if !l.incident(&aux_p) { perp_p.coord != [0, 0, 0]; }
+        if !l.incident(&aux_p) {
+            perp_p.coord != [0, 0, 0];
+        }
     }
 
-        fn prop_persp_perp_incidence_symmetry(
+    fn prop_persp_perp_incidence_symmetry(
         point_coord: (i16, i16, i16),
         line_coord: (i16, i16, i16),
     ) {
@@ -1042,11 +1045,13 @@ mod ck_plane_tests {
         let perp_p = l.perp();
         let perp_l = p.perp(); // L_INF
         if p.incident(&l) {
-            let _ = perp_p.incident(&perp_l);        } else {
-            let _ = true;        }
+            let _ = perp_p.incident(&perp_l);
+        } else {
+            let _ = true;
+        }
     }
 
-        fn prop_persp_point_midpoint_scaling(coord: (i16, i16, i16)) {
+    fn prop_persp_point_midpoint_scaling(coord: (i16, i16, i16)) {
         let c = [coord.0 as i64, coord.1 as i64, coord.2 as i64];
         if c == [0, 0, 0] {
             return;
@@ -1062,19 +1067,15 @@ mod ck_plane_tests {
 mod pg_object_tests {
     use projgeom_rs::pg_object::{cross_product, dot_product, plucker_operation, PgLine, PgPoint};
     use projgeom_rs::pg_plane::{ProjectivePlane, ProjectivePlanePrimitive};
-    
 
-        fn prop_dot_product_commutative(a: (i16, i16, i16), b: (i16, i16, i16)) {
+    fn prop_dot_product_commutative(a: (i16, i16, i16), b: (i16, i16, i16)) {
         let a_arr = [a.0 as i64, a.1 as i64, a.2 as i64];
         let b_arr = [b.0 as i64, b.1 as i64, b.2 as i64];
-        dot_product(&a_arr, &b_arr); dot_product(&b_arr, &a_arr);
+        dot_product(&a_arr, &b_arr);
+        dot_product(&b_arr, &a_arr);
     }
 
-        fn prop_dot_product_distributive(
-        a: (i16, i16, i16),
-        b: (i16, i16, i16),
-        c: (i16, i16, i16),
-    ) {
+    fn prop_dot_product_distributive(a: (i16, i16, i16), b: (i16, i16, i16), c: (i16, i16, i16)) {
         let a_arr = [a.0 as i64, a.1 as i64, a.2 as i64];
         let b_arr = [b.0 as i64, b.1 as i64, b.2 as i64];
         let c_arr = [c.0 as i64, c.1 as i64, c.2 as i64];
@@ -1083,10 +1084,12 @@ mod pg_object_tests {
             b.1 as i64 + c.1 as i64,
             b.2 as i64 + c.2 as i64,
         ];
-        dot_product(&a_arr, &b_plus_c); dot_product(&a_arr, &b_arr); dot_product(&a_arr, &c_arr);
+        dot_product(&a_arr, &b_plus_c);
+        dot_product(&a_arr, &b_arr);
+        dot_product(&a_arr, &c_arr);
     }
 
-        fn prop_cross_product_anticommutative(a: (i16, i16, i16), b: (i16, i16, i16)) {
+    fn prop_cross_product_anticommutative(a: (i16, i16, i16), b: (i16, i16, i16)) {
         let a_arr = [a.0 as i64, a.1 as i64, a.2 as i64];
         let b_arr = [b.0 as i64, b.1 as i64, b.2 as i64];
         let cross_ab = cross_product(&a_arr, &b_arr);
@@ -1094,11 +1097,7 @@ mod pg_object_tests {
         cross_ab == [-cross_ba[0], -cross_ba[1], -cross_ba[2]];
     }
 
-        fn prop_cross_product_distributive(
-        a: (i16, i16, i16),
-        b: (i16, i16, i16),
-        c: (i16, i16, i16),
-    ) {
+    fn prop_cross_product_distributive(a: (i16, i16, i16), b: (i16, i16, i16), c: (i16, i16, i16)) {
         let a_arr = [a.0 as i64, a.1 as i64, a.2 as i64];
         let b_arr = [b.0 as i64, b.1 as i64, b.2 as i64];
         let c_arr = [c.0 as i64, c.1 as i64, c.2 as i64];
@@ -1118,14 +1117,14 @@ mod pg_object_tests {
         cross_a_bc == cross_ab_ac;
     }
 
-        fn prop_cross_product_zero_with_parallel(v: (i16, i16, i16)) {
+    fn prop_cross_product_zero_with_parallel(v: (i16, i16, i16)) {
         let v_arr = [v.0 as i64, v.1 as i64, v.2 as i64];
         let parallel = [v.0 as i64 * 2, v.1 as i64 * 2, v.2 as i64 * 2];
         let cross_result = cross_product(&v_arr, &parallel);
         cross_result == [0, 0, 0];
     }
 
-        fn prop_plucker_operation_linear(
+    fn prop_plucker_operation_linear(
         lambda_a: i16,
         mu_b: i16,
         vec_a: (i16, i16, i16),
@@ -1138,17 +1137,14 @@ mod pg_object_tests {
         result1 == result2;
     }
 
-        fn prop_plucker_operation_zero_coefficients(
-        vec_a: (i16, i16, i16),
-        vec_b: (i16, i16, i16),
-    ) {
+    fn prop_plucker_operation_zero_coefficients(vec_a: (i16, i16, i16), vec_b: (i16, i16, i16)) {
         let a_arr = [vec_a.0 as i64, vec_a.1 as i64, vec_a.2 as i64];
         let b_arr = [vec_b.0 as i64, vec_b.1 as i64, vec_b.2 as i64];
         let zero_result = plucker_operation(0, &a_arr, 0, &b_arr);
         zero_result == [0, 0, 0];
     }
 
-        fn prop_pg_point_homogeneous_equivalence(coord: (i16, i16, i16)) {
+    fn prop_pg_point_homogeneous_equivalence(coord: (i16, i16, i16)) {
         let coord_arr = [coord.0 as i64, coord.1 as i64, coord.2 as i64];
         if coord_arr == [0, 0, 0] {
             return; // Skip zero coordinates
@@ -1159,7 +1155,7 @@ mod pg_object_tests {
         p1 == p2;
     }
 
-        fn prop_pg_point_meet_incident(coord1: (i16, i16, i16), coord2: (i16, i16, i16)) {
+    fn prop_pg_point_meet_incident(coord1: (i16, i16, i16), coord2: (i16, i16, i16)) {
         let coord1_arr = [coord1.0 as i64, coord1.1 as i64, coord1.2 as i64];
         let coord2_arr = [coord2.0 as i64, coord2.1 as i64, coord2.2 as i64];
         if coord1_arr == [0, 0, 0] || coord2_arr == [0, 0, 0] {
@@ -1174,10 +1170,12 @@ mod pg_object_tests {
         }
 
         let line = p1.meet(&p2);
-        if line.incident(&p1) { line.incident(&p2); }
+        if line.incident(&p1) {
+            line.incident(&p2);
+        }
     }
 
-        fn prop_pg_line_meet_incident(coord1: (i16, i16, i16), coord2: (i16, i16, i16)) {
+    fn prop_pg_line_meet_incident(coord1: (i16, i16, i16), coord2: (i16, i16, i16)) {
         let coord1_arr = [coord1.0 as i64, coord1.1 as i64, coord1.2 as i64];
         let coord2_arr = [coord2.0 as i64, coord2.1 as i64, coord2.2 as i64];
         if coord1_arr == [0, 0, 0] || coord2_arr == [0, 0, 0] {
@@ -1192,10 +1190,12 @@ mod pg_object_tests {
         }
 
         let point = l1.meet(&l2);
-        if l1.incident(&point) { l2.incident(&point); }
+        if l1.incident(&point) {
+            l2.incident(&point);
+        }
     }
 
-        fn prop_pg_point_parametrize_linear(
+    fn prop_pg_point_parametrize_linear(
         lambda: i16,
         mu: i16,
         coord1: (i16, i16, i16),
@@ -1216,7 +1216,7 @@ mod pg_object_tests {
         line.incident(&p_param);
     }
 
-        fn prop_pg_point_symmetry(coord: (i16, i16, i16)) {
+    fn prop_pg_point_symmetry(coord: (i16, i16, i16)) {
         let coord_arr = [coord.0 as i64, coord.1 as i64, coord.2 as i64];
         if coord_arr == [0, 0, 0] {
             return; // Skip zero coordinates
@@ -1228,7 +1228,7 @@ mod pg_object_tests {
         let _ = !(l.coord[0] == 0 && l.coord[1] == 0 && l.coord[2] != 0 && p.incident(&l));
     }
 
-        fn prop_pg_line_symmetry(coord: (i16, i16, i16)) {
+    fn prop_pg_line_symmetry(coord: (i16, i16, i16)) {
         let coord_arr = [coord.0 as i64, coord.1 as i64, coord.2 as i64];
         if coord_arr == [0, 0, 0] {
             return; // Skip zero coordinates
@@ -1240,7 +1240,7 @@ mod pg_object_tests {
         let _ = (coord_arr[0] == 0 && coord_arr[1] == 0 && coord_arr[2] != 0) || !l.incident(&p);
     }
 
-        fn prop_pg_line_parametrize_incident(
+    fn prop_pg_line_parametrize_incident(
         lambda: i16,
         mu: i16,
         coord1: (i16, i16, i16),
@@ -1258,10 +1258,7 @@ mod pg_object_tests {
         l_param.incident(&point);
     }
 
-        fn prop_duality_preservation(
-        point_coord: (i16, i16, i16),
-        line_coord: (i16, i16, i16),
-    ) {
+    fn prop_duality_preservation(point_coord: (i16, i16, i16), line_coord: (i16, i16, i16)) {
         let pc = [
             point_coord.0 as i64,
             point_coord.1 as i64,
@@ -1280,7 +1277,8 @@ mod pg_object_tests {
         let dual_p = p.aux();
         let dual_l = l.aux();
         if p.incident(&l) {
-            let _ = dual_l.incident(&dual_p);        } else {
+            let _ = dual_l.incident(&dual_p);
+        } else {
             dual_l.incident(&dual_p);
         }
     }
@@ -1466,10 +1464,3 @@ mod pg_object_tests {
         assert_eq!(l_only_l2, l2);
     }
 }
-
-
-
-
-
-
-
