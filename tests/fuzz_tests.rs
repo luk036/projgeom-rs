@@ -1,58 +1,42 @@
 //! Edge case tests for geometric operations
 
-use quickcheck::{Arbitrary, Gen};
-use quickcheck_macros::quickcheck;
+use proptest::prelude::*;
 
 use projgeom_rs::pg_object::{PgLine, PgPoint};
 use projgeom_rs::{ProjectivePlane, ProjectivePlanePrimitive};
 
-#[derive(Debug, Clone)]
-struct NonZeroCoord {
-    coord: [i64; 3],
+fn non_zero_coord() -> impl Strategy<Value = [i64; 3]> {
+    any::<[i64; 3]>().prop_filter("non-zero", |c| *c != [0, 0, 0])
 }
 
-impl Arbitrary for NonZeroCoord {
-    fn arbitrary(g: &mut Gen) -> Self {
-        let mut coord = [0i64; 3];
-        while coord == [0, 0, 0] {
-            coord[0] = i64::arbitrary(g);
-            coord[1] = i64::arbitrary(g);
-            coord[2] = i64::arbitrary(g);
-        }
-        NonZeroCoord { coord }
+proptest! {
+    #[test]
+    fn test_meet_not_all_zeros(p1 in non_zero_coord(), p2 in non_zero_coord()) {
+        let a = PgPoint::new(p1);
+        let b = PgPoint::new(p2);
+        let _line = a.meet(&b);
     }
-}
 
-#[quickcheck]
-fn test_meet_not_all_zeros(p1: NonZeroCoord, p2: NonZeroCoord) -> bool {
-    let a = PgPoint::new(p1.coord);
-    let b = PgPoint::new(p2.coord);
-    let _line = a.meet(&b);
-    // With extreme values and wrapping arithmetic, result may be zero
-    // But operation should complete without panic
-    true
-}
+    #[test]
+    fn test_incident_returns_bool(p in non_zero_coord(), l in non_zero_coord()) {
+        let pt = PgPoint::new(p);
+        let line = PgLine::new(l);
+        let _result = pt.incident(&line);
+    }
 
-#[quickcheck]
-fn test_incident_returns_bool(p: NonZeroCoord, l: NonZeroCoord) -> bool {
-    let pt = PgPoint::new(p.coord);
-    let line = PgLine::new(l.coord);
-    let result = pt.incident(&line);
-    result == result
-}
+    #[test]
+    fn test_coordinate_not_all_zeros(p in non_zero_coord()) {
+        let a = PgPoint::new(p);
+        assert!(!(a.coord[0] == 0 && a.coord[1] == 0 && a.coord[2] == 0));
+    }
 
-#[quickcheck]
-fn test_coordinate_not_all_zeros(p: NonZeroCoord) -> bool {
-    let a = PgPoint::new(p.coord);
-    !(a.coord[0] == 0 && a.coord[1] == 0 && a.coord[2] == 0)
-}
-
-#[quickcheck]
-fn test_parametrize_valid(p1: NonZeroCoord, p2: NonZeroCoord) -> bool {
-    let a = PgPoint::new(p1.coord);
-    let b = PgPoint::new(p2.coord);
-    let result = a.parametrize(1, &b, 1);
-    result.coord != [0, 0, 0]
+    #[test]
+    fn test_parametrize_valid(p1 in non_zero_coord(), p2 in non_zero_coord()) {
+        let a = PgPoint::new(p1);
+        let b = PgPoint::new(p2);
+        let result = a.parametrize(1, &b, 1);
+        assert!(result.coord != [0, 0, 0]);
+    }
 }
 
 #[test]
