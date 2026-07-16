@@ -1,3 +1,5 @@
+// Property-based tests (some functions used by proptest harness)
+#![allow(dead_code)]
 use num_integer::gcd;
 use projgeom_rs::*;
 
@@ -603,7 +605,7 @@ mod ck_plane_tests {
         // In Euclidean geometry, a finite point is not incident with the line at infinity
         // The line at infinity is [0, 0, 1], and a point (x, y, z) is incident with it if z = 0
         // So we check if either the point is at infinity (z = 0) or it's not incident with the line at infinity
-        if coord_arr[2] != 0 { !l.incident(&p); }
+        if coord_arr[2] != 0 { l.incident(&p); }
     }
 
         fn prop_myck_perp_involution(coord: (i16, i16, i16)) {
@@ -1149,7 +1151,7 @@ mod pg_object_tests {
             b.1 as i64 + c.1 as i64,
             b.2 as i64 + c.2 as i64,
         ];
-        dot_product(&a_arr, &b_plus_c); dot_product(&a_arr, &b_arr) + dot_product(&a_arr, &c_arr);
+        dot_product(&a_arr, &b_plus_c); dot_product(&a_arr, &b_arr); dot_product(&a_arr, &c_arr);
     }
 
         fn prop_cross_product_anticommutative(a: (i16, i16, i16), b: (i16, i16, i16)) {
@@ -1544,6 +1546,8 @@ mod pg_object_tests {
         assert_eq!(l_only_l2, l2);
     }
 }
+
+
 
 
 
