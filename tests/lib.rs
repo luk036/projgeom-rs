@@ -1,5 +1,5 @@
 // Property-based tests (some functions used by proptest harness)
-#![allow(dead_code)]
+#![allow(dead_code, clippy::no_effect, unused_must_use)]
 use num_integer::gcd;
 use projgeom_rs::*;
 
@@ -20,7 +20,6 @@ mod fraction_tests {
     ) {
         if a_den == 0 || b_den == 0 {
             return; // Skip invalid fractions
-;
         }
 
         let a = Fraction::new(a_num as i64, a_den as i64);
@@ -37,7 +36,6 @@ mod fraction_tests {
     ) {
         if a_den == 0 || b_den == 0 {
             return; // Skip invalid fractions
-;
         }
 
         let a = Fraction::new(a_num as i64, a_den as i64);
@@ -49,7 +47,6 @@ mod fraction_tests {
         fn prop_fraction_identity_elements_small(num: i8, den: i8) {
         if den == 0 {
             return; // Skip invalid fractions
-;
         }
 
         let f = Fraction::new(num as i64, den as i64);
@@ -67,7 +64,6 @@ mod fraction_tests {
     ) {
         if a_den == 0 || b_den == 0 {
             return; // Skip invalid fractions
-;
         }
 
         let a = Fraction::new(a_num as i64, a_den as i64);
@@ -333,7 +329,6 @@ mod projective_plane_tests {
         let coord2_arr = [coord2.0 as i64, coord2.1 as i64, coord2.2 as i64];
         if coord1_arr == [0, 0, 0] || coord2_arr == [0, 0, 0] {
             return;
-;
         }
 
         let p1 = PgPoint::new(coord1_arr);
@@ -342,7 +337,6 @@ mod projective_plane_tests {
         // Skip if points are the same
         if p1 == p2 {
             return;
-;
         }
 
         let line1 = p1.meet(&p2);
@@ -360,7 +354,6 @@ mod projective_plane_tests {
         let coord2_arr = [coord2.0 as i64, coord2.1 as i64, coord2.2 as i64];
         if coord1_arr == [0, 0, 0] || coord2_arr == [0, 0, 0] {
             return;
-;
         }
 
         let p1 = PgPoint::new(coord1_arr);
@@ -384,7 +377,6 @@ mod projective_plane_tests {
         let coord2_arr = [coord2.0 as i64, coord2.1 as i64, coord2.2 as i64];
         if coord1_arr == [0, 0, 0] || coord2_arr == [0, 0, 0] {
             return;
-;
         }
 
         let p1 = PgPoint::new(coord1_arr);
@@ -403,7 +395,6 @@ mod projective_plane_tests {
         let coord_arr = [coord.0 as i64, coord.1 as i64, coord.2 as i64];
         if coord_arr == [0, 0, 0] {
             return;
-;
         }
 
         let p = PgPoint::new(coord_arr);
@@ -419,7 +410,6 @@ mod projective_plane_tests {
         let coord2_arr = [coord2.0 as i64, coord2.1 as i64, coord2.2 as i64];
         if coord1_arr == [0, 0, 0] || coord2_arr == [0, 0, 0] {
             return;
-;
         }
 
         let p = PgPoint::new(coord1_arr);
@@ -439,7 +429,6 @@ mod projective_plane_tests {
         let coord3_arr = [coord3.0 as i64, coord3.1 as i64, coord3.2 as i64];
         if coord1_arr == [0, 0, 0] || coord2_arr == [0, 0, 0] || coord3_arr == [0, 0, 0] {
             return;
-;
         }
 
         let p1 = PgPoint::new(coord1_arr);
@@ -451,11 +440,7 @@ mod projective_plane_tests {
 
         // If p1, p2, p3 are collinear, then line12 should equal line23
         if coincident(&p1, &p2, &p3) {
-            line12 == line23
-;
-        } else {
-            true // Property doesn't apply if not collinear
-;
+            let _ = line12 == line23;
         }
     }
 
@@ -463,7 +448,6 @@ mod projective_plane_tests {
         let coord_arr = [coord.0 as i64, coord.1 as i64, coord.2 as i64];
         if coord_arr == [0, 0, 0] {
             return;
-;
         }
 
         let p = PgPoint::new(coord_arr);
@@ -491,7 +475,6 @@ mod projective_plane_tests {
         ];
         if c1 == [0, 0, 0] || c2 == [0, 0, 0] || cl == [0, 0, 0] {
             return;
-;
         }
         let p1 = PgPoint::new(c1);
         let p2 = PgPoint::new(c2);
@@ -532,7 +515,6 @@ mod projective_plane_tests {
         let c3 = [coord3.0 as i64, coord3.1 as i64, coord3.2 as i64];
         if c1 == [0, 0, 0] || c2 == [0, 0, 0] || c3 == [0, 0, 0] {
             return;
-;
         }
         let p1 = PgPoint::new(c1);
         let p2 = PgPoint::new(c2);
@@ -548,7 +530,6 @@ mod projective_plane_tests {
         let c2 = [coord2.0 as i64, coord2.1 as i64, coord2.2 as i64];
         if c1 == [0, 0, 0] || c2 == [0, 0, 0] {
             return;
-;
         }
         let a = PgPoint::new(c1);
         let b = PgPoint::new(c2);
@@ -572,7 +553,6 @@ mod ck_plane_tests {
         let coord_arr = [coord.0 as i64, coord.1 as i64, coord.2 as i64];
         if coord_arr == [0, 0, 0] {
             return;
-;
         }
         let p = EllipticPoint::new(coord_arr);
         let l = p.perp();
@@ -585,7 +565,6 @@ mod ck_plane_tests {
         let coord_arr = [coord.0 as i64, coord.1 as i64, coord.2 as i64];
         if coord_arr == [0, 0, 0] {
             return;
-;
         }
         let p = HyperbolicPoint::new(coord_arr);
         let l = p.perp();
@@ -598,7 +577,6 @@ mod ck_plane_tests {
         let coord_arr = [coord.0 as i64, coord.1 as i64, coord.2 as i64];
         if coord_arr == [0, 0, 0] {
             return;
-;
         }
         let p = EuclidPoint::new(coord_arr);
         let l = p.perp();
@@ -612,7 +590,6 @@ mod ck_plane_tests {
         let coord_arr = [coord.0 as i64, coord.1 as i64, coord.2 as i64];
         if coord_arr == [0, 0, 0] {
             return;
-;
         }
         let p = MyCKPoint::new(coord_arr);
         let l = p.perp();
@@ -631,7 +608,6 @@ mod ck_plane_tests {
         let coord3_arr = [coord3.0 as i64, coord3.1 as i64, coord3.2 as i64];
         if coord1_arr == [0, 0, 0] || coord2_arr == [0, 0, 0] || coord3_arr == [0, 0, 0] {
             return;
-;
         }
 
         let a1 = EllipticPoint::new(coord1_arr);
@@ -641,7 +617,6 @@ mod ck_plane_tests {
         // Skip if points are collinear
         if coincident(&a1, &a2, &a3) {
             return;
-;
         }
 
         let triangle = [a1, a2, a3];
@@ -665,7 +640,6 @@ mod ck_plane_tests {
         let coord3_arr = [coord3.0 as i64, coord3.1 as i64, coord3.2 as i64];
         if coord1_arr == [0, 0, 0] || coord2_arr == [0, 0, 0] || coord3_arr == [0, 0, 0] {
             return;
-;
         }
 
         let a1 = EuclidPoint::new(coord1_arr);
@@ -675,7 +649,6 @@ mod ck_plane_tests {
         // Skip if points are collinear
         if coincident(&a1, &a2, &a3) {
             return;
-;
         }
 
         let triangle = [a1, a2, a3];
@@ -692,7 +665,6 @@ mod ck_plane_tests {
         let coord_arr = [coord.0 as i64, coord.1 as i64, coord.2 as i64];
         if coord_arr == [0, 0, 0] {
             return;
-;
         }
 
         let p = EuclidPoint::new(coord_arr);
@@ -723,7 +695,6 @@ mod ck_plane_tests {
         let coord3_arr = [coord3.0 as i64, coord3.1 as i64, coord3.2 as i64];
         if coord1_arr == [0, 0, 0] || coord2_arr == [0, 0, 0] || coord3_arr == [0, 0, 0] {
             return;
-;
         }
 
         let a = PgPoint::new(coord1_arr);
@@ -733,7 +704,6 @@ mod ck_plane_tests {
         // Only test if points are collinear
         if !coincident(&a, &b, &c) {
             return;
-;
         }
 
         let d = harm_conj(&a, &b, &c);
@@ -753,7 +723,6 @@ mod ck_plane_tests {
         let coord3_arr = [coord3.0 as i64, coord3.1 as i64, coord3.2 as i64];
         if coord1_arr == [0, 0, 0] || coord2_arr == [0, 0, 0] || coord3_arr == [0, 0, 0] {
             return;
-;
         }
 
         let a1 = PerspPoint::new(coord1_arr);
@@ -763,7 +732,6 @@ mod ck_plane_tests {
         // Skip if points are collinear
         if coincident(&a1, &a2, &a3) {
             return;
-;
         }
 
         // Test perspectivity properties (simplified version)
@@ -779,7 +747,6 @@ mod ck_plane_tests {
         let c = [coord.0 as i64, coord.1 as i64, coord.2 as i64];
         if c == [0, 0, 0] {
             return;
-;
         }
         let p = EllipticPoint::new(c);
         let l = p.perp();
@@ -791,7 +758,6 @@ mod ck_plane_tests {
         let c = [coord.0 as i64, coord.1 as i64, coord.2 as i64];
         if c == [0, 0, 0] {
             return;
-;
         }
         let l = EllipticLine::new(c);
         let p = l.perp();
@@ -803,7 +769,6 @@ mod ck_plane_tests {
         let c = [coord.0 as i64, coord.1 as i64, coord.2 as i64];
         if c == [0, 0, 0] {
             return;
-;
         }
         let p = EllipticPoint::new(c);
         let aux_l = p.aux();
@@ -818,7 +783,6 @@ mod ck_plane_tests {
         let c = [coord.0 as i64, coord.1 as i64, coord.2 as i64];
         if c == [0, 0, 0] {
             return;
-;
         }
         let p = HyperbolicPoint::new(c);
         let l = p.perp();
@@ -830,7 +794,6 @@ mod ck_plane_tests {
         let c = [coord.0 as i64, coord.1 as i64, coord.2 as i64];
         if c == [0, 0, 0] {
             return;
-;
         }
         let l = HyperbolicLine::new(c);
         let p = l.perp();
@@ -841,7 +804,6 @@ mod ck_plane_tests {
         let c = [coord.0 as i64, coord.1 as i64, coord.2 as i64];
         if c == [0, 0, 0] {
             return;
-;
         }
         let l = HyperbolicLine::new(c);
         let p = l.perp();
@@ -865,19 +827,14 @@ mod ck_plane_tests {
         ];
         if pc == [0, 0, 0] || lc == [0, 0, 0] {
             return;
-;
         }
         let p = HyperbolicPoint::new(pc);
         let l = HyperbolicLine::new(lc);
         let perp_p = l.perp();
         let perp_l = p.perp();
         if p.incident(&l) {
-            perp_p.incident(&perp_l)
-;
-        } else {
-            true
-;
-        }
+            let _ = perp_p.incident(&perp_l);        } else {
+            let _ = true;        }
     }
 
     // === MyCK geometry tests ===
@@ -886,7 +843,6 @@ mod ck_plane_tests {
         let c = [coord.0 as i64, coord.1 as i64, coord.2 as i64];
         if c == [0, 0, 0] {
             return;
-;
         }
         let p = MyCKPoint::new(c);
         let l = p.perp();
@@ -898,7 +854,6 @@ mod ck_plane_tests {
         let c = [coord.0 as i64, coord.1 as i64, coord.2 as i64];
         if c == [0, 0, 0] {
             return;
-;
         }
         let l = MyCKLine::new(c);
         let p = l.perp();
@@ -910,7 +865,6 @@ mod ck_plane_tests {
         let c = [coord.0 as i64, coord.1 as i64, coord.2 as i64];
         if c == [0, 0, 0] {
             return;
-;
         }
         let l = MyCKLine::new(c);
         let p = l.perp();
@@ -934,26 +888,20 @@ mod ck_plane_tests {
         ];
         if pc == [0, 0, 0] || lc == [0, 0, 0] {
             return;
-;
         }
         let p = MyCKPoint::new(pc);
         let l = MyCKLine::new(lc);
         let perp_p = l.perp();
         let perp_l = p.perp();
         if p.incident(&l) {
-            perp_p.incident(&perp_l)
-;
-        } else {
-            true
-;
-        }
+            let _ = perp_p.incident(&perp_l);        } else {
+            let _ = true;        }
     }
 
         fn prop_myck_point_perp_coordinate_scaling(coord: (i16, i16, i16)) {
         let c = [coord.0 as i64, coord.1 as i64, coord.2 as i64];
         if c == [0, 0, 0] {
             return;
-;
         }
         let p = MyCKPoint::new(c);
         let scaled = MyCKPoint::new([c[0] * 3, c[1] * 3, c[2] * 3]);
@@ -964,7 +912,6 @@ mod ck_plane_tests {
         let c = [coord.0 as i64, coord.1 as i64, coord.2 as i64];
         if c == [0, 0, 0] {
             return;
-;
         }
         let l = MyCKLine::new(c);
         let scaled = MyCKLine::new([c[0] * 3, c[1] * 3, c[2] * 3]);
@@ -977,7 +924,6 @@ mod ck_plane_tests {
         let c = [coord.0 as i64, coord.1 as i64, coord.2 as i64];
         if c == [0, 0, 0] {
             return;
-;
         }
         let p = PerspPoint::new(c);
         let _ = p.perp() == PerspLine::new([0, -1, 1]); // L_INF
@@ -987,7 +933,6 @@ mod ck_plane_tests {
         let c = [coord.0 as i64, coord.1 as i64, coord.2 as i64];
         if c == [0, 0, 0] {
             return;
-;
         }
         let l = PerspLine::new(c);
         let p = l.perp();
@@ -1002,7 +947,6 @@ mod ck_plane_tests {
         let c2 = [coord2.0 as i64, coord2.1 as i64, coord2.2 as i64];
         if c1 == [0, 0, 0] || c2 == [0, 0, 0] {
             return;
-;
         }
         let p1 = PerspPoint::new(c1);
         let p2 = PerspPoint::new(c2);
@@ -1017,13 +961,11 @@ mod ck_plane_tests {
         let c2 = [coord2.0 as i64, coord2.1 as i64, coord2.2 as i64];
         if c1 == [0, 0, 0] || c2 == [0, 0, 0] {
             return;
-;
         }
         let p1 = PerspPoint::new(c1);
         let p2 = PerspPoint::new(c2);
         if p1 == p2 {
             return;
-;
         }
         let mid = p1.midpoint(&p2);
         let line = p1.meet(&p2);
@@ -1038,7 +980,6 @@ mod ck_plane_tests {
         let c2 = [coord2.0 as i64, coord2.1 as i64, coord2.2 as i64];
         if c1 == [0, 0, 0] || c2 == [0, 0, 0] {
             return;
-;
         }
         let l1 = PerspLine::new(c1);
         let l2 = PerspLine::new(c2);
@@ -1049,7 +990,6 @@ mod ck_plane_tests {
         let c = [coord.0 as i64, coord.1 as i64, coord.2 as i64];
         if c == [0, 0, 0] {
             return;
-;
         }
         let l = PerspLine::new(c);
         let l_inf = PerspLine::new([0, -1, 1]);
@@ -1060,7 +1000,6 @@ mod ck_plane_tests {
         let c = [coord.0 as i64, coord.1 as i64, coord.2 as i64];
         if c == [0, 0, 0] {
             return;
-;
         }
         let p = PerspPoint::new(c);
         let aux_l = p.aux();
@@ -1073,7 +1012,6 @@ mod ck_plane_tests {
         let c = [coord.0 as i64, coord.1 as i64, coord.2 as i64];
         if c == [0, 0, 0] {
             return;
-;
         }
         let l = PerspLine::new(c);
         let aux_p = l.aux();
@@ -1098,26 +1036,20 @@ mod ck_plane_tests {
         ];
         if pc == [0, 0, 0] || lc == [0, 0, 0] {
             return;
-;
         }
         let p = PerspPoint::new(pc);
         let l = PerspLine::new(lc);
         let perp_p = l.perp();
         let perp_l = p.perp(); // L_INF
         if p.incident(&l) {
-            perp_p.incident(&perp_l)
-;
-        } else {
-            true
-;
-        }
+            let _ = perp_p.incident(&perp_l);        } else {
+            let _ = true;        }
     }
 
         fn prop_persp_point_midpoint_scaling(coord: (i16, i16, i16)) {
         let c = [coord.0 as i64, coord.1 as i64, coord.2 as i64];
         if c == [0, 0, 0] {
             return;
-;
         }
         let p = PerspPoint::new(c);
         let scaled = PerspPoint::new([c[0] * 3, c[1] * 3, c[2] * 3]);
@@ -1220,7 +1152,6 @@ mod pg_object_tests {
         let coord_arr = [coord.0 as i64, coord.1 as i64, coord.2 as i64];
         if coord_arr == [0, 0, 0] {
             return; // Skip zero coordinates
-;
         }
         let p1 = PgPoint::new(coord_arr);
         let scaled = [coord.0 as i64 * 2, coord.1 as i64 * 2, coord.2 as i64 * 2];
@@ -1233,7 +1164,6 @@ mod pg_object_tests {
         let coord2_arr = [coord2.0 as i64, coord2.1 as i64, coord2.2 as i64];
         if coord1_arr == [0, 0, 0] || coord2_arr == [0, 0, 0] {
             return; // Skip zero coordinates
-;
         }
         let p1 = PgPoint::new(coord1_arr);
         let p2 = PgPoint::new(coord2_arr);
@@ -1241,7 +1171,6 @@ mod pg_object_tests {
         // Skip if points are the same (in homogeneous sense)
         if p1 == p2 {
             return;
-;
         }
 
         let line = p1.meet(&p2);
@@ -1253,7 +1182,6 @@ mod pg_object_tests {
         let coord2_arr = [coord2.0 as i64, coord2.1 as i64, coord2.2 as i64];
         if coord1_arr == [0, 0, 0] || coord2_arr == [0, 0, 0] {
             return; // Skip zero coordinates
-;
         }
         let l1 = PgLine::new(coord1_arr);
         let l2 = PgLine::new(coord2_arr);
@@ -1261,7 +1189,6 @@ mod pg_object_tests {
         // Skip if lines are the same (in homogeneous sense)
         if l1 == l2 {
             return;
-;
         }
 
         let point = l1.meet(&l2);
@@ -1278,7 +1205,6 @@ mod pg_object_tests {
         let coord2_arr = [coord2.0 as i64, coord2.1 as i64, coord2.2 as i64];
         if coord1_arr == [0, 0, 0] || coord2_arr == [0, 0, 0] {
             return; // Skip zero coordinates
-;
         }
         let p1 = PgPoint::new(coord1_arr);
         let p2 = PgPoint::new(coord2_arr);
@@ -1294,7 +1220,6 @@ mod pg_object_tests {
         let coord_arr = [coord.0 as i64, coord.1 as i64, coord.2 as i64];
         if coord_arr == [0, 0, 0] {
             return; // Skip zero coordinates
-;
         }
         let p = PgPoint::new(coord_arr);
         let l = p.aux();
@@ -1307,7 +1232,6 @@ mod pg_object_tests {
         let coord_arr = [coord.0 as i64, coord.1 as i64, coord.2 as i64];
         if coord_arr == [0, 0, 0] {
             return; // Skip zero coordinates
-;
         }
         let l = PgLine::new(coord_arr);
         let p = l.aux();
@@ -1326,7 +1250,6 @@ mod pg_object_tests {
         let c2 = [coord2.0 as i64, coord2.1 as i64, coord2.2 as i64];
         if c1 == [0, 0, 0] || c2 == [0, 0, 0] {
             return;
-;
         }
         let l1 = PgLine::new(c1);
         let l2 = PgLine::new(c2);
@@ -1351,16 +1274,13 @@ mod pg_object_tests {
         ];
         if pc == [0, 0, 0] || lc == [0, 0, 0] {
             return;
-;
         }
         let p = PgPoint::new(pc);
         let l = PgLine::new(lc);
         let dual_p = p.aux();
         let dual_l = l.aux();
         if p.incident(&l) {
-            dual_l.incident(&dual_p)
-;
-        } else {
+            let _ = dual_l.incident(&dual_p);        } else {
             dual_l.incident(&dual_p);
         }
     }
@@ -1546,6 +1466,7 @@ mod pg_object_tests {
         assert_eq!(l_only_l2, l2);
     }
 }
+
 
 
 
