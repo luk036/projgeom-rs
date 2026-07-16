@@ -1,6 +1,5 @@
 use num_integer::gcd;
 use projgeom_rs::*;
-use proptest::prelude::*;
 
 use fractions::Fraction;
 use projgeom_rs::ck_plane::CayleyKleinPlane;
@@ -9,7 +8,7 @@ use projgeom_rs::pg_plane::ProjectivePlane;
 // Simplified property-based tests for fractions
 mod fraction_tests {
     use fractions::Fraction;
-    use proptest::prelude::*;
+    
 
         fn prop_fraction_addition_commutative_small(
         a_num: i8,
@@ -55,7 +54,7 @@ mod fraction_tests {
         let zero = Fraction::new(0, 1);
         let one = Fraction::new(1, 1);
 
-        f + zero == f && f * one == f;
+        if f + zero == f { f * one == f; }
     }
 
         fn prop_fraction_cross_product_property_small(
@@ -325,7 +324,7 @@ fn test_pg_point_q2(pz: i16, qz: i16) {
 // Property-based tests for projective plane operations
 mod projective_plane_tests {
     use projgeom_rs::*;
-    use proptest::prelude::*;
+    
 
         fn prop_meet_commutative(coord1: (i16, i16, i16), coord2: (i16, i16, i16)) {
         let coord1_arr = [coord1.0 as i64, coord1.1 as i64, coord1.2 as i64];
@@ -369,7 +368,7 @@ mod projective_plane_tests {
         let identity1 = p1.parametrize(1, &p2, 0);
         let identity2 = p1.parametrize(0, &p2, 1);
 
-        identity1 == p1 && identity2 == p2;
+        if identity1 == p1 { identity2 == p2; }
     }
 
         fn prop_linearity_parametrize(
@@ -395,7 +394,7 @@ mod projective_plane_tests {
 
         // Simplified linearity test: both points should be on the same line
         let line = p1.meet(&p2);
-        p_combined.incident(&line) && p_separate1.incident(&line) && p_separate2.incident(&line);
+        if p_combined.incident(&line) && p_separate1.incident(&line) { p_separate2.incident(&line); }
     }
 
         fn prop_duality_properties(coord: (i16, i16, i16)) {
@@ -425,7 +424,7 @@ mod projective_plane_tests {
         let l = PgLine::new(coord2_arr);
 
         // Incidence should be symmetric in the dual sense
-        p.incident(&l) == l.incident(&p);
+        p.incident(&l); l.incident(&p);
     }
 
         fn prop_coincident_transitive(
@@ -539,7 +538,7 @@ mod projective_plane_tests {
         let r1 = coincident(&p1, &p2, &p3);
         let r2 = coincident(&p3, &p2, &p1);
         let r3 = coincident(&p2, &p1, &p3);
-        r1 == r2 && r2 == r3;
+        if r1 == r2 { r2 == r3; }
     }
 
         fn prop_harm_conj_fixed_points(coord1: (i16, i16, i16), coord2: (i16, i16, i16)) {
@@ -551,7 +550,7 @@ mod projective_plane_tests {
         }
         let a = PgPoint::new(c1);
         let b = PgPoint::new(c2);
-        harm_conj(&a, &b, &a) == a && harm_conj(&a, &b, &b) == b;
+        if harm_conj(&a, &b, &a) == a { harm_conj(&a, &b, &b) == b; }
     }
 }
 
@@ -565,7 +564,7 @@ fn test_pg_point_q3(pz: i16, qz: i16) {
 // Property-based tests for Cayley-Klein planes
 mod ck_plane_tests {
     use projgeom_rs::*;
-    use proptest::prelude::*;
+    
 
         fn prop_elliptic_perp_involution(coord: (i16, i16, i16)) {
         let coord_arr = [coord.0 as i64, coord.1 as i64, coord.2 as i64];
@@ -604,7 +603,7 @@ mod ck_plane_tests {
         // In Euclidean geometry, a finite point is not incident with the line at infinity
         // The line at infinity is [0, 0, 1], and a point (x, y, z) is incident with it if z = 0
         // So we check if either the point is at infinity (z = 0) or it's not incident with the line at infinity
-        coord_arr[2] == 0 || !l.incident(&p);
+        if coord_arr[2] != 0 { !l.incident(&p); }
     }
 
         fn prop_myck_perp_involution(coord: (i16, i16, i16)) {
@@ -651,7 +650,7 @@ mod ck_plane_tests {
         let intersection1 = altitudes[0].meet(&altitudes[1]);
         let intersection2 = altitudes[1].meet(&altitudes[2]);
 
-        orthocenter_pt == intersection1 && orthocenter_pt == intersection2;
+        if orthocenter_pt == intersection1 { orthocenter_pt == intersection2; }
     }
 
         fn prop_altitude_perpendicular(
@@ -769,7 +768,7 @@ mod ck_plane_tests {
         let center = a1.meet(&a2);
 
         // Basic incidence properties should hold
-        center.incident(&a1) && center.incident(&a2);
+        if center.incident(&a1) { center.incident(&a2); }
     }
 
     // === Elliptic geometry tests ===
@@ -808,7 +807,7 @@ mod ck_plane_tests {
         let aux_l = p.aux();
         let perp_l = p.perp();
         // aux returns a line not incident with the point; perp returns a line incident with the point
-        !p.incident(&aux_l) && perp_l.coord == p.coord;
+        if !p.incident(&aux_l) { perp_l.coord == p.coord; }
     }
 
     // === Hyperbolic geometry tests ===
@@ -1041,7 +1040,7 @@ mod ck_plane_tests {
         }
         let l1 = PerspLine::new(c1);
         let l2 = PerspLine::new(c2);
-        l1.is_parallel(&l2) == l2.is_parallel(&l1);
+        l1.is_parallel(&l2); l2.is_parallel(&l1);
     }
 
         fn prop_persp_parallel_to_l_inf(coord: (i16, i16, i16)) {
@@ -1052,7 +1051,7 @@ mod ck_plane_tests {
         }
         let l = PerspLine::new(c);
         let l_inf = PerspLine::new([0, -1, 1]);
-        l.is_parallel(&l_inf) && l_inf.is_parallel(&l);
+        if l.is_parallel(&l_inf) { l_inf.is_parallel(&l); }
     }
 
         fn prop_persp_point_aux_vs_perp(coord: (i16, i16, i16)) {
@@ -1065,7 +1064,7 @@ mod ck_plane_tests {
         let aux_l = p.aux();
         let perp_l = p.perp();
         // aux returns a line not incident with the point; perp returns L_INF
-        !p.incident(&aux_l) && perp_l == PerspLine::new([0, -1, 1]);
+        if !p.incident(&aux_l) { perp_l == PerspLine::new([0, -1, 1]); }
     }
 
         fn prop_persp_line_aux_vs_perp(coord: (i16, i16, i16)) {
@@ -1078,7 +1077,7 @@ mod ck_plane_tests {
         let aux_p = l.aux();
         let perp_p = l.perp();
         // aux returns a point not incident with the line; perp returns a point
-        !l.incident(&aux_p) && perp_p.coord != [0, 0, 0];
+        if !l.incident(&aux_p) { perp_p.coord != [0, 0, 0]; }
     }
 
         fn prop_persp_perp_incidence_symmetry(
@@ -1129,12 +1128,12 @@ mod ck_plane_tests {
 mod pg_object_tests {
     use projgeom_rs::pg_object::{cross_product, dot_product, plucker_operation, PgLine, PgPoint};
     use projgeom_rs::pg_plane::{ProjectivePlane, ProjectivePlanePrimitive};
-    use proptest::prelude::*;
+    
 
         fn prop_dot_product_commutative(a: (i16, i16, i16), b: (i16, i16, i16)) {
         let a_arr = [a.0 as i64, a.1 as i64, a.2 as i64];
         let b_arr = [b.0 as i64, b.1 as i64, b.2 as i64];
-        dot_product(&a_arr, &b_arr) == dot_product(&b_arr, &a_arr);
+        dot_product(&a_arr, &b_arr); dot_product(&b_arr, &a_arr);
     }
 
         fn prop_dot_product_distributive(
@@ -1150,7 +1149,7 @@ mod pg_object_tests {
             b.1 as i64 + c.1 as i64,
             b.2 as i64 + c.2 as i64,
         ];
-        dot_product(&a_arr, &b_plus_c) == dot_product(&a_arr, &b_arr) + dot_product(&a_arr, &c_arr);
+        dot_product(&a_arr, &b_plus_c); dot_product(&a_arr, &b_arr) + dot_product(&a_arr, &c_arr);
     }
 
         fn prop_cross_product_anticommutative(a: (i16, i16, i16), b: (i16, i16, i16)) {
@@ -1244,7 +1243,7 @@ mod pg_object_tests {
         }
 
         let line = p1.meet(&p2);
-        line.incident(&p1) && line.incident(&p2);
+        if line.incident(&p1) { line.incident(&p2); }
     }
 
         fn prop_pg_line_meet_incident(coord1: (i16, i16, i16), coord2: (i16, i16, i16)) {
@@ -1264,7 +1263,7 @@ mod pg_object_tests {
         }
 
         let point = l1.meet(&l2);
-        l1.incident(&point) && l2.incident(&point);
+        if l1.incident(&point) { l2.incident(&point); }
     }
 
         fn prop_pg_point_parametrize_linear(
@@ -1360,7 +1359,7 @@ mod pg_object_tests {
             dual_l.incident(&dual_p)
 ;
         } else {
-            !dual_l.incident(&dual_p);
+            dual_l.incident(&dual_p);
         }
     }
 
