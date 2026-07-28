@@ -7,13 +7,12 @@ use fractions::Fraction;
 use projgeom_rs::ck_plane::CayleyKleinPlane;
 use projgeom_rs::pg_plane::ProjectivePlane;
 
-// Simplified property-based tests for fractions
 mod fraction_tests {
     use fractions::Fraction;
 
     fn prop_fraction_addition_commutative_small(a_num: i8, a_den: i8, b_num: i8, b_den: i8) {
         if a_den == 0 || b_den == 0 {
-            return; // Skip invalid fractions
+            return;
         }
 
         let a = Fraction::new(a_num as i64, a_den as i64);
@@ -24,7 +23,7 @@ mod fraction_tests {
 
     fn prop_fraction_multiplication_commutative_small(a_num: i8, a_den: i8, b_num: i8, b_den: i8) {
         if a_den == 0 || b_den == 0 {
-            return; // Skip invalid fractions
+            return;
         }
 
         let a = Fraction::new(a_num as i64, a_den as i64);
@@ -35,7 +34,7 @@ mod fraction_tests {
 
     fn prop_fraction_identity_elements_small(num: i8, den: i8) {
         if den == 0 {
-            return; // Skip invalid fractions
+            return;
         }
 
         let f = Fraction::new(num as i64, den as i64);
@@ -49,13 +48,12 @@ mod fraction_tests {
 
     fn prop_fraction_cross_product_property_small(a_num: i8, a_den: i8, b_num: i8, b_den: i8) {
         if a_den == 0 || b_den == 0 {
-            return; // Skip invalid fractions
+            return;
         }
 
         let a = Fraction::new(a_num as i64, a_den as i64);
         let b = Fraction::new(b_num as i64, b_den as i64);
 
-        // Cross product should be anti-symmetric
         let cross_ab = Fraction::cross(&a, &b);
         let cross_ba = Fraction::cross(&b, &a);
 
@@ -85,7 +83,6 @@ fn test_cross() {
     let result = Fraction::cross(&frac_f, &frac_h);
     assert_eq!(result, -9);
     assert_eq!(frac_h, 3);
-    // assert_eq!(result, 30);
 }
 
 #[test]
@@ -95,7 +92,6 @@ fn test_ordering() {
     assert!(1i32 != frac_f);
     assert!(frac_f < 1i32);
     assert!(1i32 > frac_f);
-    // assert_eq!(result, 30);
 }
 
 #[test]
@@ -276,14 +272,6 @@ fn test_persp_point() {
     check_ck_plane(a_1, a_2, a_3);
 }
 
-// #[test]
-// fn test_persp_line() {
-//     let a_1 = PerspLine::new([13, 23, 32]);
-//     let a_2 = PerspLine::new([44, -34, 2]);
-//     let a_3 = PerspLine::new([-2, 12, 23]);
-//     check_ck_plane(a_1, a_2, a_3);
-// }
-
 #[test]
 fn test_euclid_point() {
     let a_1 = EuclidPoint::new([13, 23, 32]);
@@ -319,7 +307,6 @@ mod projective_plane_tests {
         let p1 = PgPoint::new(coord1_arr);
         let p2 = PgPoint::new(coord2_arr);
 
-        // Skip if points are the same
         if p1 == p2 {
             return;
         }
@@ -390,7 +377,6 @@ mod projective_plane_tests {
         let l = p.aux();
         let p_dual = l.aux();
 
-        // Test duality: aux(aux(p)) should be equivalent to p
         p == p_dual;
     }
 
@@ -404,7 +390,6 @@ mod projective_plane_tests {
         let p = PgPoint::new(coord1_arr);
         let l = PgLine::new(coord2_arr);
 
-        // Incidence should be symmetric in the dual sense
         p.incident(&l);
         l.incident(&p);
     }
@@ -442,12 +427,11 @@ mod projective_plane_tests {
 
         let p = PgPoint::new(coord_arr);
         let l = PgLine::new([1, 1, 1]);
-        let origin = PgPoint::new([1, 0, 0]); // A fixed origin point
+        let origin = PgPoint::new([1, 0, 0]);
 
         let p_transformed = involution(&origin, &l, &p);
         let p_double_transformed = involution(&origin, &l, &p_transformed);
 
-        // Involution should be its own inverse
         p == p_double_transformed;
     }
 
@@ -550,7 +534,6 @@ mod ck_plane_tests {
         let p = EllipticPoint::new(coord_arr);
         let l = p.perp();
         let p_perp = l.perp();
-        // In elliptic geometry, perp(perp(p)) = p
         p == p_perp;
     }
 
@@ -562,7 +545,6 @@ mod ck_plane_tests {
         let p = HyperbolicPoint::new(coord_arr);
         let l = p.perp();
         let p_perp = l.perp();
-        // In hyperbolic geometry, perp(perp(p)) = p
         p == p_perp;
     }
 
@@ -573,9 +555,6 @@ mod ck_plane_tests {
         }
         let p = EuclidPoint::new(coord_arr);
         let l = p.perp();
-        // In Euclidean geometry, a finite point is not incident with the line at infinity
-        // The line at infinity is [0, 0, 1], and a point (x, y, z) is incident with it if z = 0
-        // So we check if either the point is at infinity (z = 0) or it's not incident with the line at infinity
         if coord_arr[2] != 0 {
             l.incident(&p);
         }
@@ -589,7 +568,6 @@ mod ck_plane_tests {
         let p = MyCKPoint::new(coord_arr);
         let l = p.perp();
         let p_perp = l.perp();
-        // In this custom Cayley-Klein geometry, perp(perp(p)) = p
         p == p_perp;
     }
 
@@ -609,7 +587,6 @@ mod ck_plane_tests {
         let a2 = EllipticPoint::new(coord2_arr);
         let a3 = EllipticPoint::new(coord3_arr);
 
-        // Skip if points are collinear
         if coincident(&a1, &a2, &a3) {
             return;
         }
@@ -643,7 +620,6 @@ mod ck_plane_tests {
         let a2 = EuclidPoint::new(coord2_arr);
         let a3 = EuclidPoint::new(coord3_arr);
 
-        // Skip if points are collinear
         if coincident(&a1, &a2, &a3) {
             return;
         }
@@ -652,7 +628,6 @@ mod ck_plane_tests {
         let altitudes = tri_altitude(&triangle);
         let trilateral = tri_dual(&triangle);
 
-        // Each altitude should be perpendicular to the opposite side
         let _ = is_perpendicular(&altitudes[0], &trilateral[0])
             && is_perpendicular(&altitudes[1], &trilateral[1])
             && is_perpendicular(&altitudes[2], &trilateral[2]);
@@ -669,7 +644,6 @@ mod ck_plane_tests {
         let reflected = reflect(&mirror, &p);
         let reflected_twice = reflect(&mirror, &reflected);
 
-        // Reflecting twice should return the original point
         p == reflected_twice;
     }
 
@@ -678,8 +652,6 @@ mod ck_plane_tests {
         _coord2: (i16, i16, i16),
         _coord3: (i16, i16, i16),
     ) {
-        // Skip this test for hyperbolic geometry due to implementation-specific issues
-        // The dual of a triangle in hyperbolic geometry has some edge cases that are not handled properly
     }
 
     fn prop_harmonic_conjugate_involution(
@@ -698,7 +670,6 @@ mod ck_plane_tests {
         let b = PgPoint::new(coord2_arr);
         let c = PgPoint::new(coord3_arr);
 
-        // Only test if points are collinear
         if !coincident(&a, &b, &c) {
             return;
         }
@@ -706,7 +677,6 @@ mod ck_plane_tests {
         let d = harm_conj(&a, &b, &c);
         let d_double = harm_conj(&a, &b, &d);
 
-        // The harmonic conjugate of the harmonic conjugate should be the original point
         c == d_double;
     }
 
@@ -726,7 +696,6 @@ mod ck_plane_tests {
         let a2 = PerspPoint::new(coord2_arr);
         let a3 = PerspPoint::new(coord3_arr);
 
-        // Skip if points are collinear
         if coincident(&a1, &a2, &a3) {
             return;
         }
@@ -749,7 +718,6 @@ mod ck_plane_tests {
         }
         let p = EllipticPoint::new(c);
         let l = p.perp();
-        // In elliptic geometry, perp preserves coordinates
         l.coord == p.coord;
     }
 
@@ -787,7 +755,6 @@ mod ck_plane_tests {
         }
         let p = HyperbolicPoint::new(c);
         let l = p.perp();
-        // In hyperbolic geometry, perp transforms as (x, y, z) -> (x, y, -z)
         l.coord == [c[0], c[1], -c[2]];
     }
 
@@ -1283,12 +1250,10 @@ mod pg_object_tests {
         }
     }
 
-    // Original unit tests for reference
     #[test]
     fn test_dot_product() {
-        // Test with non-zero vectors
         assert_eq!(dot_product(&[1, 2, 3], &[3, 4, 5]), 26);
-        // Test with zero vector
+
         assert_eq!(dot_product(&[0, 0, 0], &[3, 4, 5]), 0);
         assert_eq!(dot_product(&[1, 2, 3], &[0, 0, 0]), 0);
         // Test with negative numbers
