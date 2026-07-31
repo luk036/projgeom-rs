@@ -16,8 +16,6 @@ rustdoc-args = ["--html-in-header", "src/doc-header.html"]
 
 [dependencies]
 num-integer = { version = "0.1.46" }
-# fraction = { version = "0.1.1" }
-# fractions-rs = { git = "https://github.com/luk036/fractions-rs" }
 fractions-rs = { version = "0.1.7" }
 svgbobdoc = { version = "0.3", features = ["enable"] }
 
