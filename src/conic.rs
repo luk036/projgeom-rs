@@ -52,6 +52,7 @@ impl Conic {
     /// Create a unit circle centered at the origin
     ///
     /// $$ x^2 + y^2 = 1 $$
+    #[inline]
     pub fn unit_circle() -> Self {
         Conic::circle(0, 0, 1)
     }

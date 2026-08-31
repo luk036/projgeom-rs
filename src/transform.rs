@@ -256,6 +256,7 @@ impl Transform {
 }
 
 impl Default for Transform {
+    #[inline]
     fn default() -> Self {
         Self::identity()
     }

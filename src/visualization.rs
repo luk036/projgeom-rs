@@ -66,6 +66,7 @@ impl SvgRenderer {
     }
 
     /// End an SVG document
+    #[inline]
     pub fn end(&self) -> String {
         "</svg>".to_string()
     }
@@ -297,6 +298,7 @@ impl SvgRenderer {
 }
 
 impl Default for SvgRenderer {
+    #[inline]
     fn default() -> Self {
         Self::new(800, 600, 1.0)
     }

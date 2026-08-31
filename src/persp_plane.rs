@@ -196,6 +196,7 @@ impl PerspEuclidPlane {
 }
 
 impl Default for PerspEuclidPlane {
+    #[inline]
     fn default() -> Self {
         Self::new()
     }

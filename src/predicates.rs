@@ -182,6 +182,7 @@ pub fn squared_distance(p1: &PgPoint, p2: &PgPoint) -> Fraction<i64> {
 /// # Returns
 ///
 /// The distance as a Fraction (may involve square roots, not implemented)
+#[inline]
 pub fn distance(p1: &PgPoint, p2: &PgPoint) -> Fraction<i64> {
     squared_distance(p1, p2)
 }
@@ -316,6 +317,7 @@ fn to_affine(point: &PgPoint) -> (i64, i64) {
 /// # Returns
 ///
 /// True if the point is at infinity (z = 0)
+#[inline]
 pub fn is_at_infinity(point: &PgPoint) -> bool {
     point.coord[2] == 0
 }
@@ -329,6 +331,7 @@ pub fn is_at_infinity(point: &PgPoint) -> bool {
 /// # Returns
 ///
 /// True if the line is the line at infinity (z = 0)
+#[inline]
 pub fn is_line_at_infinity(line: &PgLine) -> bool {
     line.coord[0] == 0 && line.coord[1] == 0 && line.coord[2] != 0
 }

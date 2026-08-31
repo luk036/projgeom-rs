@@ -21,6 +21,7 @@ pub trait Geometry: Sized {
 }
 
 impl Geometry for PgPoint {
+    #[inline]
     fn geometry_name(&self) -> &str {
         "Projective"
     }
@@ -31,6 +32,7 @@ impl Geometry for PgPoint {
 }
 
 impl Geometry for PgLine {
+    #[inline]
     fn geometry_name(&self) -> &str {
         "Projective"
     }
@@ -41,6 +43,7 @@ impl Geometry for PgLine {
 }
 
 impl Geometry for EllipticPoint {
+    #[inline]
     fn geometry_name(&self) -> &str {
         "Elliptic"
     }
@@ -51,6 +54,7 @@ impl Geometry for EllipticPoint {
 }
 
 impl Geometry for EllipticLine {
+    #[inline]
     fn geometry_name(&self) -> &str {
         "Elliptic"
     }
@@ -61,6 +65,7 @@ impl Geometry for EllipticLine {
 }
 
 impl Geometry for HyperbolicPoint {
+    #[inline]
     fn geometry_name(&self) -> &str {
         "Hyperbolic"
     }
@@ -71,6 +76,7 @@ impl Geometry for HyperbolicPoint {
 }
 
 impl Geometry for HyperbolicLine {
+    #[inline]
     fn geometry_name(&self) -> &str {
         "Hyperbolic"
     }
@@ -81,6 +87,7 @@ impl Geometry for HyperbolicLine {
 }
 
 impl Geometry for EuclidPoint {
+    #[inline]
     fn geometry_name(&self) -> &str {
         "Euclidean"
     }
@@ -91,6 +98,7 @@ impl Geometry for EuclidPoint {
 }
 
 impl Geometry for EuclidLine {
+    #[inline]
     fn geometry_name(&self) -> &str {
         "Euclidean"
     }
@@ -105,6 +113,7 @@ use std::convert::TryFrom;
 impl TryFrom<PgPoint> for EllipticPoint {
     type Error = crate::error::GeometryError;
 
+    #[inline]
     fn try_from(value: PgPoint) -> std::result::Result<Self, Self::Error> {
         Ok(EllipticPoint::new(value.coord))
     }
@@ -113,6 +122,7 @@ impl TryFrom<PgPoint> for EllipticPoint {
 impl TryFrom<PgPoint> for HyperbolicPoint {
     type Error = crate::error::GeometryError;
 
+    #[inline]
     fn try_from(value: PgPoint) -> std::result::Result<Self, Self::Error> {
         Ok(HyperbolicPoint::new(value.coord))
     }
@@ -121,6 +131,7 @@ impl TryFrom<PgPoint> for HyperbolicPoint {
 impl TryFrom<PgPoint> for EuclidPoint {
     type Error = crate::error::GeometryError;
 
+    #[inline]
     fn try_from(value: PgPoint) -> std::result::Result<Self, Self::Error> {
         Ok(EuclidPoint::new(value.coord))
     }
@@ -129,6 +140,7 @@ impl TryFrom<PgPoint> for EuclidPoint {
 impl TryFrom<EllipticPoint> for PgPoint {
     type Error = crate::error::GeometryError;
 
+    #[inline]
     fn try_from(value: EllipticPoint) -> std::result::Result<Self, Self::Error> {
         Ok(PgPoint::new(value.coord))
     }
@@ -137,6 +149,7 @@ impl TryFrom<EllipticPoint> for PgPoint {
 impl TryFrom<HyperbolicPoint> for PgPoint {
     type Error = crate::error::GeometryError;
 
+    #[inline]
     fn try_from(value: HyperbolicPoint) -> std::result::Result<Self, Self::Error> {
         Ok(PgPoint::new(value.coord))
     }
@@ -145,6 +158,7 @@ impl TryFrom<HyperbolicPoint> for PgPoint {
 impl TryFrom<EuclidPoint> for PgPoint {
     type Error = crate::error::GeometryError;
 
+    #[inline]
     fn try_from(value: EuclidPoint) -> std::result::Result<Self, Self::Error> {
         Ok(PgPoint::new(value.coord))
     }
@@ -153,6 +167,7 @@ impl TryFrom<EuclidPoint> for PgPoint {
 impl TryFrom<PgLine> for EllipticLine {
     type Error = crate::error::GeometryError;
 
+    #[inline]
     fn try_from(value: PgLine) -> std::result::Result<Self, Self::Error> {
         Ok(EllipticLine::new(value.coord))
     }
@@ -161,6 +176,7 @@ impl TryFrom<PgLine> for EllipticLine {
 impl TryFrom<PgLine> for HyperbolicLine {
     type Error = crate::error::GeometryError;
 
+    #[inline]
     fn try_from(value: PgLine) -> std::result::Result<Self, Self::Error> {
         Ok(HyperbolicLine::new(value.coord))
     }
@@ -169,6 +185,7 @@ impl TryFrom<PgLine> for HyperbolicLine {
 impl TryFrom<PgLine> for EuclidLine {
     type Error = crate::error::GeometryError;
 
+    #[inline]
     fn try_from(value: PgLine) -> std::result::Result<Self, Self::Error> {
         Ok(EuclidLine::new(value.coord))
     }
@@ -177,6 +194,7 @@ impl TryFrom<PgLine> for EuclidLine {
 impl TryFrom<EllipticLine> for PgLine {
     type Error = crate::error::GeometryError;
 
+    #[inline]
     fn try_from(value: EllipticLine) -> std::result::Result<Self, Self::Error> {
         Ok(PgLine::new(value.coord))
     }
@@ -185,6 +203,7 @@ impl TryFrom<EllipticLine> for PgLine {
 impl TryFrom<HyperbolicLine> for PgLine {
     type Error = crate::error::GeometryError;
 
+    #[inline]
     fn try_from(value: HyperbolicLine) -> std::result::Result<Self, Self::Error> {
         Ok(PgLine::new(value.coord))
     }
@@ -193,6 +212,7 @@ impl TryFrom<HyperbolicLine> for PgLine {
 impl TryFrom<EuclidLine> for PgLine {
     type Error = crate::error::GeometryError;
 
+    #[inline]
     fn try_from(value: EuclidLine) -> std::result::Result<Self, Self::Error> {
         Ok(PgLine::new(value.coord))
     }
