@@ -3,6 +3,7 @@
 //! This module provides various geometric transformations including
 //! rotations, translations, projections, and projective transformations.
 
+use crate::linear::{inverse3, matmul3, matvec3, rationalize, Mat3, Vec3};
 use crate::pg_object::{PgLine, PgPoint};
 use fractions::Fraction;
 
@@ -104,6 +105,24 @@ impl Transform {
         }
     }
 
+    /// Create a rotation from the tangent of its half-angle
+    ///
+    /// For a rational $$ t = \tan(\theta/2) $$ this yields an exact rotation
+    /// through $$ \theta $$ with rational entries:
+    /// $$ \cos\theta = \frac{1 - t^2}{1 + t^2}, \quad \sin\theta = \frac{2 t}{1 + t^2} $$
+    ///
+    /// # Arguments
+    ///
+    /// * `t` - Tangent of half the rotation angle
+    pub fn rotation_from_tangent(t: Fraction<i64>) -> Self {
+        let one = Fraction::<i64>::new(1, 1);
+        let denom = one + t * t;
+        Transform::rotation(
+            (one - t * t) / denom,
+            (Fraction::<i64>::new(2, 1) * t) / denom,
+        )
+    }
+
     /// Create a scaling transformation
     ///
     /// $$ S(s_x, s_y) = \begin{bmatrix} s_x & 0 & 0 \\\\ 0 & s_y & 0 \\\\ 0 & 0 & 1 \end{bmatrix} $$
@@ -179,12 +198,7 @@ impl Transform {
         let y_new = self.matrix[1][0] * x + self.matrix[1][1] * y + self.matrix[1][2] * z;
         let z_new = self.matrix[2][0] * x + self.matrix[2][1] * y + self.matrix[2][2] * z;
 
-        // Convert back to integer coordinates if possible
-        PgPoint::new([
-            x_new.numer() / x_new.denom(),
-            y_new.numer() / y_new.denom(),
-            z_new.numer() / z_new.denom(),
-        ])
+        PgPoint::new(rationalize(&[x_new, y_new, z_new]))
     }
 
     /// Apply the transformation to a line
@@ -201,11 +215,7 @@ impl Transform {
         let y_new = inverse.matrix[0][1] * x + inverse.matrix[1][1] * y + inverse.matrix[2][1] * z;
         let z_new = inverse.matrix[0][2] * x + inverse.matrix[1][2] * y + inverse.matrix[2][2] * z;
 
-        PgLine::new([
-            x_new.numer() / x_new.denom(),
-            y_new.numer() / y_new.denom(),
-            z_new.numer() / z_new.denom(),
-        ])
+        PgLine::new(rationalize(&[x_new, y_new, z_new]))
     }
 
     /// Compute the inverse of this transformation
@@ -323,13 +333,36 @@ pub fn scale_point(point: &PgPoint, sx: Fraction<i64>, sy: Fraction<i64>) -> PgP
 /// # Returns
 ///
 /// The transformation matrix
-pub fn projective_transform(_src: &[PgPoint; 4], _dst: &[PgPoint; 4]) -> Transform {
-    // This is a simplified implementation
-    // A full implementation would require solving a system of linear equations
-    // to find the transformation matrix that maps src to dst
+pub fn projective_transform(src: &[PgPoint; 4], dst: &[PgPoint; 4]) -> Transform {
+    let support = |pts: &[PgPoint; 4]| -> Mat3 {
+        std::array::from_fn(|i| std::array::from_fn(|j| Fraction::<i64>::new(pts[j].coord[i], 1)))
+    };
+    let as_vec = |pt: &PgPoint| -> Vec3 {
+        [
+            Fraction::<i64>::new(pt.coord[0], 1),
+            Fraction::<i64>::new(pt.coord[1], 1),
+            Fraction::<i64>::new(pt.coord[2], 1),
+        ]
+    };
 
-    // For now, return identity as a placeholder
-    Transform::identity()
+    let src_inverse = inverse3(&support(src));
+    let dst_inverse = inverse3(&support(dst));
+    let alpha = matvec3(&src_inverse, &as_vec(&src[3]));
+    let beta = matvec3(&dst_inverse, &as_vec(&dst[3]));
+
+    let zero = Fraction::<i64>::new(0, 1);
+    for (a, b) in alpha.iter().zip(beta.iter()) {
+        if *a == zero || *b == zero {
+            panic!("projective_transform: correspondences are not in general position");
+        }
+    }
+    let diagonal: Mat3 = std::array::from_fn(|i| {
+        std::array::from_fn(|j| if i == j { beta[i] / alpha[i] } else { zero })
+    });
+
+    Transform {
+        matrix: matmul3(&matmul3(&support(dst), &diagonal), &src_inverse),
+    }
 }
 
 #[cfg(test)]
@@ -516,9 +549,28 @@ mod tests {
         ];
 
         let transform = projective_transform(&src, &dst);
+        for (source, target) in src.iter().zip(dst.iter()) {
+            assert_eq!(transform.apply_point(source), *target);
+        }
+        assert_eq!(
+            transform.matrix,
+            Transform::scaling(Fraction::<i64>::new(2, 1), Fraction::<i64>::new(2, 1)).matrix
+        );
+    }
 
-        // For now, this returns identity as placeholder
-        assert_eq!(transform.matrix, Transform::identity().matrix);
+    #[test]
+    fn test_scaling_fractional_exact() {
+        let t = Transform::scaling(Fraction::<i64>::new(1, 2), Fraction::<i64>::new(1, 3));
+        let p = PgPoint::new([1, 1, 1]);
+        // (1/2 : 1/3 : 1) is proportional to (3 : 2 : 6).
+        assert_eq!(t.apply_point(&p), PgPoint::new([3, 2, 6]));
+    }
+
+    #[test]
+    fn test_rotation_from_tangent() {
+        let t = Transform::rotation_from_tangent(Fraction::<i64>::new(1, 1));
+        let p = PgPoint::new([1, 0, 1]);
+        assert_eq!(t.apply_point(&p), PgPoint::new([0, 1, 1]));
     }
 
     #[test]
