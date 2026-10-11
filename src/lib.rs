@@ -11,6 +11,7 @@ pub mod euclid_plane_measure;
 pub mod ffi;
 pub mod geometry;
 pub mod hyp_object;
+mod linear;
 pub mod myck_object;
 pub mod persp_object;
 pub mod persp_plane;
