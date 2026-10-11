@@ -3,8 +3,67 @@
 //! This module provides support for conic sections (circles, ellipses,
 //! parabolas, and hyperbolas) in projective geometry.
 
+use crate::linear::{adjugate3, det3, matvec3, rationalize, Mat3, Vec3};
 use crate::pg_object::{PgLine, PgPoint};
 use fractions::Fraction;
+
+fn isqrt(n: i64) -> i64 {
+    if n < 2 {
+        return n;
+    }
+    let mut lo: i64 = 1;
+    let mut hi: i64 = n / 2 + 1;
+    while lo <= hi {
+        let mid = lo + (hi - lo) / 2;
+        let sq = mid * mid;
+        if sq == n {
+            return mid;
+        }
+        if sq < n {
+            lo = mid + 1;
+        } else {
+            hi = mid - 1;
+        }
+    }
+    hi
+}
+
+fn is_zero(v: &Vec3) -> bool {
+    v[0] == Fraction::new(0, 1) && v[1] == Fraction::new(0, 1) && v[2] == Fraction::new(0, 1)
+}
+
+fn cross3(a: &Vec3, b: &Vec3) -> Vec3 {
+    [
+        a[1] * b[2] - a[2] * b[1],
+        a[2] * b[0] - a[0] * b[2],
+        a[0] * b[1] - a[1] * b[0],
+    ]
+}
+
+fn quadratic_form(q: &Mat3, x: &Vec3) -> Fraction<i64> {
+    x[0] * (q[0][0] * x[0] + q[0][1] * x[1] + q[0][2] * x[2])
+        + x[1] * (q[1][0] * x[0] + q[1][1] * x[1] + q[1][2] * x[2])
+        + x[2] * (q[2][0] * x[0] + q[2][1] * x[1] + q[2][2] * x[2])
+}
+
+fn bilinear_form(q: &Mat3, x: &Vec3, y: &Vec3) -> Fraction<i64> {
+    x[0] * (q[0][0] * y[0] + q[0][1] * y[1] + q[0][2] * y[2])
+        + x[1] * (q[1][0] * y[0] + q[1][1] * y[1] + q[1][2] * y[2])
+        + x[2] * (q[2][0] * y[0] + q[2][1] * y[1] + q[2][2] * y[2])
+}
+
+fn rational_sqrt(value: &Fraction<i64>) -> Option<Fraction<i64>> {
+    if *value < Fraction::new(0, 1) {
+        return None;
+    }
+    let n = isqrt(*value.numer());
+    let d = isqrt(*value.denom());
+    if n * n == *value.numer() && d * d == *value.denom() {
+        Some(Fraction::new(n, d))
+    } else {
+        None
+    }
+}
 
 /// Represents a conic section in homogeneous coordinates
 ///
@@ -129,11 +188,7 @@ impl Conic {
         let b = self.matrix[1][0] * x + self.matrix[1][1] * y + self.matrix[1][2] * z;
         let c = self.matrix[2][0] * x + self.matrix[2][1] * y + self.matrix[2][2] * z;
 
-        PgLine::new([
-            a.numer() / a.denom(),
-            b.numer() / b.denom(),
-            c.numer() / c.denom(),
-        ])
+        PgLine::new(rationalize(&[a, b, c]))
     }
 
     /// Find the pole of a line with respect to the conic
@@ -148,12 +203,16 @@ impl Conic {
     ///
     /// The pole point
     pub fn pole(&self, line: &PgLine) -> PgPoint {
-        // Pole: Q^{-1} * line
-        // For now, we'll use a simplified approach
-        // A full implementation would require computing the inverse of Q
-
-        // Placeholder: return a point that lies on the line
-        PgPoint::new([line.coord[0], line.coord[1], line.coord[2]])
+        if det3(&self.matrix) == Fraction::new(0, 1) {
+            panic!("Cannot compute the pole of a degenerate conic");
+        }
+        let adj = adjugate3(&self.matrix);
+        let l = [
+            Fraction::<i64>::new(line.coord[0], 1),
+            Fraction::<i64>::new(line.coord[1], 1),
+            Fraction::<i64>::new(line.coord[2], 1),
+        ];
+        PgPoint::new(rationalize(&matvec3(&adj, &l)))
     }
 
     /// Compute the tangent line at a point on the conic
@@ -183,12 +242,72 @@ impl Conic {
     /// # Returns
     ///
     /// A vector of intersection points (0, 1, or 2 points)
-    pub fn intersect(&self, _line: &PgLine) -> Vec<PgPoint> {
-        // Solve for intersection of line and conic
-        // This requires solving a quadratic equation
+    pub fn intersect(&self, line: &PgLine) -> Vec<PgPoint> {
+        let line_coord = [
+            Fraction::<i64>::new(line.coord[0], 1),
+            Fraction::<i64>::new(line.coord[1], 1),
+            Fraction::<i64>::new(line.coord[2], 1),
+        ];
 
-        // Placeholder: return empty vector
-        vec![]
+        // A basis (origin, direction) of the line: two independent l x e_j.
+        let zero = Fraction::<i64>::new(0, 1);
+        let candidates: [Vec3; 3] = [
+            [zero, line_coord[2], -line_coord[1]],
+            [-line_coord[2], zero, line_coord[0]],
+            [line_coord[1], -line_coord[0], zero],
+        ];
+        let mut vectors: Vec<Vec3> = Vec::with_capacity(2);
+        for candidate in candidates {
+            if !is_zero(&candidate) {
+                vectors.push(candidate);
+            }
+        }
+        let origin = vectors[0];
+        let mut direction = [zero, zero, zero];
+        for candidate in &vectors[1..] {
+            if !is_zero(&cross3(&origin, candidate)) {
+                direction = *candidate;
+                break;
+            }
+        }
+
+        let quad = quadratic_form(&self.matrix, &direction);
+        let lin = Fraction::<i64>::new(2, 1) * bilinear_form(&self.matrix, &origin, &direction);
+        let constant = quadratic_form(&self.matrix, &origin);
+
+        let point_at = |t: &Fraction<i64>| -> PgPoint {
+            PgPoint::new(rationalize(&[
+                origin[0] + *t * direction[0],
+                origin[1] + *t * direction[1],
+                origin[2] + *t * direction[2],
+            ]))
+        };
+
+        if quad == zero {
+            if lin == zero {
+                panic!("line lies on the conic");
+            }
+            return vec![point_at(&(-constant / lin))];
+        }
+
+        let disc = lin * lin - Fraction::<i64>::new(4, 1) * quad * constant;
+        if disc < zero {
+            return Vec::new();
+        }
+        match rational_sqrt(&disc) {
+            None => panic!("intersection requires a quadratic surd"),
+            Some(root) => {
+                let two_q = Fraction::<i64>::new(2, 1) * quad;
+                if root == zero {
+                    vec![point_at(&(-lin / two_q))]
+                } else {
+                    vec![
+                        point_at(&((-lin + root) / two_q)),
+                        point_at(&((-lin - root) / two_q)),
+                    ]
+                }
+            }
+        }
     }
 
     /// Compute the discriminant of the conic
@@ -358,21 +477,33 @@ mod tests {
     #[test]
     fn test_intersect_empty() {
         let circle = Conic::unit_circle();
-        let line = PgLine::new([1, 0, 2]); // Line x = -2, which doesn't intersect unit circle
+        let line = PgLine::new([1, 0, 2]); // Line x = -2, which doesn't meet unit circle
 
+        // A non-secant line has no real intersection points: an empty list.
         let intersections = circle.intersect(&line);
-        // For now, this returns empty due to placeholder implementation
-        assert_eq!(intersections.len(), 0);
+        assert!(intersections.is_empty());
     }
 
     #[test]
     fn test_intersect_line_through_center() {
         let circle = Conic::unit_circle();
-        let line = PgLine::new([0, 0, 1]); // Line through origin
+        let line = PgLine::new([1, 0, 0]); // Line x = 0, through the center
 
         let intersections = circle.intersect(&line);
-        // For now, this returns empty due to placeholder implementation
-        assert_eq!(intersections.len(), 0);
+        assert_eq!(intersections.len(), 2);
+        for point in &intersections {
+            assert!(circle.contains(point));
+        }
+        assert!(intersections.contains(&PgPoint::new([0, 1, 1])));
+        assert!(intersections.contains(&PgPoint::new([0, -1, 1])));
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_intersect_irrational_panics() {
+        let circle = Conic::unit_circle();
+        let line = PgLine::new([1, 1, 0]); // x + y = 0: irrational intersection
+        circle.intersect(&line);
     }
 
     #[test]
@@ -426,8 +557,21 @@ mod tests {
         let line = PgLine::new([1, 0, -1]); // Line x = 1
 
         let pole = circle.pole(&line);
-        // For now, this returns a placeholder point
-        assert!(pole.coord[0] != 0 || pole.coord[1] != 0 || pole.coord[2] != 0);
+        assert_eq!(pole, PgPoint::new([1, 0, 1]));
+    }
+
+    #[test]
+    fn test_polar_parabola_no_truncation() {
+        let parabola = Conic::parabola(Fraction::<i64>::new(1, 1));
+        let polar = parabola.polar(&PgPoint::new([0, 1, 1]));
+        assert_eq!(polar, PgLine::new([0, 1, 1]));
+    }
+
+    #[test]
+    fn test_pole_polar_roundtrip() {
+        let circle = Conic::unit_circle();
+        let line = PgLine::new([1, 0, -1]);
+        assert_eq!(circle.polar(&circle.pole(&line)), line);
     }
 
     #[test]
